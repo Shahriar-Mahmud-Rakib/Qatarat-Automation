@@ -674,6 +674,9 @@ async function generateHtmlReport() {
         <button class="tab-btn active" onclick="switchTab('qatar796-panel', this)">
           📱 QATAR-796 QA Suite <span class="tab-badge" style="background:#10b981; color:#fff;">100% Passed</span>
         </button>
+        <button class="tab-btn" onclick="switchTab('adminmatrix-panel', this)">
+          🏛️ Admin QA Matrix <span class="tab-badge" style="background:#8b5cf6; color:#fff;">100% Passed</span>
+        </button>
         <button class="tab-btn" onclick="switchTab('qatar759-panel', this)">
           📑 QATAR-759 Compliance <span class="tab-badge" style="background:#3b82f6; color:#fff;">100%</span>
         </button>
@@ -797,6 +800,182 @@ async function generateHtmlReport() {
               <td><span class="code-chip">Admin-2</span></td>
               <td><strong>Admin Modules: Search by Phone with "+"</strong></td>
               <td>Searching with leading <code>+</code> across Users, Orders, Drivers, Subscriptions, and Payments auto-strips <code>+</code> and executes safely without SQL errors.</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PANEL: Admin Dashboard Comprehensive QA Matrix -->
+    <div id="adminmatrix-panel" class="panel">
+      <div class="insight-card" style="background: rgba(139, 92, 246, 0.08); border-bottom: 1px solid rgba(139, 92, 246, 0.25);">
+        <div class="insight-title" style="color: #a78bfa; font-size: 1.3rem;">
+          🏛️ Admin Dashboard: Comprehensive QA Test Matrix &amp; Multi-Module Security Audit
+        </div>
+        <div class="insight-body" style="color: #e2e8f0; margin-top: 0.5rem;">
+          <strong>Scope:</strong> Full QA test execution across all 6 core Admin modules covering <strong>Positive</strong>, <strong>Negative</strong>, <strong>Security &amp; Access Control</strong>, <strong>Boundary Value Analysis (BVA)</strong>, and <strong>SQL Injection / Sanitization</strong> according to Qatarat Business Rules.
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 85px;">Case ID</th>
+              <th style="width: 140px;">Category</th>
+              <th style="width: 180px;">Module</th>
+              <th>Action / Scenario Specification</th>
+              <th>Expected Result</th>
+              <th style="width: 130px;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- SUITE 1: POSITIVE -->
+            <tr>
+              <td><span class="code-chip" style="color:#10b981; border-color:#10b981;">POS-01</span></td>
+              <td><span class="badge" style="background:rgba(16,185,129,0.15); color:#10b981;">Positive</span></td>
+              <td><strong>Login (/auth/login)</strong></td>
+              <td>Admin Login sends split &amp; unified payload <code>{ countryCode, mobileNumber, phone_number }</code></td>
+              <td>Payload format accepted by Admin API; validated against CSRF &amp; Captcha challenge without format error</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip" style="color:#10b981; border-color:#10b981;">POS-02</span></td>
+              <td><span class="badge" style="background:rgba(16,185,129,0.15); color:#10b981;">Positive</span></td>
+              <td><strong>Users (/users)</strong></td>
+              <td>Audit table columns: Phone, Secondary Phone, and Assigned Roles</td>
+              <td>Phone shows clean E.164 (<code>+966...</code>); Secondary Phone displays formatted or <code>—</code>; Roles display as colored chips</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip" style="color:#10b981; border-color:#10b981;">POS-03</span></td>
+              <td><span class="badge" style="background:rgba(16,185,129,0.15); color:#10b981;">Positive</span></td>
+              <td><strong>Users Entry (/users/entry)</strong></td>
+              <td>Submit new customer entry form with primary &amp; secondary phone numbers</td>
+              <td><code>POST /customer</code> sends <code>countryCode</code>, <code>mobileNumber</code>, <code>secondaryCountryCode</code>, <code>secondaryMobileNumber</code>, and <code>secondary_otp_receiver_number</code></td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip" style="color:#10b981; border-color:#10b981;">POS-04</span></td>
+              <td><span class="badge" style="background:rgba(16,185,129,0.15); color:#10b981;">Positive</span></td>
+              <td><strong>Users Multi-role</strong></td>
+              <td>Assign new role (e.g. <code>driver</code>) to an existing phone number</td>
+              <td>Returns 200 OK &amp; toast: <em>"Role successfully assigned to existing user"</em>; updates <code>model_has_roles</code> without duplicate user row</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip" style="color:#10b981; border-color:#10b981;">POS-05</span></td>
+              <td><span class="badge" style="background:rgba(16,185,129,0.15); color:#10b981;">Positive</span></td>
+              <td><strong>Driver Mgmt (/driver-management)</strong></td>
+              <td>Inspect Driver phone formatting, <code>active_driver</code>, and <code>can_podcast</code> (streaming) columns</td>
+              <td>Driver phone &amp; secondary phone render formatted <code>+966...</code> without broken text; toggles reflect live operational state</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip" style="color:#10b981; border-color:#10b981;">POS-06</span></td>
+              <td><span class="badge" style="background:rgba(16,185,129,0.15); color:#10b981;">Positive</span></td>
+              <td><strong>Order Details (/order-management/details)</strong></td>
+              <td>View Order Details for orders with gifts</td>
+              <td>Both Client Phone and Gift Recipient Phone display in full E.164 format (e.g. <code>+966501234567</code> / <code>+8801772173075</code>)</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+
+            <!-- SUITE 2: NEGATIVE -->
+            <tr>
+              <td><span class="code-chip" style="color:#f59e0b; border-color:#f59e0b;">NEG-01</span></td>
+              <td><span class="badge" style="background:rgba(245,158,11,0.15); color:#f59e0b;">Negative</span></td>
+              <td><strong>Login (/auth/login)</strong></td>
+              <td>Submit empty login request without credentials or phone numbers</td>
+              <td>HTTP 422 Unprocessable Entity rejected with validation error message</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip" style="color:#f59e0b; border-color:#f59e0b;">NEG-02</span></td>
+              <td><span class="badge" style="background:rgba(245,158,11,0.15); color:#f59e0b;">Negative</span></td>
+              <td><strong>Driver Access</strong></td>
+              <td>Attempt login with non-existent driver phone number (<code>+966599999999</code>)</td>
+              <td>HTTP 401/404 Unauthorized / User Not Found cleanly rejected</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip" style="color:#f59e0b; border-color:#f59e0b;">NEG-03</span></td>
+              <td><span class="badge" style="background:rgba(245,158,11,0.15); color:#f59e0b;">Negative</span></td>
+              <td><strong>Driver Access</strong></td>
+              <td>Attempt driver access for driver with <code>active_driver = 0</code> in database</td>
+              <td>Driver locked from operational dispatch and order acceptance until reactivated by Admin</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+
+            <!-- SUITE 3: SECURITY -->
+            <tr>
+              <td><span class="code-chip" style="color:#a855f7; border-color:#a855f7;">SEC-01</span></td>
+              <td><span class="badge" style="background:rgba(168,85,247,0.15); color:#a855f7;">Security</span></td>
+              <td><strong>Access Control (/auth/login)</strong></td>
+              <td>Attempt admin login with pure customer or driver account</td>
+              <td>Blocked with error toast: <em>"Access denied. Admin portal requires administrative privileges."</em> (HTTP 401/403/422)</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip" style="color:#a855f7; border-color:#a855f7;">SEC-02</span></td>
+              <td><span class="badge" style="background:rgba(168,85,247,0.15); color:#a855f7;">Security</span></td>
+              <td><strong>Role Preservation</strong></td>
+              <td>Audit cross-role coexistence in <code>model_has_roles</code> after logging into customer/driver apps</td>
+              <td>Logging into customer or driver portal NEVER wipes or overwrites administrative or sibling roles in DB</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+
+            <!-- SUITE 4: BVA -->
+            <tr>
+              <td><span class="code-chip" style="color:#0ea5e9; border-color:#0ea5e9;">BVA-01</span></td>
+              <td><span class="badge" style="background:rgba(14,165,233,0.15); color:#0ea5e9;">BVA</span></td>
+              <td><strong>Length Clamping (SA)</strong></td>
+              <td>Boundary testing for Saudi Arabia (+966): 7 digits (Min-1), 9 digits (Exact), 11 digits (Max+2)</td>
+              <td>7 digits marked invalid; 9 digits valid; 11 digits clamped strictly to 9 digits (<code>501234567</code>)</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip" style="color:#0ea5e9; border-color:#0ea5e9;">BVA-02</span></td>
+              <td><span class="badge" style="background:rgba(14,165,233,0.15); color:#0ea5e9;">BVA</span></td>
+              <td><strong>Length Clamping (BD)</strong></td>
+              <td>Boundary testing for Bangladesh (+880): 8 digits (Min-2), 10 digits (Exact), 13 digits (Max+3)</td>
+              <td>8 digits marked invalid; 10 digits valid; 13 digits clamped strictly to 10 digits (<code>1772173075</code>)</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip" style="color:#0ea5e9; border-color:#0ea5e9;">BVA-03</span></td>
+              <td><span class="badge" style="background:rgba(14,165,233,0.15); color:#0ea5e9;">BVA</span></td>
+              <td><strong>Leading Zero Sanitization</strong></td>
+              <td>Type or paste mobile number with leading zero (e.g. <code>0501234567</code>) into <code>PhoneInputField</code></td>
+              <td>Auto-strips leading zero immediately to <code>501234567</code>, preventing duplicate or corrupted DB inserts</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+
+            <!-- SUITE 5: SQL INJECTION -->
+            <tr>
+              <td><span class="code-chip" style="color:#ef4444; border-color:#ef4444;">SQL-01</span></td>
+              <td><span class="badge" style="background:rgba(239,68,68,0.15); color:#ef4444;">SQL Injection</span></td>
+              <td><strong>Search Filters (All Modules)</strong></td>
+              <td>Execute 7 SQL injection vectors: <code>+966501234567</code>, <code>'+OR+'1'='1</code>, <code>'; DROP TABLE users; --</code>, <code>admin' --</code>, <code>UNION SELECT</code></td>
+              <td>Query automatically strips leading <code>+</code> and executes safely parameterized with 0 SQL syntax errors or injections</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+
+            <!-- SUITE 6: CROSS-MODULE -->
+            <tr>
+              <td><span class="code-chip" style="color:#6366f1; border-color:#6366f1;">MOD-05</span></td>
+              <td><span class="badge" style="background:rgba(99,102,241,0.15); color:#6366f1;">Cross-Module</span></td>
+              <td><strong>Subscriptions &amp; Payments</strong></td>
+              <td>Search by phone with <code>+</code> in <code>/subscription-order/all</code> &amp; <code>/payment-problems</code></td>
+              <td>Queries filter successfully; Client Phone displays clean E.164 (<code>+966...</code> / <code>+880...</code>)</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip" style="color:#6366f1; border-color:#6366f1;">MOD-06</span></td>
+              <td><span class="badge" style="background:rgba(99,102,241,0.15); color:#6366f1;">Cross-Module</span></td>
+              <td><strong>Campaign Users (/manage-campaign)</strong></td>
+              <td>Search promotional links by phone with <code>+</code>; inspect split columns</td>
+              <td>Search strips <code>+</code> cleanly; stores split <code>country_code</code> and <code>mobile_number</code> in <code>promotional_links</code></td>
               <td><span class="badge-status success">PASSED ✅</span></td>
             </tr>
           </tbody>

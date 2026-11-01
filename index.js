@@ -117,6 +117,14 @@ switch (command.toLowerCase()) {
     runScript('./test_qatar_796_compliance.js');
     break;
 
+  case 'admin-matrix':
+  case 'matrix':
+  case 'admin-dashboard':
+  case 'dashboard-qa':
+    // Full Comprehensive Admin Dashboard QA Matrix (Positive, Negative, Security, BVA, SQL Injection, Modules 1-6)
+    runScript('./test_admin_dashboard_full_matrix.js');
+    break;
+
   case 'report':
   case 'html':
   case 'html-report':
@@ -129,6 +137,10 @@ switch (command.toLowerCase()) {
 ================================================================================
 🌟 QATARAT MASTER QA AUTOMATION SUITE — DEDICATED COMMAND CHEAT SHEET
 ================================================================================
+
+🎯 0. Admin Dashboard Comprehensive QA Test Matrix:
+   - Full 6 Modules (Login, Users, Drivers, Orders, Subs/Payments, Campaigns) across Positive, Negative, Security, BVA, SQL Injection:
+     👉 node index.js admin-matrix
 
 🎯 1. Direct Order Generation (Single vs. Multi-User):
    - Same User (e.g. 50 orders for 1 user):

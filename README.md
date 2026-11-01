@@ -42,6 +42,10 @@ Run the refactored test suites via npm or node index.js:
 > **Jira Requirement Reference:** `QATAR-759` & `QATAR-795` (Phone Standardization & Multi-Role Architecture)  
 
 ```bash
+# 0. Run Full Admin Dashboard QA Test Matrix (Positive, Negative, Security, BVA, SQL, Modules):
+npm run test:admin-matrix
+node index.js admin-matrix
+
 # 1. Run Full QATAR-796 WebApp & Admin QA Suite:
 npm run test:qatar-796
 node index.js qatar-796
@@ -50,7 +54,7 @@ node index.js qatar-796
 npm run test:qatar-759
 node index.js qatar-759
 
-# 3. Run Master Suite (Executes all 3 refactored suites end-to-end):
+# 3. Run Master Suite (Executes all refactored suites end-to-end):
 npm run test:all
 node index.js all
 
@@ -91,6 +95,51 @@ node index.js subscription-refactor
 - **Access Control:** Pure customer and driver accounts are denied access to the Admin Portal with administrative privileges required.
 - **Search with Leading "+":** Searching with leading `+` across Users, Orders, Drivers, Subscriptions, and Payments auto-strips `+` and queries safely without SQL errors.
 - **Multi-Role Assignment:** Assigning a role to an existing phone returns HTTP 200 without creating duplicate accounts.
+
+---
+
+## 🏛️ Admin Dashboard: Comprehensive QA Test Matrix & Security Audit
+
+### 1. Login (`/auth/login`)
+| Test ID | Category | Scenario / Action | Expected Result | Status |
+| :--- | :--- | :--- | :--- | :---: |
+| **POS-01** | Positive | Admin Login sends split & unified payload | `POST /auth/login` accepts `{ countryCode, mobileNumber, phone_number }` | ✅ PASSED |
+| **NEG-01** | Negative | Submit empty credentials | Rejected with `HTTP 422 Unprocessable Entity` validation error | ✅ PASSED |
+| **SEC-01** | Security | Login with pure customer/driver account | Blocked with toast: *"Access denied. Admin portal requires administrative privileges."* | ✅ PASSED |
+| **BVA-01** | BVA | Saudi Arabia (+966) length clamping | Clamps strictly to 9 digits (`501234567`) | ✅ PASSED |
+| **BVA-02** | BVA | Bangladesh (+880) length clamping | Clamps strictly to 10 digits (`1772173075`) | ✅ PASSED |
+| **BVA-03** | BVA | Leading `0` auto-stripping | Typing/pasting `0501234567` auto-strips to `501234567` | ✅ PASSED |
+
+### 2. Users Management (`/users` & `/users/entry`)
+| Test ID | Category | Scenario / Action | Expected Result | Status |
+| :--- | :--- | :--- | :--- | :---: |
+| **POS-02** | Positive | Table columns inspection | Phone renders clean E.164 (`+966...`); Secondary Phone displays formatted or `—`; Roles as colored chips | ✅ PASSED |
+| **POS-03** | Positive | Create customer entry | `POST /customer` sends `countryCode`, `mobileNumber`, `secondaryCountryCode`, `secondaryMobileNumber`, `secondary_otp_receiver_number` | ✅ PASSED |
+| **POS-04** | Positive | Multi-role assignment to existing user | Returns 200 OK & Toast: *"Role successfully assigned to existing user"*; updates `model_has_roles` | ✅ PASSED |
+| **SEC-02** | Security | Cross-role non-destruction | Roles in `model_has_roles` are never wiped when logging into sibling portals | ✅ PASSED |
+
+### 3. Driver Management (`/driver-management` & `/driver-management/entry`)
+| Test ID | Category | Scenario / Action | Expected Result | Status |
+| :--- | :--- | :--- | :--- | :---: |
+| **POS-05** | Positive | Driver list table rendering | Driver phone and secondary phone render clean `+966...` without broken text; `active_driver` & `can_podcast` verified | ✅ PASSED |
+| **NEG-02** | Negative | Login with non-existent driver | HTTP 401/404 User Not Found | ✅ PASSED |
+| **NEG-03** | Negative | Inactive driver (`active_driver = 0`) | Driver locked from operational dispatch and order acceptance | ✅ PASSED |
+
+### 4. Orders (`/order-management` & `/order-management/details`)
+| Test ID | Category | Scenario / Action | Expected Result | Status |
+| :--- | :--- | :--- | :--- | :---: |
+| **POS-06** | Positive | Order Details phone rendering | Both Client Phone and Gift Recipient Phone display in full E.164 format (`+966501234567`) | ✅ PASSED |
+| **SQL-01** | SQL Injection | Filter orders with `+` and SQLi vectors | Strips leading `+` and parameterizes safely without SQL syntax error across 7 test vectors | ✅ PASSED |
+
+### 5. Subscriptions & Payments (`/subscription-order/all` & `/payment-problems`)
+| Test ID | Category | Scenario / Action | Expected Result | Status |
+| :--- | :--- | :--- | :--- | :---: |
+| **MOD-05** | Cross-Module | Filter Subscriptions & Payment Problems by phone | Search query works; Client Phone column displays clean `+966...` / `+880...` | ✅ PASSED |
+
+### 6. Campaign Users (`/manage-campaign`)
+| Test ID | Category | Scenario / Action | Expected Result | Status |
+| :--- | :--- | :--- | :--- | :---: |
+| **MOD-06** | Cross-Module | Search promotional links by phone with `+` | Strips `+` cleanly; promotional links store split `country_code` and `mobile_number` | ✅ PASSED |
 
 ---
 

@@ -20,6 +20,7 @@
     "test:100": "node index.js test-100",
     "test:qatar-759": "node index.js qatar-759",
     "test:qatar-796": "node index.js qatar-796",
+    "test:admin-matrix": "node index.js admin-matrix",
     "test:all": "node index.js all",
     "report": "node generate_report_html.js"
   },
