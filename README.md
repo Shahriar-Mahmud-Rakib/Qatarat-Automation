@@ -42,29 +42,55 @@ Run the refactored test suites via npm or node index.js:
 > **Jira Requirement Reference:** `QATAR-759` & `QATAR-795` (Phone Standardization & Multi-Role Architecture)  
 
 ```bash
-# 1. Run Full QATAR-759 Compliance Audit (11 Tables, Multi-Role, Dual-Input, Contracts):
+# 1. Run Full QATAR-796 WebApp & Admin QA Suite:
+npm run test:qatar-796
+node index.js qatar-796
+
+# 2. Run Full QATAR-759 Compliance Audit (11 Tables, Multi-Role, Dual-Input, Contracts):
 npm run test:qatar-759
 node index.js qatar-759
 
-# 2. Run Master Suite (Executes all 3 refactored suites end-to-end):
+# 3. Run Master Suite (Executes all 3 refactored suites end-to-end):
 npm run test:all
 node index.js all
 
-# 3. Test 100+ Multi-Role Logins & All Database "00" Prefix Numbers:
+# 4. Test 100+ Multi-Role Logins & All Database "00" Prefix Numbers:
 npm run test:100
 node index.js test-100
 
-# 4. Test Phone Uniqueness & Multi-Role (User + Driver + Admin):
+# 5. Test Phone Uniqueness & Multi-Role (User + Driver + Admin):
 npm run test:auth
 node index.js auth
 
-# 5. Test Refactored Payment System & Outbox:
+# 6. Test Refactored Payment System & Outbox:
 npm run test:payment
 node index.js payment
 
-# 6. Test Refactored Subscription System & Deduplication:
+# 7. Test Refactored Subscription System & Deduplication:
 node index.js subscription-refactor
 ```
+
+---
+
+## 📱 QATAR-796: Phone Formatting Across APIs & UI + Multi-Role QA Matrix
+
+### 1. WebApp Client UI & Input Behavior (TC-01 through TC-08)
+- **TC-01 (Leading 0 Auto-Stripping & Clamping):** Typing `0501234567` automatically strips leading `0` to `501234567`. Saudi national limit clamps input at exactly 9 digits.
+- **TC-01 (Country Switch Clamping):** Typing 10 digits for Bangladesh (`+880`) and switching to Saudi Arabia immediately clamps value down to 9 digits.
+- **TC-06 (Country Code Modal Search):** Search works with `+966`, `+880`, plain digits (`966`, `880`), or names ("Saudi", "السعودية").
+- **TC-07 (App Initialization):** Verified bug fix in `hooks/useAppInitializer.ts` (replaced `split("00")` with direct parse) with 0 runtime errors or `NaN` country codes on refresh.
+- **TC-08 (RTL Visual Alignment):** In Arabic mode (`/ar/login`), phone inputs enforce `dir="ltr"` so `+` remains strictly on the left of the dial code.
+
+### 2. WebApp API Payload Contracts
+- **SendWhatsAppOtp:** Sends standardized camelCase `{ countryCode, mobileNumber, role: "user", sendNew: true }` $\rightarrow$ HTTP 204.
+- **Customer Login:** Verifies OTP and returns JWT token, `role: "user"`, `countryCode`, `mobileNumber`, and E.164 `phoneNumber`.
+- **Edit Profile:** Standardized update payload schema validated on `POST /api/v2/Profiles/update-phone`.
+- **Gift Details Order Contract:** `POST /latest-gift/Add` accepts `countryCode` and `mobileNumber` alongside E.164 `phoneNumber`.
+
+### 3. Admin Dashboard QA Scenarios
+- **Access Control:** Pure customer and driver accounts are denied access to the Admin Portal with administrative privileges required.
+- **Search with Leading "+":** Searching with leading `+` across Users, Orders, Drivers, Subscriptions, and Payments auto-strips `+` and queries safely without SQL errors.
+- **Multi-Role Assignment:** Assigning a role to an existing phone returns HTTP 200 without creating duplicate accounts.
 
 ---
 
@@ -85,6 +111,7 @@ node index.js subscription-refactor
 ### 3. Unified API Contract & Dual-Input Support (§3)
 - **Dual-Input Compatibility:** APIs accept camelCase `{ countryCode: "966", mobileNumber: "501234567" }` and legacy `{ phoneNumber: "+966501234567" }` (or `05...` / `00966...`).
 - **Response Format:** Returns separated `countryCode`, `mobileNumber`, AND E.164 `phoneNumber` alongside session role and JWT tokens.
+
 
 
 

@@ -109,6 +109,14 @@ switch (command.toLowerCase()) {
     runScript('./test_qatar_759_compliance.js');
     break;
 
+  case 'qatar-796':
+  case '796':
+  case 'webapp-qa':
+  case 'admin-qa':
+    // Full QATAR-796 WebApp & Admin Dashboard End-to-End QA Verification Suite
+    runScript('./test_qatar_796_compliance.js');
+    break;
+
   case 'report':
   case 'html':
   case 'html-report':

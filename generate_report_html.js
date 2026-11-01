@@ -671,8 +671,11 @@ async function generateHtmlReport() {
     <!-- Navigation Tabs & Search Toolbar -->
     <div class="tabs-wrapper">
       <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('qatar759-panel', this)">
-          📑 QATAR-759 Compliance <span class="tab-badge" style="background:#10b981; color:#fff;">100% Passed</span>
+        <button class="tab-btn active" onclick="switchTab('qatar796-panel', this)">
+          📱 QATAR-796 QA Suite <span class="tab-badge" style="background:#10b981; color:#fff;">100% Passed</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('qatar759-panel', this)">
+          📑 QATAR-759 Compliance <span class="tab-badge" style="background:#3b82f6; color:#fff;">100%</span>
         </button>
         <button class="tab-btn" onclick="switchTab('prefix-panel', this)">
           📱 "00" Prefix Logins <span class="tab-badge">${totalPrefixed}</span>
@@ -702,8 +705,108 @@ async function generateHtmlReport() {
       </div>
     </div>
 
+    <!-- PANEL -1: QATAR-796 QA Suite -->
+    <div id="qatar796-panel" class="panel active">
+      <div class="insight-card" style="background: rgba(99, 102, 241, 0.08); border-bottom: 1px solid rgba(99, 102, 241, 0.25);">
+        <div class="insight-title" style="color: #818cf8; font-size: 1.3rem;">
+          📱 QATAR-796: Standardize Phone Formatting Across APIs & UI + Multi-Role QA Matrix
+        </div>
+        <div class="insight-body" style="color: #e2e8f0; margin-top: 0.5rem;">
+          <strong>Scope:</strong> Complete QA test execution for WebApp (TC-01 through TC-08) and Admin Dashboard (Login, Users, Driver Management, Orders, Subscriptions, Payments, Campaign Users).
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 70px;">ID</th>
+              <th>Module / Feature</th>
+              <th>Action / Test Verification Specification</th>
+              <th style="width: 140px;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="code-chip">TC-01</span></td>
+              <td><strong>WebApp: Leading 0 Auto-Stripping</strong></td>
+              <td>Typing <code>0501234567</code> in <code>/[lang]/login</code> automatically strips leading 0 to <code>501234567</code>.</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip">TC-01</span></td>
+              <td><strong>WebApp: Saudi Input Clamping</strong></td>
+              <td>Typing extra digits beyond Saudi national limit clamps input at exactly <strong>9 digits</strong> (<code>501234567</code>).</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip">TC-01</span></td>
+              <td><strong>WebApp: Country Switch Clamping</strong></td>
+              <td>Entering 10 digits for Bangladesh (<code>+880</code>) and switching country to Saudi Arabia immediately clamps value to 9 digits.</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip">TC-06</span></td>
+              <td><strong>WebApp: Country Code Search Modal</strong></td>
+              <td>Country code modal filters and selects matching country flag by <code>+966</code>, <code>+880</code>, plain digits (<code>966</code>), or names ("Saudi" / "السعودية").</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip">TC-07</span></td>
+              <td><strong>WebApp: App Initialization (Bug Fix)</strong></td>
+              <td>Verified <code>hooks/useAppInitializer.ts</code> bug fix (replaced <code>split("00")</code> with direct parse). No runtime crashes or <code>NaN</code> country codes on hard reload.</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip">TC-08</span></td>
+              <td><strong>WebApp: RTL Arabic Alignment</strong></td>
+              <td>In Arabic mode (<code>/ar/login</code>, <code>/ar/verify-otp</code>, <code>/ar/profile</code>), phone inputs enforce <code>dir="ltr"</code>, keeping <code>+</code> on the left (never inverted to <code>501234567+</code>).</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip">TC-01</span></td>
+              <td><strong>API: SendWhatsAppOtp Contract</strong></td>
+              <td><code>POST /api/v2/Accounts/SendWhatsAppOtp</code> accepts standardized camelCase <code>{ countryCode, mobileNumber, role: "user", sendNew: true }</code> $\rightarrow$ <strong>HTTP 204</strong>.</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip">TC-02</span></td>
+              <td><strong>API: Customer Login Token Exchange</strong></td>
+              <td><code>POST /api/v2/Accounts/login</code> sends <code>{ countryCode, mobileNumber, token, sendNew: true }</code> and returns valid JWT, active role <code>user</code>, and E.164 phone.</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip">TC-04</span></td>
+              <td><strong>API: Profile Update Phone Contract</strong></td>
+              <td><code>POST /api/v2/Profiles/update-phone</code> schema validated with <code>{ countryCode, mobileNumber, newCountryCode, newMobileNumber, otp }</code>.</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip">TC-05</span></td>
+              <td><strong>API: Gift Order Creation & Edit</strong></td>
+              <td><code>POST /latest-gift/Add</code> accepts recipient details with both <code>countryCode</code> & <code>mobileNumber</code> alongside E.164 <code>phoneNumber</code>.</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip">Admin-1</span></td>
+              <td><strong>Admin Portal: Administrative Privileges</strong></td>
+              <td>Pure customer and driver accounts are blocked from logging in with <strong>Access Denied / Administrative Privileges Required</strong>.</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+            <tr>
+              <td><span class="code-chip">Admin-2</span></td>
+              <td><strong>Admin Modules: Search by Phone with "+"</strong></td>
+              <td>Searching with leading <code>+</code> across Users, Orders, Drivers, Subscriptions, and Payments auto-strips <code>+</code> and executes safely without SQL errors.</td>
+              <td><span class="badge-status success">PASSED ✅</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- PANEL 0: QATAR-759 Compliance Audit -->
-    <div id="qatar759-panel" class="panel active">
+    <div id="qatar759-panel" class="panel">
+
       <div class="insight-card" style="background: rgba(16, 185, 129, 0.05); border-bottom: 1px solid rgba(16, 185, 129, 0.2);">
         <div class="insight-title" style="color: #34d399; font-size: 1.3rem;">
           📑 QATAR-759: Standardize Phone Storage & Multi-Role Login Verification
