@@ -101,6 +101,14 @@ switch (command.toLowerCase()) {
     runScript('./test_100_multi_role_and_prefix_logins.js');
     break;
 
+  case 'qatar-759':
+  case '759':
+  case 'compliance':
+  case 'phone-audit':
+    // Full QATAR-759 Standardization & Multi-Role Compliance Audit
+    runScript('./test_qatar_759_compliance.js');
+    break;
+
   case 'report':
   case 'html':
   case 'html-report':

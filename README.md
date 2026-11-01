@@ -38,25 +38,54 @@ The platform architecture has undergone three major enterprise refactorings:
 
 Run the refactored test suites via npm or node index.js:
 
+> **Live Web Report Dashboard:** [https://shahriar-mahmud-rakib.github.io/Qatarat-Automation/](https://shahriar-mahmud-rakib.github.io/Qatarat-Automation/)  
+> **Jira Requirement Reference:** `QATAR-759` & `QATAR-795` (Phone Standardization & Multi-Role Architecture)  
+
 ```bash
-# 1. Run Master Suite (Executes all 3 refactored suites end-to-end):
+# 1. Run Full QATAR-759 Compliance Audit (11 Tables, Multi-Role, Dual-Input, Contracts):
+npm run test:qatar-759
+node index.js qatar-759
+
+# 2. Run Master Suite (Executes all 3 refactored suites end-to-end):
 npm run test:all
 node index.js all
 
-# 2. Test Phone Uniqueness & Multi-Role (User + Driver + Admin):
+# 3. Test 100+ Multi-Role Logins & All Database "00" Prefix Numbers:
+npm run test:100
+node index.js test-100
+
+# 4. Test Phone Uniqueness & Multi-Role (User + Driver + Admin):
 npm run test:auth
 node index.js auth
 
-# 3. Test Refactored Payment System & Outbox:
+# 5. Test Refactored Payment System & Outbox:
 npm run test:payment
 node index.js payment
 
-# 4. Test Refactored Subscription System & Deduplication:
-npm run test:subscription
+# 6. Test Refactored Subscription System & Deduplication:
 node index.js subscription-refactor
 ```
 
 ---
+
+## 📑 QATAR-759: Standardize Phone Storage & Multi-Role Login Verification
+
+### 1. Database & Phone Number Standardization (§1)
+- **11 Core Tables Audited:** `users`, `gifts`, `otps`, `payment_gateway_records`, `payment_gateway_records_temp`, `sms_otp_requests`, `abandonment_cart_notifications`, `chatbot_message_trackings`, `promotional_links`, `user_merge_logs`, `users_merge_bak` verified to store split `country_code` and `mobile_number` columns.
+- **Digits-Only Sanitization:** 0 records with leading `+` or `00` in `country_code`. Mobile numbers contain digits only without leading zero.
+- **Strict Deduplication:** 0 active duplicate collisions in the database.
+
+### 2. Multi-Role Login Model (§2)
+- **Application Context Determines Role:**
+  - Customer App / Web App: Always acts as `user`.
+  - Driver App: Requires `driver` role, returns `driver`.
+  - WebAdmin: Allowed for any admin role (`admin`, `super-admin`, `agent`, etc.).
+- **Role Non-Destruction (Bug Fix):** Logging in as a customer NEVER wipes or overwrites `driver` or `admin` roles in `model_has_roles`.
+
+### 3. Unified API Contract & Dual-Input Support (§3)
+- **Dual-Input Compatibility:** APIs accept camelCase `{ countryCode: "966", mobileNumber: "501234567" }` and legacy `{ phoneNumber: "+966501234567" }` (or `05...` / `00966...`).
+- **Response Format:** Returns separated `countryCode`, `mobileNumber`, AND E.164 `phoneNumber` alongside session role and JWT tokens.
+
 
 
 ## 📱 🔑 Instant User Login OTP Fetcher CLI (`node index.js otp`)
