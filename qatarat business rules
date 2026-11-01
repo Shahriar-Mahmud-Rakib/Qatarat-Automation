@@ -1,0 +1,85 @@
+# QATARAT & AL-RAHEEQ PLATFORM — COMPLETE BUSINESS LOGIC & CONTEXT
+
+You are an expert full-stack developer and lead QA engineer for the Qatarat and Al-Raheeq ecosystem. Always strictly respect the following cross-module workflows, architecture rules, and functional logic.
+
+---
+
+## 1. ECOSYSTEM ARCHITECTURE & CORE PLATFORMS
+- **Admin Panel (V2):** Centralized dashboard for managing orders, catalog, users, drivers, campaigns, popups, and financial reports.
+- **Client Mobile App & Web App:** Storefront platforms allowing customers to browse services, configure charity/home water distribution, place one-time orders, manage subscriptions, and send digital gift orders.
+- **Driver Mobile Application:** Dedicated logistics app used by field drivers to view assigned trips, navigate to target mosques/zones, live-stream delivery distributions, capture proof photos, and submit execution details.
+- **Shared Codebase:** Qatarat and Al-Raheeq share identical business models and backend architecture, isolated by localization, domains, and branding preferences.
+
+---
+
+## 2. SERVICES & LOCATION BUSINESS RULES
+The platform supports distinct delivery workflows based on service type and geographic scope:
+1. **Mecca Mosques (Specific Mosques):**
+   - Customer selects a specific registered mosque within Mecca.
+   - Driver assignment is **Mandatory**. Trips are created via `Order Management -> Set Orders`.
+   - Driver must visit the physical mosque, initiate live video streaming (or capture photo proof), and submit distribution details.
+2. **Mecca Mosques (Most Needed):**
+   - Aggregated charitable bulk distribution based on real-time need across sacred precincts.
+   - **No driver is assigned.**
+   - Fulfillments are executed directly by field operations and closed inside the Admin Panel via `Order Management -> Close Distribution` using batch event photos.
+3. **Masjid Al-Haram (Special Holy Sanctuary):**
+   - High-priority distribution within the Grand Mosque of Mecca.
+   - **Tax Exempt & Zero Delivery Fee:** Tax / VAT rate = 0, and Delivery Fee = 0.
+   - Driver assignment is bypassed; closed directly via `Close Distribution` in Admin.
+4. **All Saudi Arabia Mosques & Home/Office Delivery:**
+   - Standard logistics routing utilizing delivery zones, geofencing coordinates, and driver delivery checkpoints.
+
+---
+
+## 3. CHECKOUT, TAX, AND PAYMENT ARCHITECTURE
+- **Guest Checkout:** Customers can complete one-time order checkouts without prior authentication (guest mode). An account is linked lazily via phone verification.
+- **Subscription Constraint:** Recurring subscriptions **Strictly Require** authenticated client sessions; guest checkout is disallowed for subscriptions.
+- **Payment Lifecycle & Webhooks:**
+   - Order creation sets initial status to `Pending` or `Subscription`.
+   - Successful payment gateway response (or webhook callback) transitions the order to `Payment Received`.
+   - Only orders with status `Payment Received` are eligible for driver routing (`Set Orders`) or bulk resolution (`Close Distribution`).
+- **Payment Methods:**
+   - Supported local gateways: MADA, Visa / Mastercard, Tabby (BNPL), Apple Pay, and Indonesian local gateways (QRIS, BCA, BRI, BNI, Mandiri, Alfamart, Indomaret).
+   - Card labeling rule: Standard payment label must reflect both brands when logos are paired (e.g., `Visa / Mastercard` or `Credit / Debit Card`).
+- **Promo Codes:** Applied before tax calculation. Usage counters increment strictly upon successful transaction completion (`Payment Received`).
+
+---
+
+## 4. SUBSCRIPTION MANAGEMENT & WORKER RULES
+- **Recurring Cycle:** Customers configure recurring deliveries (Daily, Weekly, Monthly) with selected items (Water, Meals).
+- **Background Worker:** Automated scheduler executes daily to generate recurring orders.
+- **Unpaid Recurring State:** Auto-generated subscription orders start with status `Subscription`.
+- **Payment Recovery via WhatsApp:** The scheduler dispatches payment reminders containing direct payment links via WhatsApp.
+- **Distribution Transition:** Upon successful link payment, status upgrades to `Payment Received`, queuing the order for distribution.
+- **Cancellation & Deletion:** Canceling or soft-deleting a subscription immediately halts future order generation jobs for that subscription ID.
+
+---
+
+## 5. DRIVER MOBILE WORKFLOWS & STREAMING
+- **Authentication:** Drivers authenticate using registered phone numbers and secure OTP verification. Soft-deleted or inactive drivers are denied OTP dispatch.
+- **Trip Allocation:** Drivers view allocated sub-orders in the Driver App under assigned trips.
+- **Live Distribution & Proof:**
+   - Drivers initiate camera live streams during distribution to allow real-time customer monitoring.
+   - Mandatory proof upload: Drivers must capture and submit clear distribution photos before an order can transition to `Delivered`.
+- **Close Orders via Driver:** Once proof is submitted and approved, suborders transition to `Delivered` status.
+
+---
+
+## 6. CLOSE DISTRIBUTION (ADMIN BULK FULFILLMENT)
+- **Eligibility Criteria:** An order appears in `Close Distribution` ONLY IF:
+   1. Payment status is strictly `Payment Received`.
+   2. Suborder status is pending distribution.
+   3. Package `Need Delivery` flag = `False / Inactive` (charity/bulk packages).
+   4. Material distribution type = `ONE_TIME_DISTRIBUTION`.
+   5. No driver is assigned (`Set Orders` bypass).
+- **Batch Resolution:** Operations team uploads event proof photos and clicks `UPDATE`. All matching items transition to `Delivered`, generating proof links for customers and instantly purging records from the pending distribution table.
+
+---
+
+## 7. DATA INTEGRITY, DELETION & CACHING POLICY
+- **Strict Soft Delete:** Physical hard-deletions (`DELETE FROM`) are forbidden on core transactional entities (Users, Drivers, Packages, Materials, Orders, Subscriptions).
+- **Audit Columns:** Tables must maintain `is_deleted` (boolean/tinyint) and `deleted_at` (timestamp) columns.
+- **Historical Order Preservation:** Deleting a user, driver, package, or delivery zone must never corrupt past order invoices, sales reports, or historical ledger lines. Relations must fall back gracefully or maintain snapshot labels.
+- **Session Revocation:** Deleting an active user or driver from Admin must revoke active JWT bearer tokens, triggering immediate HTTP 401 Unauthorized responses and redirecting clients to login/guest views.
+- **Redis Cache Invalidation:** Creating, updating, or soft-deleting catalog packages, sliders, popups, or legal content (Terms & Conditions, Privacy Policy) must trigger automated Redis cache evictions. Admin offers manual purge via `Settings -> Clear Cache`.
+- **Multi-language Support:** Legal and storefront content is partitioned by language code (`ar`, `en`, `id`, `tr`). Client requests fetch content matching the active storefront locale.

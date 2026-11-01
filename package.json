@@ -1,0 +1,42 @@
+{
+  "name": "close-distribution-automation",
+  "version": "2.0.0",
+  "description": "Qatarat Scalable Close Distribution & Dynamic Multi-User Subscription Automation Suite",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test:orders": "node run_orders.js",
+    "test:orders:single50": "node index.js orders 50 single",
+    "test:orders:multi50": "node index.js orders 50 multi",
+    "test:subscription": "node run_subscription.js",
+    "test:subs:multi50": "node index.js subs 50",
+    "test:gateway-switch": "node index.js gateway-switch",
+    "test:rule5": "node index.js rule5",
+    "test:pdf": "node index.js pdf-test",
+    "test:templates": "node index.js templates",
+    "test:verify": "node test_close_distribution.js",
+    "test:auth": "node index.js auth",
+    "test:payment": "node index.js payment",
+    "test:subscription": "node index.js subscription-refactor",
+    "test:100": "node index.js test-100",
+    "test:all": "node index.js all",
+    "report": "node generate_report_html.js"
+  },
+  "keywords": [
+    "qatarat",
+    "automation",
+    "qa",
+    "close-distribution",
+    "subscription",
+    "multi-user-scaling",
+    "gateway-switching"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.20.0",
+    "dotenv": "^18.0.4",
+    "mysql2": "^3.24.4",
+    "puppeteer-core": "^24.43.1"
+  }
+}

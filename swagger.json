@@ -1,0 +1,281 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Qatarat API Collection (Refactored 2026)",
+    "description": "API Specification & Collections for Qatarat Unique Phone Multi-Role Auth, Refactored Payment Gateways & Outbox, and Subscription Distribution Automation.",
+    "version": "2.1.0"
+  },
+  "servers": [
+    {
+      "url": "https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com",
+      "description": "AWS API Gateway (Dev/Staging Environment)"
+    }
+  ],
+  "paths": {
+    "/ping": {
+      "get": {
+        "tags": ["System"],
+        "summary": "Health Check Ping",
+        "description": "Check if the server and API gateway connection is healthy.",
+        "operationId": "healthPing",
+        "responses": {
+          "200": {
+            "description": "Healthy Connection",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Healthy Connection"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/Accounts/AccessGuestUser": {
+      "post": {
+        "tags": ["Authentication & Unique Phone"],
+        "summary": "Generate Guest Session Token",
+        "description": "Creates an anonymous guest user and returns temporary JWT Bearer access token.",
+        "operationId": "accessGuestUser",
+        "responses": {
+          "200": {
+            "description": "Guest session created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "integer", "example": 1596606 },
+                    "userName": { "type": "string" },
+                    "role": { "type": "string", "example": "Guest" },
+                    "accessToken": { "type": "string" },
+                    "refreshToken": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/Accounts/SendWhatsAppOtp": {
+      "post": {
+        "tags": ["Authentication & Unique Phone"],
+        "summary": "Dispatch WhatsApp OTP (Role-Aware)",
+        "description": "Dispatches an OTP to user via WhatsApp for a specific role ('user', 'driver', 'admin'). Disallows duplicate accounts per phone.",
+        "operationId": "sendWhatsAppOtp",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["countryCode", "mobileNumber", "role"],
+                "properties": {
+                  "countryCode": { "type": "string", "example": "880" },
+                  "mobileNumber": { "type": "string", "example": "1772173075" },
+                  "role": { "type": "string", "enum": ["user", "driver", "admin"], "example": "user" },
+                  "sendNew": { "type": "boolean", "example": true }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OTP sent successfully" },
+          "204": { "description": "OTP sent (No Content)" },
+          "400": { "description": "Invalid parameters or blocked phone" }
+        }
+      }
+    },
+    "/api/v2/Accounts/login": {
+      "post": {
+        "tags": ["Authentication & Unique Phone"],
+        "summary": "OTP Verification & User Login",
+        "description": "Validates the 4-digit OTP code and returns authenticated client session tokens.",
+        "operationId": "verifyOtpLogin",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["countryCode", "mobileNumber", "token"],
+                "properties": {
+                  "countryCode": { "type": "string", "example": "880" },
+                  "mobileNumber": { "type": "string", "example": "1772173075" },
+                  "token": { "type": "string", "example": "1234" },
+                  "sendNew": { "type": "boolean", "example": true }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "integer", "example": 1593074 },
+                    "userName": { "type": "string", "example": "Shahriar Mahmud" },
+                    "role": { "type": "string", "example": "user" },
+                    "accessToken": { "type": "string" },
+                    "refreshToken": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "404": { "description": "Invalid OTP code" }
+        }
+      }
+    },
+    "/api/v2/carts/add-new-sale-item": {
+      "post": {
+        "tags": ["Cart & Orders"],
+        "summary": "Add Item to Cart",
+        "description": "Appends a sale item to the active cart order.",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sale_item_id": { "type": "integer", "example": 95 },
+                  "quantity": { "type": "integer", "example": 1 },
+                  "home_icon_id": { "type": "integer", "example": 3 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Item added to cart" }
+        }
+      }
+    },
+    "/api/v2/web-payments/initiate/myfatoorah": {
+      "post": {
+        "tags": ["Payments & Reconcile"],
+        "summary": "Initiate MyFatoorah Payment",
+        "description": "Generates payment gateway URL for MyFatoorah processing.",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cart_id": { "type": "integer" },
+                  "callbackUrl": { "type": "string" },
+                  "errorUrl": { "type": "string" },
+                  "paymentMethodId": { "type": "integer", "example": 2 },
+                  "phoneNumber": { "type": "string", "example": "8801772173075" },
+                  "name": { "type": "string" },
+                  "email": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Gateway URL generated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "payment_url": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/subscriptions/generate-orders": {
+      "get": {
+        "tags": ["Subscriptions & Orders"],
+        "summary": "Generate Subscription Orders",
+        "description": "Pushes daily subscription order jobs to the queue. Authenticated via `subscription-api-key` header.",
+        "operationId": "generateSubscriptionOrders",
+        "security": [
+          {
+            "SubscriptionApiKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "required": false,
+            "description": "Target date in YYYY-MM-DD format (defaults to current date)",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2026-11-01"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order job queued successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateOrdersResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing subscription-api-key"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "SubscriptionApiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "subscription-api-key",
+        "description": "API key required for automated subscription operations"
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Standard JWT authentication token"
+      }
+    },
+    "schemas": {
+      "GenerateOrdersResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string", "example": "1 subscription order job(s) pushed to the queue for 2026-11-01." },
+          "data": {
+            "type": "object",
+            "properties": {
+              "date": { "type": "string", "example": "2026-11-01" },
+              "total_queued": { "type": "integer", "example": 1 },
+              "subscription_ids": { "type": "array", "items": { "type": "integer" }, "example": [9219] }
+            }
+          }
+        }
+      }
+    }
+  }
+}

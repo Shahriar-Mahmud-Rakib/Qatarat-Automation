@@ -1,0 +1,226 @@
+{
+  "info": {
+    "_postman_id": "c1a93e50-711e-450b-bc6b-9c6091f09c7a",
+    "name": "Qatarat API Collection (Refactored 2026)",
+    "description": "Postman collection for Qatarat APIs including unique phone multi-role auth, payments, subscription order generation, and system health.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com",
+      "type": "string"
+    },
+    {
+      "key": "subscriptionApiKey",
+      "value": "qatarat-subscription-generate-api-key-dev",
+      "type": "string"
+    },
+    {
+      "key": "bearerToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "System Health",
+      "item": [
+        {
+          "name": "Ping Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ping",
+              "host": ["{{baseUrl}}"],
+              "path": ["ping"]
+            },
+            "description": "Verifies server connectivity and API gateway health."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Authentication & Unique Phone",
+      "item": [
+        {
+          "name": "Access Guest User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/Accounts/AccessGuestUser",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v2", "Accounts", "AccessGuestUser"]
+            },
+            "description": "Obtains an anonymous guest token."
+          },
+          "response": []
+        },
+        {
+          "name": "Send WhatsApp OTP (User Role)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"countryCode\": \"880\",\n  \"mobileNumber\": \"1772173075\",\n  \"role\": \"user\",\n  \"sendNew\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/Accounts/SendWhatsAppOtp",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v2", "Accounts", "SendWhatsAppOtp"]
+            },
+            "description": "Dispatches OTP for USER role."
+          },
+          "response": []
+        },
+        {
+          "name": "Send WhatsApp OTP (Driver Role)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"countryCode\": \"880\",\n  \"mobileNumber\": \"1772173075\",\n  \"role\": \"driver\",\n  \"sendNew\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/Accounts/SendWhatsAppOtp",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v2", "Accounts", "SendWhatsAppOtp"]
+            },
+            "description": "Dispatches OTP for DRIVER role (Same Phone)."
+          },
+          "response": []
+        },
+        {
+          "name": "Send WhatsApp OTP (Admin Role)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"countryCode\": \"880\",\n  \"mobileNumber\": \"1772173075\",\n  \"role\": \"admin\",\n  \"sendNew\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/Accounts/SendWhatsAppOtp",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v2", "Accounts", "SendWhatsAppOtp"]
+            },
+            "description": "Dispatches OTP for ADMIN role (Same Phone)."
+          },
+          "response": []
+        },
+        {
+          "name": "Verify OTP & Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"countryCode\": \"880\",\n  \"mobileNumber\": \"1772173075\",\n  \"token\": \"1234\",\n  \"sendNew\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/Accounts/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v2", "Accounts", "login"]
+            },
+            "description": "Logs in user with OTP."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cart & Payments",
+      "item": [
+        {
+          "name": "Add Sale Item to Cart",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{bearerToken}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sale_item_id\": 95,\n  \"quantity\": 1,\n  \"home_icon_id\": 3\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/carts/add-new-sale-item",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v2", "carts", "add-new-sale-item"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Initiate MyFatoorah Payment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{bearerToken}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cart_id\": 696600,\n  \"callbackUrl\": \"https://qatarat-stage.vercel.app/en/checkout/success\",\n  \"errorUrl\": \"https://qatarat-stage.vercel.app/en/checkout/error\",\n  \"paymentMethodId\": 2,\n  \"phoneNumber\": \"8801772173075\",\n  \"name\": \"Shahriar Mahmud\",\n  \"email\": \"shahriar@qataratapp.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/web-payments/initiate/myfatoorah",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v2", "web-payments", "initiate", "myfatoorah"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Subscriptions & Orders",
+      "item": [
+        {
+          "name": "Generate Subscription Orders (By Date)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "subscription-api-key",
+                "value": "{{subscriptionApiKey}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/subscriptions/generate-orders?date=2026-11-01",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v2", "subscriptions", "generate-orders"],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2026-11-01",
+                  "description": "Target date in YYYY-MM-DD"
+                }
+              ]
+            },
+            "description": "Pushes order generation jobs for a specific date."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
