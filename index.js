@@ -117,6 +117,14 @@ switch (command.toLowerCase()) {
     runScript('./test_qatar_796_compliance.js');
     break;
 
+  case 'close-dist-flow':
+  case 'close-distribution-flow':
+  case 'close-flow':
+  case 'live-close':
+    // Live Close Distribution Workflow (Gift order, 2 Close Dist, 1 Driver + Admin Completion)
+    runScript('./run_close_distribution_live_workflow.js');
+    break;
+
   case 'admin-ui':
   case 'admin-complete':
   case 'admin-e2e':

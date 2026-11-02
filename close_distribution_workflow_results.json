@@ -1,0 +1,104 @@
+{
+  "executedAt": "2026-11-02T04:13:38.658Z",
+  "orders": [
+    {
+      "Scenario": "1. Order with Gift",
+      "Order Number": "261102197597",
+      "Package": "Watering Al-Haram (5 Cartons)",
+      "Recipient Info": "Sara Al-Otaibi (+966551234567)",
+      "Delivery Routing": "Close Dist / Mosque",
+      "Current Status": "PAID (1) · Ready for Dist"
+    },
+    {
+      "Scenario": "2. Close Distribution #1",
+      "Order Number": "261102268700",
+      "Package": "Watering Al-Haram (5 Cartons)",
+      "Recipient Info": "None (Mosque General)",
+      "Delivery Routing": "Close Dist Queue",
+      "Current Status": "CLOSED (4) · DELIVERED (3) ✅"
+    },
+    {
+      "Scenario": "3. Close Distribution #2",
+      "Order Number": "261102150338",
+      "Package": "Haram Meal (5 Meals)",
+      "Recipient Info": "None (Charity Meals)",
+      "Delivery Routing": "Close Dist Queue",
+      "Current Status": "PAID (1) · In Active Queue"
+    },
+    {
+      "Scenario": "4. Order with Driver",
+      "Order Number": "261102659596",
+      "Package": "Providing Water (10 Cartons)",
+      "Recipient Info": "Driver Assigned (#12)",
+      "Delivery Routing": "Set Orders / Driver App",
+      "Current Status": "PAID (1) · Dispatched to Driver"
+    }
+  ],
+  "details": [
+    {
+      "index": 1,
+      "type": "Order with Gift",
+      "orderNumber": "261102197597",
+      "orderId": 696613,
+      "package": "Watering Al-Haram (5 Cartons)",
+      "hasGift": true,
+      "recipient": "Sara Al-Otaibi (+966551234567)",
+      "needDelivery": 0,
+      "driverId": null,
+      "targetModule": "Order Details (/order-management/details) + Close Dist",
+      "isCloseDistEligible": true,
+      "orderDetailId": 1157696,
+      "clientOrderStatus": 2,
+      "orderDetailStatus": 2
+    },
+    {
+      "index": 2,
+      "type": "Close Distribution #1",
+      "orderNumber": "261102268700",
+      "orderId": 696614,
+      "package": "Watering Al-Haram (5 Cartons)",
+      "hasGift": false,
+      "recipient": "N/A",
+      "needDelivery": 0,
+      "driverId": null,
+      "targetModule": "Close Distribution Queue (/close-distribution)",
+      "isCloseDistEligible": true,
+      "orderDetailId": 1157697,
+      "clientOrderStatus": 2,
+      "orderDetailStatus": 2,
+      "finalStatus": "CLOSED / DELIVERED ✅"
+    },
+    {
+      "index": 3,
+      "type": "Close Distribution #2",
+      "orderNumber": "261102150338",
+      "orderId": 696615,
+      "package": "Haram Meal (5 Meals)",
+      "hasGift": false,
+      "recipient": "N/A",
+      "needDelivery": 0,
+      "driverId": null,
+      "targetModule": "Close Distribution Queue (/close-distribution)",
+      "isCloseDistEligible": true,
+      "orderDetailId": 1157698,
+      "clientOrderStatus": 2,
+      "orderDetailStatus": 2
+    },
+    {
+      "index": 4,
+      "type": "Order with Driver",
+      "orderNumber": "261102659596",
+      "orderId": 696616,
+      "package": "Providing Water (10 Cartons)",
+      "hasGift": false,
+      "recipient": "N/A",
+      "needDelivery": 1,
+      "driverId": 12,
+      "targetModule": "Set Orders / Driver Delivery Queue (/order-management)",
+      "isCloseDistEligible": false,
+      "orderDetailId": 1157699,
+      "clientOrderStatus": 2,
+      "orderDetailStatus": 2
+    }
+  ]
+}

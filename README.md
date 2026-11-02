@@ -42,7 +42,11 @@ Run the refactored test suites via npm or node index.js:
 > **Jira Requirement Reference:** `QATAR-759` & `QATAR-795` (Phone Standardization & Multi-Role Architecture)  
 
 ```bash
-# 0. Complete Admin Dashboard QA Suite (Live Chrome UI Automation + 6 Modules Matrix):
+# 0. Live Close Distribution Workflow (Gift order, 2 Close Dist, 1 Driver + Admin Completion):
+npm run test:close-flow
+node index.js close-dist-flow
+
+# 1. Complete Admin Dashboard QA Suite (Live Chrome UI Automation + 6 Modules Matrix):
 npm run test:admin-ui
 node index.js admin-ui
 
