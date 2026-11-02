@@ -1308,7 +1308,9 @@ async function generateHtmlReport() {
 
   const reportPath = path.join(__dirname, 'report.html');
   fs.writeFileSync(reportPath, htmlContent, 'utf8');
-  console.log(`✅ HTML Report successfully generated at: ${reportPath}`);
+  const indexPath = path.join(__dirname, 'index.html');
+  fs.writeFileSync(indexPath, htmlContent, 'utf8');
+  console.log(`✅ HTML Report successfully generated at: ${reportPath} and ${indexPath}`);
   await pool.end();
 }
 

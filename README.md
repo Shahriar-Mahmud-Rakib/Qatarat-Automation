@@ -42,19 +42,23 @@ Run the refactored test suites via npm or node index.js:
 > **Jira Requirement Reference:** `QATAR-759` & `QATAR-795` (Phone Standardization & Multi-Role Architecture)  
 
 ```bash
-# 0. Run Full Admin Dashboard QA Test Matrix (Positive, Negative, Security, BVA, SQL, Modules):
+# 0. Complete Admin Dashboard QA Suite (Live Chrome UI Automation + 6 Modules Matrix):
+npm run test:admin-ui
+node index.js admin-ui
+
+# 1. Run Full Admin Dashboard QA Test Matrix (Positive, Negative, Security, BVA, SQL, Modules):
 npm run test:admin-matrix
 node index.js admin-matrix
 
-# 1. Run Full QATAR-796 WebApp & Admin QA Suite:
+# 2. Run Full QATAR-796 WebApp & Admin QA Suite:
 npm run test:qatar-796
 node index.js qatar-796
 
-# 2. Run Full QATAR-759 Compliance Audit (11 Tables, Multi-Role, Dual-Input, Contracts):
+# 3. Run Full QATAR-759 Compliance Audit (11 Tables, Multi-Role, Dual-Input, Contracts):
 npm run test:qatar-759
 node index.js qatar-759
 
-# 3. Run Master Suite (Executes all refactored suites end-to-end):
+# 4. Run Master Suite (Executes all refactored suites end-to-end):
 npm run test:all
 node index.js all
 

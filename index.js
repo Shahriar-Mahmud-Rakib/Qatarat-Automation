@@ -117,6 +117,14 @@ switch (command.toLowerCase()) {
     runScript('./test_qatar_796_compliance.js');
     break;
 
+  case 'admin-ui':
+  case 'admin-complete':
+  case 'admin-e2e':
+  case 'dashboard-ui':
+    // Complete Admin Dashboard QA Suite (Live UI Automation + Code Structure + Database Audit)
+    runScript('./test_admin_ui_and_matrix_complete.js');
+    break;
+
   case 'admin-matrix':
   case 'matrix':
   case 'admin-dashboard':
