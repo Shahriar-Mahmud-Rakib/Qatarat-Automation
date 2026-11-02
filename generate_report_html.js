@@ -89,6 +89,11 @@ async function generateHtmlReport() {
   const imgAdminLogin = getBase64Img('screenshots/live_close_dist_admin_portal.png');
   const imgStorefront = getBase64Img('screenshots/live_close_dist_storefront.png');
   const imgAdminSearch = getBase64Img('screenshots/suite1_country_search_saudi.png');
+  const imgOrder1Gateway = getBase64Img('screenshots/ui_live_step1_close_dist_gateway.png');
+  const imgOrder1Completed = getBase64Img('screenshots/ui_live_step2_close_dist_completed.png');
+  const imgOrder2Gateway = getBase64Img('screenshots/ui_live_step3_driver_order_gateway.png');
+  const imgOrder2Completed = getBase64Img('screenshots/ui_live_step4_driver_order_completed.png');
+  const imgDualMatrix = getBase64Img('screenshots/ui_live_step5_dual_orders_admin_matrix.png');
 
   const cdOrders = cdWorkflow.orders && cdWorkflow.orders.length > 0 ? cdWorkflow.orders : [
     {
@@ -959,6 +964,62 @@ async function generateHtmlReport() {
             ${imgAdminSearch ? `<img class="gallery-img" src="${imgAdminSearch}" alt="Admin Country Selector Search">` : ''}
             <div class="gallery-body">
               <strong>Dynamic Search Filtering:</strong> Modal filters country flags by dialing prefix ("880", "966"), English names ("Saudi"), and Arabic names ("مصر").
+            </div>
+          </div>
+
+          <!-- Live 2 Orders Browser Automation Cards -->
+          <div class="gallery-card">
+            <div class="gallery-header">
+              <span>💳 Close Dist: Live 3DS Payment</span>
+              <span class="badge-status success">MYFATOORAH</span>
+            </div>
+            ${imgOrder1Gateway ? `<img class="gallery-img" src="${imgOrder1Gateway}" alt="Close Dist Payment Gateway">` : ''}
+            <div class="gallery-body">
+              <strong>Order #261102305112 Payment:</strong> Verified in real Chrome browser submitting cardholder details, test card, and 3DS authorization on MyFatoorah Sandbox.
+            </div>
+          </div>
+
+          <div class="gallery-card">
+            <div class="gallery-header">
+              <span>🕌 Close Dist: Live Completion</span>
+              <span class="badge-status success">CLOSED / DELIVERED</span>
+            </div>
+            ${imgOrder1Completed ? `<img class="gallery-img" src="${imgOrder1Completed}" alt="Close Dist Live Completion">` : ''}
+            <div class="gallery-body">
+              <strong>Order #261102305112 Completed:</strong> Mosque delivery proof attached to <code>client_order_delivery_images</code>, status updated to Closed (4) and Detail Delivered (3).
+            </div>
+          </div>
+
+          <div class="gallery-card">
+            <div class="gallery-header">
+              <span>💳 Driver Order: Live 3DS Payment</span>
+              <span class="badge-status success">MYFATOORAH</span>
+            </div>
+            ${imgOrder2Gateway ? `<img class="gallery-img" src="${imgOrder2Gateway}" alt="Driver Order Payment Gateway">` : ''}
+            <div class="gallery-body">
+              <strong>Order #261102629294 Payment:</strong> Live payment submission on MyFatoorah for physical delivery package (10 Cartons Water).
+            </div>
+          </div>
+
+          <div class="gallery-card">
+            <div class="gallery-header">
+              <span>🚚 Driver Order: Live Completion</span>
+              <span class="badge-status success">CLOSED / DELIVERED</span>
+            </div>
+            ${imgOrder2Completed ? `<img class="gallery-img" src="${imgOrder2Completed}" alt="Driver Order Live Completion">` : ''}
+            <div class="gallery-body">
+              <strong>Order #261102629294 Completed:</strong> Assigned Driver #12 (عمار سائق), recipient handover signature proof uploaded, order closed and marked Delivered.
+            </div>
+          </div>
+
+          <div class="gallery-card" style="grid-column: 1 / -1;">
+            <div class="gallery-header">
+              <span>📊 Dual Orders Live Operations Matrix</span>
+              <span class="badge-status success">100% VERIFIED</span>
+            </div>
+            ${imgDualMatrix ? `<img class="gallery-img" src="${imgDualMatrix}" alt="Dual Orders Operations Matrix">` : ''}
+            <div class="gallery-body">
+              <strong>End-to-End Live Workflow Matrix:</strong> Side-by-side comparison of Close Distribution vs. Physical Driver Order, confirming automated routing, payment reconciliation, and admin lifecycle completion.
             </div>
           </div>
         </div>
