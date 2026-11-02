@@ -9,7 +9,8 @@ const pool = mysql.createPool({
   database: process.env.DB_DATABASE || 'qatarat-prod-db-replica',
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  connectTimeout: 20000
 });
 
 module.exports = pool;
