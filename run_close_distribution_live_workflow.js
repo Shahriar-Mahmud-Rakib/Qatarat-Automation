@@ -290,6 +290,15 @@ async function runCloseDistributionLiveWorkflow() {
     await page.screenshot({ path: shot2 });
     console.log(`📸 Screenshot saved: ${shot2}`);
 
+    // Navigate to Haram Watering Close Distribution products page
+    console.log('🌐 Loading Storefront Masjid al-Haram packages...');
+    await page.goto('https://qataratapp.com/haram-watering-&-feeding', { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await sleep(2500);
+
+    const shot3 = 'screenshots/storefront_haram_watering_products.png';
+    await page.screenshot({ path: shot3 });
+    console.log(`📸 Screenshot saved: ${shot3}`);
+
   } catch (err) {
     console.error('Browser UI note:', err.message);
   } finally {
