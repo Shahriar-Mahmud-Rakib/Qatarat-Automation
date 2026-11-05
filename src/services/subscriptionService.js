@@ -47,7 +47,8 @@ class SubscriptionService {
     const res = await axios.get(`${this.baseApi}/api/v2/subscriptions/generate-orders?date=${date}`, {
       headers: {
         'subscription-api-key': this.apiKey
-      }
+      },
+      timeout: 15000
     });
     return res.data;
   }

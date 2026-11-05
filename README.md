@@ -17,6 +17,108 @@ In the Qatarat environment, operations reported that valid customer orders inter
 
 ---
 
+## 🚀 ENTERPRISE PLAYWRIGHT API AUTOMATION FRAMEWORK
+
+A production-grade, highly scalable, and contract-validated API test automation framework built with **Playwright Test**, **JavaScript (Node.js)**, **AJV Schema Validator**, **MySQL Replica Integration**, and **Allure Diagnostic Reporting**.
+
+```mermaid
+flowchart TD
+    subgraph Test Layer
+        T1["Domain Specs (01-sys, 02-auth, 03-cart, 05-pay, 06-sub, 08-cd)"]
+        T2["E2E Lifecycle Journeys (Order-Payment, Subscription-Worker)"]
+        T3["Enterprise Spec (qatarat-enterprise.spec.js - 5 Principles)"]
+    end
+
+    subgraph Service Object Model Layer
+        S1["BaseService.js (HTTP Client, Auth Header, Allure Logger)"]
+        S2["AuthService.js"]
+        S3["CartService.js"]
+        S4["PaymentService.js"]
+        S5["SubscriptionService.js"]
+        S6["GiftService.js"]
+        S7["SystemService.js"]
+        S8["NotificationService.js (Indonesian Localization & Notifications)"]
+    end
+
+    subgraph Validation & Helpers
+        H1["schema.helper.js - AJV & Formats Compiler"]
+        H2["matrix.helper.js - Data-Driven Corner-Case Generator"]
+        H3["test-data.helper.js - SQLi, XSS, Boundaries & Fixtures"]
+        H4["db.helper.js - MySQL Connection Pool & State Queries"]
+        H5["allure.helper.js - Diagnostic Step Logger"]
+    end
+
+    subgraph Schemas & Contracts
+        C1["common.schema.js"]
+        C2["auth.schema.js"]
+        C3["cart.schema.js"]
+        C4["payment.schema.js"]
+        C5["subscription.schema.js"]
+        C6["notification.schema.js (Indonesian, English, Arabic)"]
+    end
+
+    subgraph CI/CD & Reporting
+        R1[GitHub Actions CI/CD]
+        R2[Interactive Allure & HTML Dashboard]
+    end
+
+    T1 & T2 & T3 --> S2 & S3 & S4 & S5 & S6 & S7
+    S2 & S3 & S4 & S5 & S6 & S7 --> S1
+    T1 & T2 & T3 --> H1 & H2 & H3 & H4 & H5
+    H1 --> C1 & C2 & C3 & C4 & C5
+    T1 & T2 & T3 --> R1 --> R2
+```
+
+### 🌟 5 Enterprise Best Practices Implemented:
+1. **🏛️ Service Object Model (SOM):** Decouples HTTP client logic, headers, token injection, and Allure logging (`tests/services/`).
+2. **📐 Contract Testing & JSON Schema Validation (AJV Engine):** Validates field types, required properties, and nullability against predefined schema contracts (`tests/schemas/`).
+3. **🛡️ Data-Driven Matrix & Automated Corner-Case Generation (`matrix.helper.js`):**
+   - **Required Fields Matrix:** Omits required fields one by one to verify `400/422` error handling.
+   - **Boundary & Whitespace:** Injects empty strings, whitespaces (`"   "`), nulls, and extreme character lengths (> 1000 chars).
+   - **Security Vectors:** Injects SQL Injection (SQLi) & XSS attack vectors.
+4. **🗄️ Direct Database State Verification (MySQL Replica):** Audits DB constraints (`users_phone_split_index`, `payment_job_outbox`, `idx_prevent_duplicate_active_subs`, and 5-point Close Distribution Predicates).
+5. **📊 Rich Allure Step Attachments & CI/CD Pipeline:** Every request payload, response body, status code, and header is logged into Allure step diagnostics.
+
+---
+
+### 🧪 Playwright API Test Commands
+
+```bash
+# 1. Parse Swagger & Generate API Inventories:
+npm run parse:api
+
+# 2. Run All 59+ Playwright API Tests (100% Pass):
+npm run test:api
+
+# 3. Run Flagship Enterprise 5-Principle Showcase Spec:
+npm run test:api:enterprise
+
+# 4. Run Domain-Specific Test Suites:
+npm run test:api:health        # System /ping & Gateway SLA
+npm run test:api:auth          # Authentication & Unique Phone (QATAR-759)
+npm run test:api:cart          # Cart Items & Quantity Boundaries
+npm run test:api:gift          # Digital Gifts & XSS/SQLi Payloads
+npm run test:api:payment       # Payments, MyFatoorah & Outbox
+npm run test:api:subs          # Subscription Worker & Deduplication
+npm run test:api:cd            # Close Distribution 5-Point DB Audit
+npm run test:api:profile       # Profile Contracts & Updates
+npm run test:api:notifications # Subscription Notifications (Indonesian 'id')
+
+# 5. Run Subscription Notification Automation (Indonesian):
+npm run test:notifications     # Node runner for Reminder & Order Created notifications
+
+# 6. Run End-to-End Lifecycle Journeys:
+npm run test:api:e2e-order     # Guest ➔ Cart ➔ Gift ➔ Payment Gateway URL ➔ DB
+npm run test:api:e2e-subs      # Active Subs ➔ Worker API Trigger ➔ Queue Check
+
+# 7. View Test Reports:
+npm run test:api:report       # Open Playwright HTML Report
+npm run allure:generate       # Generate Allure HTML Dashboard
+npm run allure:open           # Open Allure Interactive Dashboard
+```
+
+---
+
 ## 🚀 2026 REFACTORED ARCHITECTURE & TEST COMMANDS
 
 The platform architecture has undergone three major enterprise refactorings:
@@ -42,44 +144,63 @@ Run the refactored test suites via npm or node index.js:
 > **Jira Requirement Reference:** `QATAR-759` & `QATAR-795` (Phone Standardization & Multi-Role Architecture)  
 
 ```bash
-# 0. Live Close Distribution Workflow (Gift order, 2 Close Dist, 1 Driver + Admin Completion):
-npm run test:close-flow
-node index.js close-dist-flow
+# ==============================================================================
+# 🌟 CORE MODULAR QA AUTOMATION MODELS
+# ==============================================================================
 
-# 1. Complete Admin Dashboard QA Suite (Live Chrome UI Automation + 6 Modules Matrix):
-npm run test:admin-ui
-node index.js admin-ui
-
-# 1. Run Full Admin Dashboard QA Test Matrix (Positive, Negative, Security, BVA, SQL, Modules):
-npm run test:admin-matrix
-node index.js admin-matrix
-
-# 2. Run Full QATAR-796 WebApp & Admin QA Suite:
-npm run test:qatar-796
-node index.js qatar-796
-
-# 3. Run Full QATAR-759 Compliance Audit (11 Tables, Multi-Role, Dual-Input, Contracts):
-npm run test:qatar-759
-node index.js qatar-759
-
-# 4. Run Master Suite (Executes all refactored suites end-to-end):
-npm run test:all
-node index.js all
-
-# 4. Test 100+ Multi-Role Logins & All Database "00" Prefix Numbers:
-npm run test:100
-node index.js test-100
-
-# 5. Test Phone Uniqueness & Multi-Role (User + Driver + Admin):
-npm run test:auth
-node index.js auth
-
-# 6. Test Refactored Payment System & Outbox:
+# 1. PAYMENT MODEL (Real User Journey):
+#    Login -> DB OTP -> Clear Cart -> Add Item -> Add Gift -> MyFatoorah Live -> Admin Search -> Close Dist -> Web App
 npm run test:payment
 node index.js payment
 
-# 7. Test Refactored Subscription System & Deduplication:
-node index.js subscription-refactor
+# 2. PHONE NUMBER MODEL (Refactor & Schema Suite):
+#    Phone Normalization, DB Uniqueness, Multi-Role User/Driver/Admin, OTP dispatch, Legacy 00 Prefix Audit
+npm run test:phone
+node index.js phone
+
+# 3. CLOSE DISTRIBUTION MODEL (5-Point Business Predicate Audit):
+#    Audits need_delivery = 0, driver_id NULL, one-time, paid, pending vs Driver Delivery routing
+npm run test:close-dist
+node index.js close-dist
+
+# 4. SUBSCRIPTION MODEL (Deduplication & Worker Generation):
+#    Audits unique active constraint, next_generate_date scheduling, and worker auto-generation API
+npm run test:subscription
+node index.js subscription
+
+# 5. FULL MASTER SUITE (Executes all 4 models sequentially):
+npm run test:full
+# or
+npm run test:all
+node index.js full
+
+# ==============================================================================
+# 🏛️ EXTENDED QA MATRIX & LIVE SUITES
+# ==============================================================================
+
+# Complete Admin Dashboard QA Suite (Live Chrome UI + 6 Modules):
+npm run test:admin-ui
+node index.js admin-ui
+
+# Admin Dashboard Full Matrix (Positive, Negative, Security, BVA, SQL Injection):
+npm run test:admin-matrix
+node index.js admin-matrix
+
+# QATAR-796 WebApp & Admin QA Suite:
+npm run test:qatar-796
+node index.js qatar-796
+
+# QATAR-759 Compliance Audit (11 Tables, Multi-Role, Dual-Input, Contracts):
+npm run test:qatar-759
+node index.js qatar-759
+
+# 100+ Multi-Role Logins & All Database "00" Prefix Numbers:
+npm run test:100
+node index.js test-100
+
+# Live Close Distribution Workflow (Gift order, 2 Close Dist, 1 Driver + Admin Completion):
+npm run test:close-flow
+node index.js close-dist-flow
 ```
 
 ---
@@ -349,17 +470,22 @@ The automation suite provides **separate, modular commands** for every scenario:
 
 | # | Scenario / Action | CLI Command | Description |
 | :-: | :--- | :--- | :--- |
-| **1** | **Get Instant OTP by Phone** | `node index.js otp <PHONE> [--watch]` | Fetches live login OTP code directly in terminal |
-| **2** | **Same User ($N$ Orders)** | `node index.js orders 50 single` | Generates $N$ orders under 1 single user |
-| **3** | **Multi Unique Users ($N$ Orders)** | `node index.js orders 50 multi` | Generates $N$ orders across $N$ distinct unique users |
-| **4** | **Subscription Worker ($N$ Users)** | `node index.js subs 50` | Arms $N$ subscriptions, triggers worker & asserts cycle |
-| **5** | **Specific Single Subscription** | `node index.js subs single 9216` | Runs single subscription cycle verification |
-| **6** | **Gateway Switch (Cancel & Retry)** | `node index.js gateway-switch` | Tests abandoning Gateway A & paying on Gateway B |
-| **7** | **Rule 05 Status Audit (1 vs 6 vs 4)**| `node index.js rule5` | Audits direct vs subscription vs closed items |
-| **8** | **PDF 5-Point Live Audit** | `node index.js pdf-test` | Tests live 5-point database routing logic |
-| **9** | **List All Preset Templates** | `node index.js templates` | Displays all ready-made templates |
-| **10** | **Execute Specific Template** | `node index.js template <name>` | Runs a pre-configured scenario template |
-| **11** | **Verify Order in Database** | `node index.js verify <ORDER_NO>` | Audits any specific order by order number |
+| **1** | **Payment Model (Real User Journey)** | `node index.js payment` | Runs end-to-end checkout, MyFatoorah gateway, admin & proof |
+| **2** | **Phone Number Model (Refactor & Schema)** | `node index.js phone` | Audits normalization, DB uniqueness, multi-role & 00 prefixes |
+| **3** | **Close Distribution Model (5-Point Audit)** | `node index.js close-dist` | Validates 5 predicate business rules vs driver routing |
+| **4** | **Subscription Model (Deduplication & Worker)**| `node index.js subscription` | Validates active uniqueness constraint & worker generation API |
+| **5** | **Full Master Suite (All 4 Models)** | `node index.js full` | Executes all 4 models in sequence & outputs unified summary |
+| **6** | **Get Instant OTP by Phone** | `node index.js otp <PHONE> [--watch]` | Fetches live login OTP code directly in terminal |
+| **7** | **Same User ($N$ Orders)** | `node index.js orders 50 single` | Generates $N$ orders under 1 single user |
+| **8** | **Multi Unique Users ($N$ Orders)** | `node index.js orders 50 multi` | Generates $N$ orders across $N$ distinct unique users |
+| **9** | **Subscription Worker ($N$ Users)** | `node index.js subs 50` | Arms $N$ subscriptions, triggers worker & asserts cycle |
+| **10** | **Specific Single Subscription** | `node index.js subs single 9216` | Runs single subscription cycle verification |
+| **11** | **Gateway Switch (Cancel & Retry)** | `node index.js gateway-switch` | Tests abandoning Gateway A & paying on Gateway B |
+| **12** | **Rule 05 Status Audit (1 vs 6 vs 4)**| `node index.js rule5` | Audits direct vs subscription vs closed items |
+| **13** | **PDF 5-Point Live Audit** | `node index.js pdf-test` | Tests live 5-point database routing logic |
+| **14** | **List All Preset Templates** | `node index.js templates` | Displays all ready-made templates |
+| **15** | **Execute Specific Template** | `node index.js template <name>` | Runs a pre-configured scenario template |
+| **16** | **Verify Order in Database** | `node index.js verify <ORDER_NO>` | Audits any specific order by order number |
 
 ---
 
@@ -470,13 +596,14 @@ node index.js test-100
 
 ---
 
-### 10. Refactored Architecture Test Suites
+### 10. Core Modular QA Automation Models
 
 ```bash
-npm run test:auth          # Unique Phone & Multi-Role Coexistence Suite
-npm run test:payment       # Payment Outbox & Settlement Verification
-npm run test:subscription  # Virtual Generated Column & Due Date Unique Constraint Suite
-npm run test:all           # Master Unified QA Verification Suite
+npm run test:payment       # Payment Model (End-to-End Real User Journey & Admin Proof)
+npm run test:phone         # Phone Model (Phone Normalization, Uniqueness & Multi-Role Suite)
+npm run test:close-dist    # Close Distribution Model (5-Point Business Predicate Audit)
+npm run test:subscription  # Subscription Model (Deduplication, Due Date & Worker Generation)
+npm run test:full          # Full Master Suite (Executes All 4 Models Sequentially)
 ```
 
 ---

@@ -8,7 +8,7 @@ const pool = mysql.createPool({
   password: process.env.DB_PASSWORD || 'Kbzz8ef82K0tdJCHtCcG',
   database: process.env.DB_DATABASE || 'qatarat-prod-db-replica',
   waitForConnections: true,
-  connectionLimit: 10,
+  connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT, 10) || 30,
   queueLimit: 0,
   connectTimeout: 20000
 });

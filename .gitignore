@@ -19,6 +19,8 @@ yarn-error.log*
 *.token_cache.json
 playwright-report/
 test-results/
+allure-results/
+allure-report/
 
 # OS & IDE files
 .DS_Store

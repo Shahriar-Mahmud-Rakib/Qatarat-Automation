@@ -298,7 +298,7 @@ class OrderService {
     const startTime = Date.now();
 
     // Work queue for concurrent execution
-    const actualConcurrency = executionMode === 'browser' ? 1 : Math.min(concurrency, 10);
+    const actualConcurrency = executionMode === 'browser' ? 1 : Math.max(1, concurrency || 10);
     let currentIndex = 0;
 
     const worker = async (workerId) => {

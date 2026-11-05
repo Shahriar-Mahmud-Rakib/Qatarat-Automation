@@ -1,0 +1,86 @@
+{
+  "System": [
+    {
+      "path": "/ping",
+      "method": "GET",
+      "summary": "Health Check Ping",
+      "description": "Check if the server and API gateway connection is healthy.",
+      "operationId": "healthPing"
+    }
+  ],
+  "Authentication & Unique Phone": [
+    {
+      "path": "/api/v2/Accounts/AccessGuestUser",
+      "method": "POST",
+      "summary": "Generate Guest Session Token",
+      "description": "Creates an anonymous guest user and returns temporary JWT Bearer access token.",
+      "operationId": "accessGuestUser"
+    },
+    {
+      "path": "/api/v2/Accounts/SendWhatsAppOtp",
+      "method": "POST",
+      "summary": "Dispatch WhatsApp OTP (Role-Aware)",
+      "description": "Dispatches an OTP to user via WhatsApp for a specific role ('user', 'driver', 'admin'). Disallows duplicate accounts per phone.",
+      "operationId": "sendWhatsAppOtp"
+    },
+    {
+      "path": "/api/v2/Accounts/login",
+      "method": "POST",
+      "summary": "OTP Verification & User Login",
+      "description": "Validates the 4-digit OTP code and returns authenticated client session tokens.",
+      "operationId": "verifyOtpLogin"
+    }
+  ],
+  "Cart & Orders": [
+    {
+      "path": "/api/v2/carts/add-new-sale-item",
+      "method": "POST",
+      "summary": "Add Item to Cart",
+      "description": "Appends a sale item to the active cart order.",
+      "operationId": ""
+    }
+  ],
+  "Payments & Reconcile": [
+    {
+      "path": "/api/v2/web-payments/initiate/myfatoorah",
+      "method": "POST",
+      "summary": "Initiate MyFatoorah Payment",
+      "description": "Generates payment gateway URL for MyFatoorah processing.",
+      "operationId": ""
+    }
+  ],
+  "Subscriptions & Orders": [
+    {
+      "path": "/api/v2/subscriptions/generate-orders",
+      "method": "GET",
+      "summary": "Generate Subscription Orders",
+      "description": "Pushes daily subscription order jobs to the queue. Authenticated via `subscription-api-key` header.",
+      "operationId": "generateSubscriptionOrders"
+    }
+  ],
+  "System Health": [
+    {
+      "path": "/ping",
+      "method": "GET",
+      "summary": "Ping Health Check",
+      "description": "Verifies server connectivity and API gateway health.",
+      "operationId": "Ping_Health_Check"
+    }
+  ],
+  "Cart & Payments": [
+    {
+      "path": "/api/v2/carts/add-new-sale-item",
+      "method": "POST",
+      "summary": "Add Sale Item to Cart",
+      "description": "",
+      "operationId": "Add_Sale_Item_to_Cart"
+    },
+    {
+      "path": "/api/v2/web-payments/initiate/myfatoorah",
+      "method": "POST",
+      "summary": "Initiate MyFatoorah Payment",
+      "description": "",
+      "operationId": "Initiate_MyFatoorah_Payment"
+    }
+  ]
+}

@@ -1,0 +1,3150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qatarat - 100 Concurrent Orders Stress Test Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg-primary: #0a0d14;
+      --bg-secondary: #0f1523;
+      --bg-card: rgba(18, 25, 40, 0.75);
+      --bg-card-hover: rgba(24, 34, 55, 0.85);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(99, 102, 241, 0.3);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent-indigo: #6366f1;
+      --accent-violet: #8b5cf6;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --accent-cyan: #06b6d4;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.6;
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(circle at 15% 10%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 20%, rgba(139, 92, 246, 0.10) 0%, transparent 40%),
+        radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.08) 0%, transparent 50%);
+      background-attachment: fixed;
+      padding: 2.5rem 1.5rem;
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .brand-logo {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--accent-indigo), var(--accent-violet));
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
+    }
+
+    h1 {
+      font-size: 2.15rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      font-weight: 400;
+    }
+
+    .meta-badges {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid var(--border-subtle);
+      backdrop-filter: blur(10px);
+    }
+
+    .badge-success {
+      background: rgba(16, 185, 129, 0.12);
+      color: #34d399;
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+
+    .badge-concurrency {
+      background: rgba(99, 102, 241, 0.12);
+      color: #a5b4fc;
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+
+    .badge-time {
+      background: rgba(245, 158, 11, 0.12);
+      color: #fbbf24;
+      border-color: rgba(245, 158, 11, 0.25);
+    }
+
+    /* KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 1.5rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-accent);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent-indigo), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .kpi-card:hover::before {
+      opacity: 1;
+    }
+
+    .kpi-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .kpi-value {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 0.4rem;
+    }
+
+    .kpi-sub {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+
+    /* Section Cards */
+    .section-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 1.85rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      color: #fff;
+    }
+
+    /* Diagnostics Banner */
+    .diagnostic-alert {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: 16px;
+      padding: 1.35rem;
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+    }
+
+    .diagnostic-icon {
+      font-size: 1.75rem;
+      line-height: 1;
+    }
+
+    .diagnostic-content h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fbbf24;
+      margin-bottom: 0.35rem;
+    }
+
+    .diagnostic-content p {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+      line-height: 1.55;
+    }
+
+    /* Two column grid for charts */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .chart-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 1.5rem;
+      height: 360px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chart-box h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .chart-wrapper {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Key Findings Grid */
+    .findings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.25rem;
+    }
+
+    .finding-card {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 1.25rem;
+      border-left: 4px solid var(--accent-indigo);
+    }
+
+    .finding-card.warning {
+      border-left-color: var(--accent-amber);
+    }
+
+    .finding-card.success {
+      border-left-color: var(--accent-emerald);
+    }
+
+    .finding-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .finding-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Search & Filter Bar */
+    .table-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .search-input {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 0.6rem 1rem;
+      color: #fff;
+      font-size: 0.875rem;
+      width: 320px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-indigo);
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 0.45rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--accent-indigo);
+      color: #fff;
+      border-color: var(--accent-indigo);
+    }
+
+    /* Interactive Table */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 14px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+
+    th {
+      background: rgba(15, 23, 42, 0.85);
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .code-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.2rem 0.45rem;
+      border-radius: 6px;
+      color: #e2e8f0;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .pill-close {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+    }
+
+    .pill-set {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+    }
+
+    .pill-success {
+      background: rgba(99, 102, 241, 0.15);
+      color: #a5b4fc;
+    }
+
+    /* Phase Progress Bar inside table row */
+    .timing-bar {
+      width: 140px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .t-auth { background: #38bdf8; }
+    .t-cart { background: #818cf8; }
+    .t-pay  { background: #f43f5e; }
+    .t-rec  { background: #34d399; }
+
+    /* Footer */
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+      .search-input {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+    <!-- Header -->
+    <header>
+      <div>
+        <div class="brand-title">
+          <div class="brand-logo">💧</div>
+          <div>
+            <h1>Qatarat 100 Concurrent Orders Stress Test</h1>
+            <p class="subtitle">Simultaneous Execution Audit: 100 Unique User Profiles & Live Gateway Performance</p>
+          </div>
+        </div>
+      </div>
+      <div class="meta-badges">
+        <span class="badge badge-success">● 100 / 100 Success (100%)</span>
+        <span class="badge badge-concurrency">⚡ 20 Concurrent Workers</span>
+        <span class="badge badge-time">⏱️ Total Time: 91.9s</span>
+      </div>
+    </header>
+
+    <!-- Key Performance Indicators (KPIs) -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-title">
+          <span>Total Orders Placed</span>
+          <span>📦</span>
+        </div>
+        <div class="kpi-value">100 <span style="font-size: 1.1rem; color: #34d399; font-weight: 600;">/ 100</span></div>
+        <div class="kpi-sub">100% Success Rate (0 Failures, 0 Timeouts)</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-title">
+          <span>Distinct Users</span>
+          <span>👤</span>
+        </div>
+        <div class="kpi-value">100</div>
+        <div class="kpi-sub">100 Unique Phone Numbers & JWT Tokens</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-title">
+          <span>Avg End-to-End Latency</span>
+          <span>⏱️</span>
+        </div>
+        <div class="kpi-value">17.86s</div>
+        <div class="kpi-sub">Median (p50): 18.01s | p95: 25.76s</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-title">
+          <span>Database Collisions</span>
+          <span>🛡️</span>
+        </div>
+        <div class="kpi-value" style="color: #34d399;">0</div>
+        <div class="kpi-sub">0 Duplicate Order # | 0 Suborder Clashes</div>
+      </div>
+    </div>
+
+    <!-- Highlight Diagnostic Alert -->
+    <div class="diagnostic-alert">
+      <div class="diagnostic-icon">⚠️</div>
+      <div class="diagnostic-content">
+        <h3>Critical Performance Bottleneck Identified: Synchronous Payment Initiation (Phase 5)</h3>
+        <p>
+          While all 100 orders completed successfully with zero database deadlocks or HTTP 429 rate limit rejections, 
+          <strong>Phase 5 (MyFatoorah Payment Initiation) consumed an average of 14.14 seconds per order</strong>, 
+          representing <strong>79.2% of total order lifecycle time</strong>. 
+          Under simultaneous user checkouts, external payment gateway latency throttles client turnaround times between 14s and 25s.
+        </p>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="charts-grid">
+      <div class="chart-box">
+        <h4>📊 Average Latency Breakdown by Phase (Seconds)</h4>
+        <div class="chart-wrapper">
+          <canvas id="phaseTimingChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-box">
+        <h4>📈 End-to-End Latency Percentile Curve</h4>
+        <div class="chart-wrapper">
+          <canvas id="percentileChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Architecture & Audit Observations -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title">
+          <span>🔍</span>
+          <span>Technical Findings & Reliability Audit</span>
+        </div>
+      </div>
+
+      <div class="findings-grid">
+        <div class="finding-card success">
+          <div class="finding-title">
+            <span>Unique Order Sequence Generation</span>
+            <span>✅ PASS</span>
+          </div>
+          <div class="finding-desc">
+            Even with 20 parallel requests hitting cart finalization simultaneously, Qatarat's order number generator produced 100 distinct 12-digit order numbers (IDs #999048 to #999147) without a single collision.
+          </div>
+        </div>
+
+        <div class="finding-card warning">
+          <div class="finding-title">
+            <span>Payment Gateway Latency (14.14s)</span>
+            <span>⚠️ BOTTLENECK</span>
+          </div>
+          <div class="finding-desc">
+            The endpoint <code>/api/v2/web-payments/initiate/myfatoorah</code> calls MyFatoorah synchronously. Under high concurrent load, MyFatoorah's API response stretches up to 24.3s, delaying user checkout completion.
+          </div>
+        </div>
+
+        <div class="finding-card success">
+          <div class="finding-title">
+            <span>Admin Routing Accuracy</span>
+            <span>✅ PASS</span>
+          </div>
+          <div class="finding-desc">
+            80 orders were correctly routed to <strong>Close Distribution</strong> (packages with Need Delivery = 0), and 20 orders were routed to <strong>Set Order</strong> (driver-required packages), with 100% visible in Order Management.
+          </div>
+        </div>
+
+        <div class="finding-card success">
+          <div class="finding-title">
+            <span>Zero Payment Problems</span>
+            <span>✅ PASS</span>
+          </div>
+          <div class="finding-desc">
+            None of the 100 orders remained stuck in the <code>payment_problems</code> queue. Outbox event dispatches logged clean asynchronous transitions.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders Master Table -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title">
+          <span>📋</span>
+          <span>100 Orders Execution Registry</span>
+        </div>
+      </div>
+
+      <div class="table-toolbar">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search Order #, User, Package, or Phone...">
+        <div class="filter-buttons">
+          <button class="filter-btn active" data-filter="all">All (100)</button>
+          <button class="filter-btn" data-filter="close">Close Dist (80)</button>
+          <button class="filter-btn" data-filter="set">Set Order (20)</button>
+          <button class="filter-btn" data-filter="fast">Fast (&lt; 15s)</button>
+          <button class="filter-btn" data-filter="slow">Slow (&gt; 20s)</button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table id="ordersTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Customer</th>
+              <th>Phone</th>
+              <th>Order #</th>
+              <th>Suborder</th>
+              <th>Package / Item</th>
+              <th>Cost (SAR)</th>
+              <th>Latency</th>
+              <th>Phase Timeline</th>
+              <th>Admin Destination</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+                <tr data-category="close" data-duration="23088">
+                  <td><span class="code-text">1</span></td>
+                  <td><strong>QA Stress User 1</strong></td>
+                  <td><span class="code-text">880171000001</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102647834</span></td>
+                  <td><span class="code-text">1677114</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(5 Cartons)</span></td>
+                  <td><strong>82.5 SAR</strong></td>
+                  <td><strong>23.1s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 388ms | Cart: 817ms | Pay: 20562ms | Reconcile: 787ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 4%"></div>
+                      <div class="t-pay" style="width: 89%"></div>
+                      <div class="t-rec" style="width: 5%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="22125">
+                  <td><span class="code-text">2</span></td>
+                  <td><strong>QA Stress User 2</strong></td>
+                  <td><span class="code-text">880171000002</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102282107</span></td>
+                  <td><span class="code-text">1677121</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(5 Meals)</span></td>
+                  <td><strong>75 SAR</strong></td>
+                  <td><strong>22.1s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 298ms | Cart: 1312ms | Pay: 19345ms | Reconcile: 617ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 6%"></div>
+                      <div class="t-pay" style="width: 87%"></div>
+                      <div class="t-rec" style="width: 6%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="20742">
+                  <td><span class="code-text">3</span></td>
+                  <td><strong>QA Stress User 3</strong></td>
+                  <td><span class="code-text">880171000003</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102208092</span></td>
+                  <td><span class="code-text">1677116</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Cartons)</span></td>
+                  <td><strong>140 SAR</strong></td>
+                  <td><strong>20.7s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 289ms | Cart: 836ms | Pay: 18289ms | Reconcile: 789ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 4%"></div>
+                      <div class="t-pay" style="width: 88%"></div>
+                      <div class="t-rec" style="width: 7%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="21508">
+                  <td><span class="code-text">4</span></td>
+                  <td><strong>QA Stress User 4</strong></td>
+                  <td><span class="code-text">880171000004</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102935859</span></td>
+                  <td><span class="code-text">1677120</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Meals)</span></td>
+                  <td><strong>150 SAR</strong></td>
+                  <td><strong>21.5s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 290ms | Cart: 1044ms | Pay: 18412ms | Reconcile: 1177ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 5%"></div>
+                      <div class="t-pay" style="width: 86%"></div>
+                      <div class="t-rec" style="width: 8%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="21384">
+                  <td><span class="code-text">5</span></td>
+                  <td><strong>QA Stress User 5</strong></td>
+                  <td><span class="code-text">880171000005</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102583172</span></td>
+                  <td><span class="code-text">1677122</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Cartons)</span></td>
+                  <td><strong>255 SAR</strong></td>
+                  <td><strong>21.4s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 519ms | Cart: 1167ms | Pay: 17899ms | Reconcile: 1253ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 5%"></div>
+                      <div class="t-pay" style="width: 84%"></div>
+                      <div class="t-rec" style="width: 9%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="21048">
+                  <td><span class="code-text">6</span></td>
+                  <td><strong>QA Stress User 6</strong></td>
+                  <td><span class="code-text">880171000006</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102530879</span></td>
+                  <td><span class="code-text">1677115</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Meals)</span></td>
+                  <td><strong>300 SAR</strong></td>
+                  <td><strong>21.0s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 288ms | Cart: 738ms | Pay: 18397ms | Reconcile: 1104ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 4%"></div>
+                      <div class="t-pay" style="width: 87%"></div>
+                      <div class="t-rec" style="width: 8%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="set" data-duration="25526">
+                  <td><span class="code-text">7</span></td>
+                  <td><strong>QA Stress User 7</strong></td>
+                  <td><span class="code-text">880171000007</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102788907</span></td>
+                  <td><span class="code-text">1677127</span></td>
+                  <td>Providing Water <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Cartons)</span></td>
+                  <td><strong>82.5 SAR</strong></td>
+                  <td><strong>25.5s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 481ms | Cart: 5520ms | Pay: 18107ms | Reconcile: 714ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 22%"></div>
+                      <div class="t-pay" style="width: 71%"></div>
+                      <div class="t-rec" style="width: 5%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-set">🚚 Set Order</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="22016">
+                  <td><span class="code-text">8</span></td>
+                  <td><strong>QA Stress User 8</strong></td>
+                  <td><span class="code-text">880171000008</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102669068</span></td>
+                  <td><span class="code-text">1677117</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(30 Cartons)</span></td>
+                  <td><strong>370 SAR</strong></td>
+                  <td><strong>22.0s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 327ms | Cart: 834ms | Pay: 19410ms | Reconcile: 642ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 4%"></div>
+                      <div class="t-pay" style="width: 88%"></div>
+                      <div class="t-rec" style="width: 7%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="24730">
+                  <td><span class="code-text">9</span></td>
+                  <td><strong>QA Stress User 9</strong></td>
+                  <td><span class="code-text">880171000009</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102724610</span></td>
+                  <td><span class="code-text">1677123</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(30 Meals)</span></td>
+                  <td><strong>450 SAR</strong></td>
+                  <td><strong>24.7s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 348ms | Cart: 4806ms | Pay: 18488ms | Reconcile: 527ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 19%"></div>
+                      <div class="t-pay" style="width: 75%"></div>
+                      <div class="t-rec" style="width: 5%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="set" data-duration="26966">
+                  <td><span class="code-text">10</span></td>
+                  <td><strong>QA Stress User 10</strong></td>
+                  <td><span class="code-text">880171000010</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102676847</span></td>
+                  <td><span class="code-text">1677129</span></td>
+                  <td>Providing Water <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Cartons)</span></td>
+                  <td><strong>165 SAR</strong></td>
+                  <td><strong>27.0s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 348ms | Cart: 6003ms | Pay: 19356ms | Reconcile: 705ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 22%"></div>
+                      <div class="t-pay" style="width: 72%"></div>
+                      <div class="t-rec" style="width: 5%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-set">🚚 Set Order</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="18957">
+                  <td><span class="code-text">11</span></td>
+                  <td><strong>QA Stress User 11</strong></td>
+                  <td><span class="code-text">880171000011</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102726664</span></td>
+                  <td><span class="code-text">1677113</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(5 Cartons)</span></td>
+                  <td><strong>82.5 SAR</strong></td>
+                  <td><strong>19.0s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 324ms | Cart: 729ms | Pay: 16556ms | Reconcile: 871ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 4%"></div>
+                      <div class="t-pay" style="width: 87%"></div>
+                      <div class="t-rec" style="width: 7%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="21282">
+                  <td><span class="code-text">12</span></td>
+                  <td><strong>QA Stress User 12</strong></td>
+                  <td><span class="code-text">880171000012</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102760015</span></td>
+                  <td><span class="code-text">1677118</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(5 Meals)</span></td>
+                  <td><strong>75 SAR</strong></td>
+                  <td><strong>21.3s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 931ms | Cart: 648ms | Pay: 18884ms | Reconcile: 566ms">
+                      <div class="t-auth" style="width: 4%"></div>
+                      <div class="t-cart" style="width: 3%"></div>
+                      <div class="t-pay" style="width: 89%"></div>
+                      <div class="t-rec" style="width: 4%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="24500">
+                  <td><span class="code-text">13</span></td>
+                  <td><strong>QA Stress User 13</strong></td>
+                  <td><span class="code-text">880171000013</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102350947</span></td>
+                  <td><span class="code-text">1677132</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Cartons)</span></td>
+                  <td><strong>140 SAR</strong></td>
+                  <td><strong>24.5s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 331ms | Cart: 8436ms | Pay: 14707ms | Reconcile: 478ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 34%"></div>
+                      <div class="t-pay" style="width: 60%"></div>
+                      <div class="t-rec" style="width: 5%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="21679">
+                  <td><span class="code-text">14</span></td>
+                  <td><strong>QA Stress User 14</strong></td>
+                  <td><span class="code-text">880171000014</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102639513</span></td>
+                  <td><span class="code-text">1677119</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Meals)</span></td>
+                  <td><strong>150 SAR</strong></td>
+                  <td><strong>21.7s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 340ms | Cart: 809ms | Pay: 19455ms | Reconcile: 476ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 4%"></div>
+                      <div class="t-pay" style="width: 90%"></div>
+                      <div class="t-rec" style="width: 4%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="25759">
+                  <td><span class="code-text">15</span></td>
+                  <td><strong>QA Stress User 15</strong></td>
+                  <td><span class="code-text">880171000015</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102113054</span></td>
+                  <td><span class="code-text">1677130</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Cartons)</span></td>
+                  <td><strong>255 SAR</strong></td>
+                  <td><strong>25.8s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 437ms | Cart: 6171ms | Pay: 17669ms | Reconcile: 950ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 24%"></div>
+                      <div class="t-pay" style="width: 69%"></div>
+                      <div class="t-rec" style="width: 5%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="26163">
+                  <td><span class="code-text">16</span></td>
+                  <td><strong>QA Stress User 16</strong></td>
+                  <td><span class="code-text">880171000016</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102517200</span></td>
+                  <td><span class="code-text">1677124</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Meals)</span></td>
+                  <td><strong>300 SAR</strong></td>
+                  <td><strong>26.2s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 335ms | Cart: 5541ms | Pay: 18627ms | Reconcile: 866ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 21%"></div>
+                      <div class="t-pay" style="width: 71%"></div>
+                      <div class="t-rec" style="width: 7%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="set" data-duration="27441">
+                  <td><span class="code-text">17</span></td>
+                  <td><strong>QA Stress User 17</strong></td>
+                  <td><span class="code-text">880171000017</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102575259</span></td>
+                  <td><span class="code-text">1677126</span></td>
+                  <td>Providing Water <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Cartons)</span></td>
+                  <td><strong>82.5 SAR</strong></td>
+                  <td><strong>27.4s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 343ms | Cart: 5779ms | Pay: 19924ms | Reconcile: 765ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 21%"></div>
+                      <div class="t-pay" style="width: 73%"></div>
+                      <div class="t-rec" style="width: 5%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-set">🚚 Set Order</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="28156">
+                  <td><span class="code-text">18</span></td>
+                  <td><strong>QA Stress User 18</strong></td>
+                  <td><span class="code-text">880171000018</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102144730</span></td>
+                  <td><span class="code-text">1677131</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(30 Cartons)</span></td>
+                  <td><strong>370 SAR</strong></td>
+                  <td><strong>28.2s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 352ms | Cart: 6597ms | Pay: 19961ms | Reconcile: 700ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 23%"></div>
+                      <div class="t-pay" style="width: 71%"></div>
+                      <div class="t-rec" style="width: 5%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="24148">
+                  <td><span class="code-text">19</span></td>
+                  <td><strong>QA Stress User 19</strong></td>
+                  <td><span class="code-text">880171000019</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102575323</span></td>
+                  <td><span class="code-text">1677125</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(30 Meals)</span></td>
+                  <td><strong>450 SAR</strong></td>
+                  <td><strong>24.1s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 4111ms | Cart: 2116ms | Pay: 17249ms | Reconcile: 395ms">
+                      <div class="t-auth" style="width: 17%"></div>
+                      <div class="t-cart" style="width: 9%"></div>
+                      <div class="t-pay" style="width: 71%"></div>
+                      <div class="t-rec" style="width: 3%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="set" data-duration="26317">
+                  <td><span class="code-text">20</span></td>
+                  <td><strong>QA Stress User 20</strong></td>
+                  <td><span class="code-text">880171000020</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102109042</span></td>
+                  <td><span class="code-text">1677128</span></td>
+                  <td>Providing Water <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Cartons)</span></td>
+                  <td><strong>165 SAR</strong></td>
+                  <td><strong>26.3s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 419ms | Cart: 6262ms | Pay: 18414ms | Reconcile: 699ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 24%"></div>
+                      <div class="t-pay" style="width: 70%"></div>
+                      <div class="t-rec" style="width: 4%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-set">🚚 Set Order</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="14387">
+                  <td><span class="code-text">21</span></td>
+                  <td><strong>QA Stress User 21</strong></td>
+                  <td><span class="code-text">880171000021</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102412254</span></td>
+                  <td><span class="code-text">1677133</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(5 Cartons)</span></td>
+                  <td><strong>82.5 SAR</strong></td>
+                  <td><strong>14.4s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 190ms | Cart: 2820ms | Pay: 10573ms | Reconcile: 444ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 20%"></div>
+                      <div class="t-pay" style="width: 73%"></div>
+                      <div class="t-rec" style="width: 6%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="13532">
+                  <td><span class="code-text">22</span></td>
+                  <td><strong>QA Stress User 22</strong></td>
+                  <td><span class="code-text">880171000022</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102359962</span></td>
+                  <td><span class="code-text">1677134</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(5 Meals)</span></td>
+                  <td><strong>75 SAR</strong></td>
+                  <td><strong>13.5s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 278ms | Cart: 1416ms | Pay: 10895ms | Reconcile: 709ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 10%"></div>
+                      <div class="t-pay" style="width: 81%"></div>
+                      <div class="t-rec" style="width: 7%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="13054">
+                  <td><span class="code-text">23</span></td>
+                  <td><strong>QA Stress User 23</strong></td>
+                  <td><span class="code-text">880171000023</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102172242</span></td>
+                  <td><span class="code-text">1677138</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Cartons)</span></td>
+                  <td><strong>140 SAR</strong></td>
+                  <td><strong>13.1s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 344ms | Cart: 2566ms | Pay: 8887ms | Reconcile: 863ms">
+                      <div class="t-auth" style="width: 3%"></div>
+                      <div class="t-cart" style="width: 20%"></div>
+                      <div class="t-pay" style="width: 68%"></div>
+                      <div class="t-rec" style="width: 9%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="13125">
+                  <td><span class="code-text">24</span></td>
+                  <td><strong>QA Stress User 24</strong></td>
+                  <td><span class="code-text">880171000024</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102210496</span></td>
+                  <td><span class="code-text">1677136</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Meals)</span></td>
+                  <td><strong>150 SAR</strong></td>
+                  <td><strong>13.1s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 247ms | Cart: 1664ms | Pay: 10119ms | Reconcile: 437ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 13%"></div>
+                      <div class="t-pay" style="width: 77%"></div>
+                      <div class="t-rec" style="width: 8%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="14390">
+                  <td><span class="code-text">25</span></td>
+                  <td><strong>QA Stress User 25</strong></td>
+                  <td><span class="code-text">880171000025</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102296082</span></td>
+                  <td><span class="code-text">1677139</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Cartons)</span></td>
+                  <td><strong>255 SAR</strong></td>
+                  <td><strong>14.4s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 637ms | Cart: 1675ms | Pay: 10885ms | Reconcile: 625ms">
+                      <div class="t-auth" style="width: 4%"></div>
+                      <div class="t-cart" style="width: 12%"></div>
+                      <div class="t-pay" style="width: 76%"></div>
+                      <div class="t-rec" style="width: 8%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="12917">
+                  <td><span class="code-text">26</span></td>
+                  <td><strong>QA Stress User 26</strong></td>
+                  <td><span class="code-text">880171000026</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102320517</span></td>
+                  <td><span class="code-text">1677135</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Meals)</span></td>
+                  <td><strong>300 SAR</strong></td>
+                  <td><strong>12.9s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 444ms | Cart: 1223ms | Pay: 10227ms | Reconcile: 803ms">
+                      <div class="t-auth" style="width: 3%"></div>
+                      <div class="t-cart" style="width: 9%"></div>
+                      <div class="t-pay" style="width: 79%"></div>
+                      <div class="t-rec" style="width: 9%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="set" data-duration="12502">
+                  <td><span class="code-text">27</span></td>
+                  <td><strong>QA Stress User 27</strong></td>
+                  <td><span class="code-text">880171000027</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102887601</span></td>
+                  <td><span class="code-text">1677141</span></td>
+                  <td>Providing Water <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Cartons)</span></td>
+                  <td><strong>82.5 SAR</strong></td>
+                  <td><strong>12.5s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 331ms | Cart: 1859ms | Pay: 8853ms | Reconcile: 713ms">
+                      <div class="t-auth" style="width: 3%"></div>
+                      <div class="t-cart" style="width: 15%"></div>
+                      <div class="t-pay" style="width: 71%"></div>
+                      <div class="t-rec" style="width: 11%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-set">🚚 Set Order</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="13647">
+                  <td><span class="code-text">28</span></td>
+                  <td><strong>QA Stress User 28</strong></td>
+                  <td><span class="code-text">880171000028</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102583737</span></td>
+                  <td><span class="code-text">1677137</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(30 Cartons)</span></td>
+                  <td><strong>370 SAR</strong></td>
+                  <td><strong>13.6s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 492ms | Cart: 1214ms | Pay: 10874ms | Reconcile: 692ms">
+                      <div class="t-auth" style="width: 4%"></div>
+                      <div class="t-cart" style="width: 9%"></div>
+                      <div class="t-pay" style="width: 80%"></div>
+                      <div class="t-rec" style="width: 7%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="16678">
+                  <td><span class="code-text">29</span></td>
+                  <td><strong>QA Stress User 29</strong></td>
+                  <td><span class="code-text">880171000029</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102250281</span></td>
+                  <td><span class="code-text">1677140</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(30 Meals)</span></td>
+                  <td><strong>450 SAR</strong></td>
+                  <td><strong>16.7s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 322ms | Cart: 1635ms | Pay: 13100ms | Reconcile: 1071ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 10%"></div>
+                      <div class="t-pay" style="width: 79%"></div>
+                      <div class="t-rec" style="width: 9%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="set" data-duration="12000">
+                  <td><span class="code-text">30</span></td>
+                  <td><strong>QA Stress User 30</strong></td>
+                  <td><span class="code-text">880171000030</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102938019</span></td>
+                  <td><span class="code-text">1677142</span></td>
+                  <td>Providing Water <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Cartons)</span></td>
+                  <td><strong>165 SAR</strong></td>
+                  <td><strong>12.0s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 394ms | Cart: 1040ms | Pay: 9462ms | Reconcile: 771ms">
+                      <div class="t-auth" style="width: 3%"></div>
+                      <div class="t-cart" style="width: 9%"></div>
+                      <div class="t-pay" style="width: 79%"></div>
+                      <div class="t-rec" style="width: 9%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-set">🚚 Set Order</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="16485">
+                  <td><span class="code-text">31</span></td>
+                  <td><strong>QA Stress User 31</strong></td>
+                  <td><span class="code-text">880171000031</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102743936</span></td>
+                  <td><span class="code-text">1677144</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(5 Cartons)</span></td>
+                  <td><strong>82.5 SAR</strong></td>
+                  <td><strong>16.5s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 259ms | Cart: 2098ms | Pay: 13128ms | Reconcile: 612ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 13%"></div>
+                      <div class="t-pay" style="width: 80%"></div>
+                      <div class="t-rec" style="width: 5%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="14287">
+                  <td><span class="code-text">32</span></td>
+                  <td><strong>QA Stress User 32</strong></td>
+                  <td><span class="code-text">880171000032</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102821679</span></td>
+                  <td><span class="code-text">1677143</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(5 Meals)</span></td>
+                  <td><strong>75 SAR</strong></td>
+                  <td><strong>14.3s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 152ms | Cart: 1446ms | Pay: 11200ms | Reconcile: 1056ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 10%"></div>
+                      <div class="t-pay" style="width: 78%"></div>
+                      <div class="t-rec" style="width: 11%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="13935">
+                  <td><span class="code-text">33</span></td>
+                  <td><strong>QA Stress User 33</strong></td>
+                  <td><span class="code-text">880171000033</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102640709</span></td>
+                  <td><span class="code-text">1677145</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Cartons)</span></td>
+                  <td><strong>140 SAR</strong></td>
+                  <td><strong>13.9s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 181ms | Cart: 2237ms | Pay: 10240ms | Reconcile: 785ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 16%"></div>
+                      <div class="t-pay" style="width: 73%"></div>
+                      <div class="t-rec" style="width: 10%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="13366">
+                  <td><span class="code-text">34</span></td>
+                  <td><strong>QA Stress User 34</strong></td>
+                  <td><span class="code-text">880171000034</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102460996</span></td>
+                  <td><span class="code-text">1677146</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Meals)</span></td>
+                  <td><strong>150 SAR</strong></td>
+                  <td><strong>13.4s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 271ms | Cart: 1325ms | Pay: 10284ms | Reconcile: 804ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 10%"></div>
+                      <div class="t-pay" style="width: 77%"></div>
+                      <div class="t-rec" style="width: 11%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="13434">
+                  <td><span class="code-text">35</span></td>
+                  <td><strong>QA Stress User 35</strong></td>
+                  <td><span class="code-text">880171000035</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102967485</span></td>
+                  <td><span class="code-text">1677149</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Cartons)</span></td>
+                  <td><strong>255 SAR</strong></td>
+                  <td><strong>13.4s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 344ms | Cart: 2401ms | Pay: 9852ms | Reconcile: 614ms">
+                      <div class="t-auth" style="width: 3%"></div>
+                      <div class="t-cart" style="width: 18%"></div>
+                      <div class="t-pay" style="width: 73%"></div>
+                      <div class="t-rec" style="width: 6%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="12328">
+                  <td><span class="code-text">36</span></td>
+                  <td><strong>QA Stress User 36</strong></td>
+                  <td><span class="code-text">880171000036</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102930872</span></td>
+                  <td><span class="code-text">1677147</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Meals)</span></td>
+                  <td><strong>300 SAR</strong></td>
+                  <td><strong>12.3s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 340ms | Cart: 1606ms | Pay: 9212ms | Reconcile: 772ms">
+                      <div class="t-auth" style="width: 3%"></div>
+                      <div class="t-cart" style="width: 13%"></div>
+                      <div class="t-pay" style="width: 75%"></div>
+                      <div class="t-rec" style="width: 9%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="set" data-duration="18150">
+                  <td><span class="code-text">37</span></td>
+                  <td><strong>QA Stress User 37</strong></td>
+                  <td><span class="code-text">880171000037</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102783276</span></td>
+                  <td><span class="code-text">1677148</span></td>
+                  <td>Providing Water <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Cartons)</span></td>
+                  <td><strong>82.5 SAR</strong></td>
+                  <td><strong>18.1s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 191ms | Cart: 1443ms | Pay: 15635ms | Reconcile: 513ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 8%"></div>
+                      <div class="t-pay" style="width: 86%"></div>
+                      <div class="t-rec" style="width: 5%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-set">🚚 Set Order</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="13758">
+                  <td><span class="code-text">38</span></td>
+                  <td><strong>QA Stress User 38</strong></td>
+                  <td><span class="code-text">880171000038</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102986207</span></td>
+                  <td><span class="code-text">1677150</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(30 Cartons)</span></td>
+                  <td><strong>370 SAR</strong></td>
+                  <td><strong>13.8s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 193ms | Cart: 1284ms | Pay: 11054ms | Reconcile: 775ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 9%"></div>
+                      <div class="t-pay" style="width: 80%"></div>
+                      <div class="t-rec" style="width: 10%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="14715">
+                  <td><span class="code-text">39</span></td>
+                  <td><strong>QA Stress User 39</strong></td>
+                  <td><span class="code-text">880171000039</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102520553</span></td>
+                  <td><span class="code-text">1677151</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(30 Meals)</span></td>
+                  <td><strong>450 SAR</strong></td>
+                  <td><strong>14.7s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 401ms | Cart: 1930ms | Pay: 11210ms | Reconcile: 794ms">
+                      <div class="t-auth" style="width: 3%"></div>
+                      <div class="t-cart" style="width: 13%"></div>
+                      <div class="t-pay" style="width: 76%"></div>
+                      <div class="t-rec" style="width: 8%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="set" data-duration="13523">
+                  <td><span class="code-text">40</span></td>
+                  <td><strong>QA Stress User 40</strong></td>
+                  <td><span class="code-text">880171000040</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102872061</span></td>
+                  <td><span class="code-text">1677152</span></td>
+                  <td>Providing Water <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Cartons)</span></td>
+                  <td><strong>165 SAR</strong></td>
+                  <td><strong>13.5s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 329ms | Cart: 2088ms | Pay: 9907ms | Reconcile: 819ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 15%"></div>
+                      <div class="t-pay" style="width: 73%"></div>
+                      <div class="t-rec" style="width: 10%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-set">🚚 Set Order</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="16024">
+                  <td><span class="code-text">41</span></td>
+                  <td><strong>QA Stress User 41</strong></td>
+                  <td><span class="code-text">880171000041</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102222129</span></td>
+                  <td><span class="code-text">1677153</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(5 Cartons)</span></td>
+                  <td><strong>82.5 SAR</strong></td>
+                  <td><strong>16.0s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 374ms | Cart: 1064ms | Pay: 13357ms | Reconcile: 852ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 7%"></div>
+                      <div class="t-pay" style="width: 83%"></div>
+                      <div class="t-rec" style="width: 8%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="15435">
+                  <td><span class="code-text">42</span></td>
+                  <td><strong>QA Stress User 42</strong></td>
+                  <td><span class="code-text">880171000042</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102665919</span></td>
+                  <td><span class="code-text">1677154</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(5 Meals)</span></td>
+                  <td><strong>75 SAR</strong></td>
+                  <td><strong>15.4s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 108ms | Cart: 1217ms | Pay: 13016ms | Reconcile: 764ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 8%"></div>
+                      <div class="t-pay" style="width: 84%"></div>
+                      <div class="t-rec" style="width: 7%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="14380">
+                  <td><span class="code-text">43</span></td>
+                  <td><strong>QA Stress User 43</strong></td>
+                  <td><span class="code-text">880171000043</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102238578</span></td>
+                  <td><span class="code-text">1677155</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Cartons)</span></td>
+                  <td><strong>140 SAR</strong></td>
+                  <td><strong>14.4s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 241ms | Cart: 893ms | Pay: 12082ms | Reconcile: 694ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 6%"></div>
+                      <div class="t-pay" style="width: 84%"></div>
+                      <div class="t-rec" style="width: 8%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="16225">
+                  <td><span class="code-text">44</span></td>
+                  <td><strong>QA Stress User 44</strong></td>
+                  <td><span class="code-text">880171000044</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102157285</span></td>
+                  <td><span class="code-text">1677157</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Meals)</span></td>
+                  <td><strong>150 SAR</strong></td>
+                  <td><strong>16.2s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 253ms | Cart: 1303ms | Pay: 13349ms | Reconcile: 871ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 8%"></div>
+                      <div class="t-pay" style="width: 82%"></div>
+                      <div class="t-rec" style="width: 8%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="15277">
+                  <td><span class="code-text">45</span></td>
+                  <td><strong>QA Stress User 45</strong></td>
+                  <td><span class="code-text">880171000045</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102256524</span></td>
+                  <td><span class="code-text">1677156</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Cartons)</span></td>
+                  <td><strong>255 SAR</strong></td>
+                  <td><strong>15.3s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 265ms | Cart: 744ms | Pay: 12701ms | Reconcile: 1108ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 5%"></div>
+                      <div class="t-pay" style="width: 83%"></div>
+                      <div class="t-rec" style="width: 10%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="16724">
+                  <td><span class="code-text">46</span></td>
+                  <td><strong>QA Stress User 46</strong></td>
+                  <td><span class="code-text">880171000046</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102645696</span></td>
+                  <td><span class="code-text">1677158</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Meals)</span></td>
+                  <td><strong>300 SAR</strong></td>
+                  <td><strong>16.7s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 270ms | Cart: 1693ms | Pay: 13920ms | Reconcile: 553ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 10%"></div>
+                      <div class="t-pay" style="width: 83%"></div>
+                      <div class="t-rec" style="width: 5%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="set" data-duration="13997">
+                  <td><span class="code-text">47</span></td>
+                  <td><strong>QA Stress User 47</strong></td>
+                  <td><span class="code-text">880171000047</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102507281</span></td>
+                  <td><span class="code-text">1677159</span></td>
+                  <td>Providing Water <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Cartons)</span></td>
+                  <td><strong>82.5 SAR</strong></td>
+                  <td><strong>14.0s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 174ms | Cart: 1773ms | Pay: 10897ms | Reconcile: 760ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 13%"></div>
+                      <div class="t-pay" style="width: 78%"></div>
+                      <div class="t-rec" style="width: 8%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-set">🚚 Set Order</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="16028">
+                  <td><span class="code-text">48</span></td>
+                  <td><strong>QA Stress User 48</strong></td>
+                  <td><span class="code-text">880171000048</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102300059</span></td>
+                  <td><span class="code-text">1677161</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(30 Cartons)</span></td>
+                  <td><strong>370 SAR</strong></td>
+                  <td><strong>16.0s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 377ms | Cart: 2093ms | Pay: 12635ms | Reconcile: 723ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 13%"></div>
+                      <div class="t-pay" style="width: 79%"></div>
+                      <div class="t-rec" style="width: 6%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="17709">
+                  <td><span class="code-text">49</span></td>
+                  <td><strong>QA Stress User 49</strong></td>
+                  <td><span class="code-text">880171000049</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102786687</span></td>
+                  <td><span class="code-text">1677160</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(30 Meals)</span></td>
+                  <td><strong>450 SAR</strong></td>
+                  <td><strong>17.7s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 744ms | Cart: 1594ms | Pay: 14232ms | Reconcile: 548ms">
+                      <div class="t-auth" style="width: 4%"></div>
+                      <div class="t-cart" style="width: 9%"></div>
+                      <div class="t-pay" style="width: 80%"></div>
+                      <div class="t-rec" style="width: 7%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="set" data-duration="20543">
+                  <td><span class="code-text">50</span></td>
+                  <td><strong>QA Stress User 50</strong></td>
+                  <td><span class="code-text">880171000050</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102190134</span></td>
+                  <td><span class="code-text">1677166</span></td>
+                  <td>Providing Water <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Cartons)</span></td>
+                  <td><strong>165 SAR</strong></td>
+                  <td><strong>20.5s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 487ms | Cart: 1702ms | Pay: 17586ms | Reconcile: 387ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 8%"></div>
+                      <div class="t-pay" style="width: 86%"></div>
+                      <div class="t-rec" style="width: 4%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-set">🚚 Set Order</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="13828">
+                  <td><span class="code-text">51</span></td>
+                  <td><strong>QA Stress User 51</strong></td>
+                  <td><span class="code-text">880171000051</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102720715</span></td>
+                  <td><span class="code-text">1677162</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(5 Cartons)</span></td>
+                  <td><strong>82.5 SAR</strong></td>
+                  <td><strong>13.8s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 320ms | Cart: 1536ms | Pay: 11054ms | Reconcile: 679ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 11%"></div>
+                      <div class="t-pay" style="width: 80%"></div>
+                      <div class="t-rec" style="width: 7%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="19005">
+                  <td><span class="code-text">52</span></td>
+                  <td><strong>QA Stress User 52</strong></td>
+                  <td><span class="code-text">880171000052</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102267568</span></td>
+                  <td><span class="code-text">1677167</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(5 Meals)</span></td>
+                  <td><strong>75 SAR</strong></td>
+                  <td><strong>19.0s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 359ms | Cart: 2090ms | Pay: 15118ms | Reconcile: 1089ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 11%"></div>
+                      <div class="t-pay" style="width: 80%"></div>
+                      <div class="t-rec" style="width: 7%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="19309">
+                  <td><span class="code-text">53</span></td>
+                  <td><strong>QA Stress User 53</strong></td>
+                  <td><span class="code-text">880171000053</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102122943</span></td>
+                  <td><span class="code-text">1677164</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Cartons)</span></td>
+                  <td><strong>140 SAR</strong></td>
+                  <td><strong>19.3s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 259ms | Cart: 1355ms | Pay: 16018ms | Reconcile: 1357ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 7%"></div>
+                      <div class="t-pay" style="width: 83%"></div>
+                      <div class="t-rec" style="width: 9%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="15106">
+                  <td><span class="code-text">54</span></td>
+                  <td><strong>QA Stress User 54</strong></td>
+                  <td><span class="code-text">880171000054</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102229995</span></td>
+                  <td><span class="code-text">1677163</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Meals)</span></td>
+                  <td><strong>150 SAR</strong></td>
+                  <td><strong>15.1s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 103ms | Cart: 1511ms | Pay: 12607ms | Reconcile: 677ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 10%"></div>
+                      <div class="t-pay" style="width: 83%"></div>
+                      <div class="t-rec" style="width: 6%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="12403">
+                  <td><span class="code-text">55</span></td>
+                  <td><strong>QA Stress User 55</strong></td>
+                  <td><span class="code-text">880171000055</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102568695</span></td>
+                  <td><span class="code-text">1677165</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Cartons)</span></td>
+                  <td><strong>255 SAR</strong></td>
+                  <td><strong>12.4s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 185ms | Cart: 1204ms | Pay: 10152ms | Reconcile: 465ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 10%"></div>
+                      <div class="t-pay" style="width: 82%"></div>
+                      <div class="t-rec" style="width: 7%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="18978">
+                  <td><span class="code-text">56</span></td>
+                  <td><strong>QA Stress User 56</strong></td>
+                  <td><span class="code-text">880171000056</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102262650</span></td>
+                  <td><span class="code-text">1677168</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Meals)</span></td>
+                  <td><strong>300 SAR</strong></td>
+                  <td><strong>19.0s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 346ms | Cart: 1687ms | Pay: 15739ms | Reconcile: 883ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 9%"></div>
+                      <div class="t-pay" style="width: 83%"></div>
+                      <div class="t-rec" style="width: 6%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="set" data-duration="16243">
+                  <td><span class="code-text">57</span></td>
+                  <td><strong>QA Stress User 57</strong></td>
+                  <td><span class="code-text">880171000057</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102323339</span></td>
+                  <td><span class="code-text">1677170</span></td>
+                  <td>Providing Water <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Cartons)</span></td>
+                  <td><strong>82.5 SAR</strong></td>
+                  <td><strong>16.2s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 356ms | Cart: 2106ms | Pay: 12408ms | Reconcile: 775ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 13%"></div>
+                      <div class="t-pay" style="width: 76%"></div>
+                      <div class="t-rec" style="width: 9%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-set">🚚 Set Order</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="16414">
+                  <td><span class="code-text">58</span></td>
+                  <td><strong>QA Stress User 58</strong></td>
+                  <td><span class="code-text">880171000058</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102313087</span></td>
+                  <td><span class="code-text">1677169</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(30 Cartons)</span></td>
+                  <td><strong>370 SAR</strong></td>
+                  <td><strong>16.4s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 405ms | Cart: 1356ms | Pay: 13289ms | Reconcile: 540ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 8%"></div>
+                      <div class="t-pay" style="width: 81%"></div>
+                      <div class="t-rec" style="width: 9%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="17444">
+                  <td><span class="code-text">59</span></td>
+                  <td><strong>QA Stress User 59</strong></td>
+                  <td><span class="code-text">880171000059</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102370604</span></td>
+                  <td><span class="code-text">1677171</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(30 Meals)</span></td>
+                  <td><strong>450 SAR</strong></td>
+                  <td><strong>17.4s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 811ms | Cart: 1551ms | Pay: 14074ms | Reconcile: 611ms">
+                      <div class="t-auth" style="width: 5%"></div>
+                      <div class="t-cart" style="width: 9%"></div>
+                      <div class="t-pay" style="width: 81%"></div>
+                      <div class="t-rec" style="width: 5%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="set" data-duration="19128">
+                  <td><span class="code-text">60</span></td>
+                  <td><strong>QA Stress User 60</strong></td>
+                  <td><span class="code-text">880171000060</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102785607</span></td>
+                  <td><span class="code-text">1677172</span></td>
+                  <td>Providing Water <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Cartons)</span></td>
+                  <td><strong>165 SAR</strong></td>
+                  <td><strong>19.1s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 422ms | Cart: 3112ms | Pay: 14483ms | Reconcile: 723ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 16%"></div>
+                      <div class="t-pay" style="width: 76%"></div>
+                      <div class="t-rec" style="width: 6%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-set">🚚 Set Order</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="16155">
+                  <td><span class="code-text">61</span></td>
+                  <td><strong>QA Stress User 61</strong></td>
+                  <td><span class="code-text">880171000061</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102258502</span></td>
+                  <td><span class="code-text">1677173</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(5 Cartons)</span></td>
+                  <td><strong>82.5 SAR</strong></td>
+                  <td><strong>16.2s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 180ms | Cart: 1865ms | Pay: 12803ms | Reconcile: 1049ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 12%"></div>
+                      <div class="t-pay" style="width: 79%"></div>
+                      <div class="t-rec" style="width: 8%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="18571">
+                  <td><span class="code-text">62</span></td>
+                  <td><strong>QA Stress User 62</strong></td>
+                  <td><span class="code-text">880171000062</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102746507</span></td>
+                  <td><span class="code-text">1677174</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(5 Meals)</span></td>
+                  <td><strong>75 SAR</strong></td>
+                  <td><strong>18.6s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 267ms | Cart: 2013ms | Pay: 15273ms | Reconcile: 536ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 11%"></div>
+                      <div class="t-pay" style="width: 82%"></div>
+                      <div class="t-rec" style="width: 6%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="18006">
+                  <td><span class="code-text">63</span></td>
+                  <td><strong>QA Stress User 63</strong></td>
+                  <td><span class="code-text">880171000063</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102891716</span></td>
+                  <td><span class="code-text">1677175</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Cartons)</span></td>
+                  <td><strong>140 SAR</strong></td>
+                  <td><strong>18.0s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 645ms | Cart: 1380ms | Pay: 15187ms | Reconcile: 459ms">
+                      <div class="t-auth" style="width: 4%"></div>
+                      <div class="t-cart" style="width: 8%"></div>
+                      <div class="t-pay" style="width: 84%"></div>
+                      <div class="t-rec" style="width: 4%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="15438">
+                  <td><span class="code-text">64</span></td>
+                  <td><strong>QA Stress User 64</strong></td>
+                  <td><span class="code-text">880171000064</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102264224</span></td>
+                  <td><span class="code-text">1677177</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Meals)</span></td>
+                  <td><strong>150 SAR</strong></td>
+                  <td><strong>15.4s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 426ms | Cart: 2253ms | Pay: 11104ms | Reconcile: 1117ms">
+                      <div class="t-auth" style="width: 3%"></div>
+                      <div class="t-cart" style="width: 15%"></div>
+                      <div class="t-pay" style="width: 72%"></div>
+                      <div class="t-rec" style="width: 10%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="17765">
+                  <td><span class="code-text">65</span></td>
+                  <td><strong>QA Stress User 65</strong></td>
+                  <td><span class="code-text">880171000065</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102993828</span></td>
+                  <td><span class="code-text">1677176</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Cartons)</span></td>
+                  <td><strong>255 SAR</strong></td>
+                  <td><strong>17.8s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 163ms | Cart: 1769ms | Pay: 14051ms | Reconcile: 1041ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 10%"></div>
+                      <div class="t-pay" style="width: 79%"></div>
+                      <div class="t-rec" style="width: 10%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="15208">
+                  <td><span class="code-text">66</span></td>
+                  <td><strong>QA Stress User 66</strong></td>
+                  <td><span class="code-text">880171000066</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102567698</span></td>
+                  <td><span class="code-text">1677178</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Meals)</span></td>
+                  <td><strong>300 SAR</strong></td>
+                  <td><strong>15.2s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 270ms | Cart: 1691ms | Pay: 12642ms | Reconcile: 370ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 11%"></div>
+                      <div class="t-pay" style="width: 83%"></div>
+                      <div class="t-rec" style="width: 4%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="set" data-duration="20103">
+                  <td><span class="code-text">67</span></td>
+                  <td><strong>QA Stress User 67</strong></td>
+                  <td><span class="code-text">880171000067</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102706407</span></td>
+                  <td><span class="code-text">1677179</span></td>
+                  <td>Providing Water <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Cartons)</span></td>
+                  <td><strong>82.5 SAR</strong></td>
+                  <td><strong>20.1s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 239ms | Cart: 1456ms | Pay: 17125ms | Reconcile: 863ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 7%"></div>
+                      <div class="t-pay" style="width: 85%"></div>
+                      <div class="t-rec" style="width: 7%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-set">🚚 Set Order</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="9445">
+                  <td><span class="code-text">68</span></td>
+                  <td><strong>QA Stress User 68</strong></td>
+                  <td><span class="code-text">880171000068</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102972615</span></td>
+                  <td><span class="code-text">1677181</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(30 Cartons)</span></td>
+                  <td><strong>370 SAR</strong></td>
+                  <td><strong>9.4s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 351ms | Cart: 1122ms | Pay: 7108ms | Reconcile: 402ms">
+                      <div class="t-auth" style="width: 4%"></div>
+                      <div class="t-cart" style="width: 12%"></div>
+                      <div class="t-pay" style="width: 75%"></div>
+                      <div class="t-rec" style="width: 9%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="18965">
+                  <td><span class="code-text">69</span></td>
+                  <td><strong>QA Stress User 69</strong></td>
+                  <td><span class="code-text">880171000069</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102585378</span></td>
+                  <td><span class="code-text">1677180</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(30 Meals)</span></td>
+                  <td><strong>450 SAR</strong></td>
+                  <td><strong>19.0s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 116ms | Cart: 1204ms | Pay: 15124ms | Reconcile: 2145ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 6%"></div>
+                      <div class="t-pay" style="width: 80%"></div>
+                      <div class="t-rec" style="width: 13%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="set" data-duration="18160">
+                  <td><span class="code-text">70</span></td>
+                  <td><strong>QA Stress User 70</strong></td>
+                  <td><span class="code-text">880171000070</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102343524</span></td>
+                  <td><span class="code-text">1677182</span></td>
+                  <td>Providing Water <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Cartons)</span></td>
+                  <td><strong>165 SAR</strong></td>
+                  <td><strong>18.2s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 255ms | Cart: 1972ms | Pay: 14486ms | Reconcile: 1011ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 11%"></div>
+                      <div class="t-pay" style="width: 80%"></div>
+                      <div class="t-rec" style="width: 8%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-set">🚚 Set Order</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="19186">
+                  <td><span class="code-text">71</span></td>
+                  <td><strong>QA Stress User 71</strong></td>
+                  <td><span class="code-text">880171000071</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102172286</span></td>
+                  <td><span class="code-text">1677184</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(5 Cartons)</span></td>
+                  <td><strong>82.5 SAR</strong></td>
+                  <td><strong>19.2s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 702ms | Cart: 2730ms | Pay: 14168ms | Reconcile: 719ms">
+                      <div class="t-auth" style="width: 4%"></div>
+                      <div class="t-cart" style="width: 14%"></div>
+                      <div class="t-pay" style="width: 74%"></div>
+                      <div class="t-rec" style="width: 8%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="15699">
+                  <td><span class="code-text">72</span></td>
+                  <td><strong>QA Stress User 72</strong></td>
+                  <td><span class="code-text">880171000072</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102398883</span></td>
+                  <td><span class="code-text">1677183</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(5 Meals)</span></td>
+                  <td><strong>75 SAR</strong></td>
+                  <td><strong>15.7s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 215ms | Cart: 1190ms | Pay: 12101ms | Reconcile: 1721ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 8%"></div>
+                      <div class="t-pay" style="width: 77%"></div>
+                      <div class="t-rec" style="width: 14%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="20573">
+                  <td><span class="code-text">73</span></td>
+                  <td><strong>QA Stress User 73</strong></td>
+                  <td><span class="code-text">880171000073</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102952061</span></td>
+                  <td><span class="code-text">1677185</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Cartons)</span></td>
+                  <td><strong>140 SAR</strong></td>
+                  <td><strong>20.6s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 120ms | Cart: 1775ms | Pay: 17046ms | Reconcile: 1167ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 9%"></div>
+                      <div class="t-pay" style="width: 83%"></div>
+                      <div class="t-rec" style="width: 7%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="19912">
+                  <td><span class="code-text">74</span></td>
+                  <td><strong>QA Stress User 74</strong></td>
+                  <td><span class="code-text">880171000074</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102470274</span></td>
+                  <td><span class="code-text">1677187</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Meals)</span></td>
+                  <td><strong>150 SAR</strong></td>
+                  <td><strong>19.9s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 483ms | Cart: 1929ms | Pay: 16653ms | Reconcile: 445ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 10%"></div>
+                      <div class="t-pay" style="width: 84%"></div>
+                      <div class="t-rec" style="width: 4%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="24556">
+                  <td><span class="code-text">75</span></td>
+                  <td><strong>QA Stress User 75</strong></td>
+                  <td><span class="code-text">880171000075</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102587716</span></td>
+                  <td><span class="code-text">1677188</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Cartons)</span></td>
+                  <td><strong>255 SAR</strong></td>
+                  <td><strong>24.6s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 184ms | Cart: 2078ms | Pay: 20557ms | Reconcile: 1283ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 8%"></div>
+                      <div class="t-pay" style="width: 84%"></div>
+                      <div class="t-rec" style="width: 7%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="19506">
+                  <td><span class="code-text">76</span></td>
+                  <td><strong>QA Stress User 76</strong></td>
+                  <td><span class="code-text">880171000076</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102523859</span></td>
+                  <td><span class="code-text">1677186</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Meals)</span></td>
+                  <td><strong>300 SAR</strong></td>
+                  <td><strong>19.5s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 168ms | Cart: 2017ms | Pay: 15107ms | Reconcile: 1671ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 10%"></div>
+                      <div class="t-pay" style="width: 77%"></div>
+                      <div class="t-rec" style="width: 12%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="set" data-duration="19784">
+                  <td><span class="code-text">77</span></td>
+                  <td><strong>QA Stress User 77</strong></td>
+                  <td><span class="code-text">880171000077</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102520207</span></td>
+                  <td><span class="code-text">1677189</span></td>
+                  <td>Providing Water <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Cartons)</span></td>
+                  <td><strong>82.5 SAR</strong></td>
+                  <td><strong>19.8s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 349ms | Cart: 2140ms | Pay: 16012ms | Reconcile: 863ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 11%"></div>
+                      <div class="t-pay" style="width: 81%"></div>
+                      <div class="t-rec" style="width: 6%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-set">🚚 Set Order</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="20235">
+                  <td><span class="code-text">78</span></td>
+                  <td><strong>QA Stress User 78</strong></td>
+                  <td><span class="code-text">880171000078</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102477485</span></td>
+                  <td><span class="code-text">1677190</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(30 Cartons)</span></td>
+                  <td><strong>370 SAR</strong></td>
+                  <td><strong>20.2s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 579ms | Cart: 1272ms | Pay: 17365ms | Reconcile: 549ms">
+                      <div class="t-auth" style="width: 3%"></div>
+                      <div class="t-cart" style="width: 6%"></div>
+                      <div class="t-pay" style="width: 86%"></div>
+                      <div class="t-rec" style="width: 5%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="19584">
+                  <td><span class="code-text">79</span></td>
+                  <td><strong>QA Stress User 79</strong></td>
+                  <td><span class="code-text">880171000079</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102380801</span></td>
+                  <td><span class="code-text">1677191</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(30 Meals)</span></td>
+                  <td><strong>450 SAR</strong></td>
+                  <td><strong>19.6s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 226ms | Cart: 1526ms | Pay: 16005ms | Reconcile: 948ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 8%"></div>
+                      <div class="t-pay" style="width: 82%"></div>
+                      <div class="t-rec" style="width: 9%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="set" data-duration="22095">
+                  <td><span class="code-text">80</span></td>
+                  <td><strong>QA Stress User 80</strong></td>
+                  <td><span class="code-text">880171000080</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102858396</span></td>
+                  <td><span class="code-text">1677192</span></td>
+                  <td>Providing Water <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Cartons)</span></td>
+                  <td><strong>165 SAR</strong></td>
+                  <td><strong>22.1s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 422ms | Cart: 2411ms | Pay: 17987ms | Reconcile: 699ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 11%"></div>
+                      <div class="t-pay" style="width: 81%"></div>
+                      <div class="t-rec" style="width: 6%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-set">🚚 Set Order</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="23047">
+                  <td><span class="code-text">81</span></td>
+                  <td><strong>QA Stress User 81</strong></td>
+                  <td><span class="code-text">880171000081</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102478151</span></td>
+                  <td><span class="code-text">1677193</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(5 Cartons)</span></td>
+                  <td><strong>82.5 SAR</strong></td>
+                  <td><strong>23.0s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 511ms | Cart: 1281ms | Pay: 19131ms | Reconcile: 1581ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 6%"></div>
+                      <div class="t-pay" style="width: 83%"></div>
+                      <div class="t-rec" style="width: 9%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="20408">
+                  <td><span class="code-text">82</span></td>
+                  <td><strong>QA Stress User 82</strong></td>
+                  <td><span class="code-text">880171000082</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102590000</span></td>
+                  <td><span class="code-text">1677194</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(5 Meals)</span></td>
+                  <td><strong>75 SAR</strong></td>
+                  <td><strong>20.4s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 518ms | Cart: 1444ms | Pay: 17433ms | Reconcile: 701ms">
+                      <div class="t-auth" style="width: 3%"></div>
+                      <div class="t-cart" style="width: 7%"></div>
+                      <div class="t-pay" style="width: 85%"></div>
+                      <div class="t-rec" style="width: 5%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="19440">
+                  <td><span class="code-text">83</span></td>
+                  <td><strong>QA Stress User 83</strong></td>
+                  <td><span class="code-text">880171000083</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102988570</span></td>
+                  <td><span class="code-text">1677195</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Cartons)</span></td>
+                  <td><strong>140 SAR</strong></td>
+                  <td><strong>19.4s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 513ms | Cart: 1770ms | Pay: 16000ms | Reconcile: 859ms">
+                      <div class="t-auth" style="width: 3%"></div>
+                      <div class="t-cart" style="width: 9%"></div>
+                      <div class="t-pay" style="width: 82%"></div>
+                      <div class="t-rec" style="width: 6%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="19113">
+                  <td><span class="code-text">84</span></td>
+                  <td><strong>QA Stress User 84</strong></td>
+                  <td><span class="code-text">880171000084</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102879738</span></td>
+                  <td><span class="code-text">1677196</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Meals)</span></td>
+                  <td><strong>150 SAR</strong></td>
+                  <td><strong>19.1s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 97ms | Cart: 2285ms | Pay: 15478ms | Reconcile: 1022ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 12%"></div>
+                      <div class="t-pay" style="width: 81%"></div>
+                      <div class="t-rec" style="width: 6%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="20652">
+                  <td><span class="code-text">85</span></td>
+                  <td><strong>QA Stress User 85</strong></td>
+                  <td><span class="code-text">880171000085</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102866454</span></td>
+                  <td><span class="code-text">1677197</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Cartons)</span></td>
+                  <td><strong>255 SAR</strong></td>
+                  <td><strong>20.7s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 165ms | Cart: 2317ms | Pay: 16735ms | Reconcile: 960ms">
+                      <div class="t-auth" style="width: 1%"></div>
+                      <div class="t-cart" style="width: 11%"></div>
+                      <div class="t-pay" style="width: 81%"></div>
+                      <div class="t-rec" style="width: 7%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="20003">
+                  <td><span class="code-text">86</span></td>
+                  <td><strong>QA Stress User 86</strong></td>
+                  <td><span class="code-text">880171000086</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102982068</span></td>
+                  <td><span class="code-text">1677199</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Meals)</span></td>
+                  <td><strong>300 SAR</strong></td>
+                  <td><strong>20.0s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 536ms | Cart: 2999ms | Pay: 15515ms | Reconcile: 617ms">
+                      <div class="t-auth" style="width: 3%"></div>
+                      <div class="t-cart" style="width: 15%"></div>
+                      <div class="t-pay" style="width: 78%"></div>
+                      <div class="t-rec" style="width: 4%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="set" data-duration="23104">
+                  <td><span class="code-text">87</span></td>
+                  <td><strong>QA Stress User 87</strong></td>
+                  <td><span class="code-text">880171000087</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102280763</span></td>
+                  <td><span class="code-text">1677198</span></td>
+                  <td>Providing Water <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Cartons)</span></td>
+                  <td><strong>82.5 SAR</strong></td>
+                  <td><strong>23.1s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 394ms | Cart: 2716ms | Pay: 19280ms | Reconcile: 396ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 12%"></div>
+                      <div class="t-pay" style="width: 83%"></div>
+                      <div class="t-rec" style="width: 3%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-set">🚚 Set Order</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="20338">
+                  <td><span class="code-text">88</span></td>
+                  <td><strong>QA Stress User 88</strong></td>
+                  <td><span class="code-text">880171000088</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102228796</span></td>
+                  <td><span class="code-text">1677200</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(30 Cartons)</span></td>
+                  <td><strong>370 SAR</strong></td>
+                  <td><strong>20.3s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 427ms | Cart: 2263ms | Pay: 16628ms | Reconcile: 648ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 11%"></div>
+                      <div class="t-pay" style="width: 82%"></div>
+                      <div class="t-rec" style="width: 5%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="19213">
+                  <td><span class="code-text">89</span></td>
+                  <td><strong>QA Stress User 89</strong></td>
+                  <td><span class="code-text">880171000089</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102895294</span></td>
+                  <td><span class="code-text">1677201</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(30 Meals)</span></td>
+                  <td><strong>450 SAR</strong></td>
+                  <td><strong>19.2s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 348ms | Cart: 2162ms | Pay: 15776ms | Reconcile: 632ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 11%"></div>
+                      <div class="t-pay" style="width: 82%"></div>
+                      <div class="t-rec" style="width: 5%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="set" data-duration="19378">
+                  <td><span class="code-text">90</span></td>
+                  <td><strong>QA Stress User 90</strong></td>
+                  <td><span class="code-text">880171000090</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102113544</span></td>
+                  <td><span class="code-text">1677202</span></td>
+                  <td>Providing Water <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Cartons)</span></td>
+                  <td><strong>165 SAR</strong></td>
+                  <td><strong>19.4s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 656ms | Cart: 1841ms | Pay: 15835ms | Reconcile: 623ms">
+                      <div class="t-auth" style="width: 3%"></div>
+                      <div class="t-cart" style="width: 10%"></div>
+                      <div class="t-pay" style="width: 82%"></div>
+                      <div class="t-rec" style="width: 5%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-set">🚚 Set Order</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="16608">
+                  <td><span class="code-text">91</span></td>
+                  <td><strong>QA Stress User 91</strong></td>
+                  <td><span class="code-text">880171000091</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102315616</span></td>
+                  <td><span class="code-text">1677203</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(5 Cartons)</span></td>
+                  <td><strong>82.5 SAR</strong></td>
+                  <td><strong>16.6s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 316ms | Cart: 2648ms | Pay: 12634ms | Reconcile: 791ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 16%"></div>
+                      <div class="t-pay" style="width: 76%"></div>
+                      <div class="t-rec" style="width: 6%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="18394">
+                  <td><span class="code-text">92</span></td>
+                  <td><strong>QA Stress User 92</strong></td>
+                  <td><span class="code-text">880171000092</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102586105</span></td>
+                  <td><span class="code-text">1677204</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(5 Meals)</span></td>
+                  <td><strong>75 SAR</strong></td>
+                  <td><strong>18.4s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 896ms | Cart: 2470ms | Pay: 14331ms | Reconcile: 380ms">
+                      <div class="t-auth" style="width: 5%"></div>
+                      <div class="t-cart" style="width: 13%"></div>
+                      <div class="t-pay" style="width: 78%"></div>
+                      <div class="t-rec" style="width: 4%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="13509">
+                  <td><span class="code-text">93</span></td>
+                  <td><strong>QA Stress User 93</strong></td>
+                  <td><span class="code-text">880171000093</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102399138</span></td>
+                  <td><span class="code-text">1677206</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Cartons)</span></td>
+                  <td><strong>140 SAR</strong></td>
+                  <td><strong>13.5s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 502ms | Cart: 1873ms | Pay: 10063ms | Reconcile: 382ms">
+                      <div class="t-auth" style="width: 4%"></div>
+                      <div class="t-cart" style="width: 14%"></div>
+                      <div class="t-pay" style="width: 74%"></div>
+                      <div class="t-rec" style="width: 8%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="12718">
+                  <td><span class="code-text">94</span></td>
+                  <td><strong>QA Stress User 94</strong></td>
+                  <td><span class="code-text">880171000094</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102274918</span></td>
+                  <td><span class="code-text">1677205</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Meals)</span></td>
+                  <td><strong>150 SAR</strong></td>
+                  <td><strong>12.7s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 195ms | Cart: 1931ms | Pay: 9847ms | Reconcile: 370ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 15%"></div>
+                      <div class="t-pay" style="width: 77%"></div>
+                      <div class="t-rec" style="width: 6%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="13709">
+                  <td><span class="code-text">95</span></td>
+                  <td><strong>QA Stress User 95</strong></td>
+                  <td><span class="code-text">880171000095</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102564806</span></td>
+                  <td><span class="code-text">1677207</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Cartons)</span></td>
+                  <td><strong>255 SAR</strong></td>
+                  <td><strong>13.7s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 251ms | Cart: 2246ms | Pay: 10539ms | Reconcile: 317ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 16%"></div>
+                      <div class="t-pay" style="width: 77%"></div>
+                      <div class="t-rec" style="width: 5%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="12356">
+                  <td><span class="code-text">96</span></td>
+                  <td><strong>QA Stress User 96</strong></td>
+                  <td><span class="code-text">880171000096</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102430141</span></td>
+                  <td><span class="code-text">1677208</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Meals)</span></td>
+                  <td><strong>300 SAR</strong></td>
+                  <td><strong>12.4s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 238ms | Cart: 1540ms | Pay: 9999ms | Reconcile: 373ms">
+                      <div class="t-auth" style="width: 2%"></div>
+                      <div class="t-cart" style="width: 12%"></div>
+                      <div class="t-pay" style="width: 81%"></div>
+                      <div class="t-rec" style="width: 5%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="set" data-duration="11681">
+                  <td><span class="code-text">97</span></td>
+                  <td><strong>QA Stress User 97</strong></td>
+                  <td><span class="code-text">880171000097</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102680591</span></td>
+                  <td><span class="code-text">1677210</span></td>
+                  <td>Providing Water <span style="color: var(--text-dim); font-size: 0.75rem;">(10 Cartons)</span></td>
+                  <td><strong>82.5 SAR</strong></td>
+                  <td><strong>11.7s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 489ms | Cart: 2661ms | Pay: 7770ms | Reconcile: 359ms">
+                      <div class="t-auth" style="width: 4%"></div>
+                      <div class="t-cart" style="width: 23%"></div>
+                      <div class="t-pay" style="width: 67%"></div>
+                      <div class="t-rec" style="width: 6%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-set">🚚 Set Order</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="11747">
+                  <td><span class="code-text">98</span></td>
+                  <td><strong>QA Stress User 98</strong></td>
+                  <td><span class="code-text">880171000098</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102984281</span></td>
+                  <td><span class="code-text">1677209</span></td>
+                  <td>Watering Al-Haram <span style="color: var(--text-dim); font-size: 0.75rem;">(30 Cartons)</span></td>
+                  <td><strong>370 SAR</strong></td>
+                  <td><strong>11.7s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 754ms | Cart: 1452ms | Pay: 9074ms | Reconcile: 286ms">
+                      <div class="t-auth" style="width: 6%"></div>
+                      <div class="t-cart" style="width: 12%"></div>
+                      <div class="t-pay" style="width: 77%"></div>
+                      <div class="t-rec" style="width: 5%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="close" data-duration="8697">
+                  <td><span class="code-text">99</span></td>
+                  <td><strong>QA Stress User 99</strong></td>
+                  <td><span class="code-text">880171000099</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102764151</span></td>
+                  <td><span class="code-text">1677211</span></td>
+                  <td>Haram Meal <span style="color: var(--text-dim); font-size: 0.75rem;">(30 Meals)</span></td>
+                  <td><strong>450 SAR</strong></td>
+                  <td><strong>8.7s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 269ms | Cart: 2550ms | Pay: 5147ms | Reconcile: 314ms">
+                      <div class="t-auth" style="width: 3%"></div>
+                      <div class="t-cart" style="width: 29%"></div>
+                      <div class="t-pay" style="width: 59%"></div>
+                      <div class="t-rec" style="width: 9%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-close">● Close Dist</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+                <tr data-category="set" data-duration="8607">
+                  <td><span class="code-text">100</span></td>
+                  <td><strong>QA Stress User 100</strong></td>
+                  <td><span class="code-text">880171000100</span></td>
+                  <td><span class="code-text" style="color: #60a5fa; font-weight: 600;">#261102803970</span></td>
+                  <td><span class="code-text">1677212</span></td>
+                  <td>Providing Water <span style="color: var(--text-dim); font-size: 0.75rem;">(20 Cartons)</span></td>
+                  <td><strong>165 SAR</strong></td>
+                  <td><strong>8.6s</strong></td>
+                  <td>
+                    <div class="timing-bar" title="Auth: 486ms | Cart: 2397ms | Pay: 4916ms | Reconcile: 284ms">
+                      <div class="t-auth" style="width: 6%"></div>
+                      <div class="t-cart" style="width: 28%"></div>
+                      <div class="t-pay" style="width: 57%"></div>
+                      <div class="t-rec" style="width: 9%"></div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill pill-set">🚚 Set Order</span>
+                  </td>
+                  <td><span class="pill pill-success">✅ SUCCESS</span></td>
+                </tr>
+              
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      Qatarat Automation Suite &bull; Comprehensive 100-User Stress Testing Engine &bull; Generated on Mon, 02 Nov 2026 08:25:50 GMT
+    </footer>
+
+  </div>
+
+  <script>
+    // 1. Phase Latency Chart
+    const ctxPhase = document.getElementById('phaseTimingChart').getContext('2d');
+    new Chart(ctxPhase, {
+      type: 'bar',
+      data: {
+        labels: ['Guest Auth', 'DB Profile', 'Add to Cart', 'Get Cart', 'Initiate Pay (Gateway)', 'Reconcile DB', 'Verify Admin'],
+        datasets: [{
+          label: 'Average Latency (Seconds)',
+          data: [
+            0.40,
+            0.23,
+            1.30,
+            0.81,
+            14.14,
+            0.76,
+            0.22
+          ],
+          backgroundColor: [
+            'rgba(56, 189, 248, 0.75)',
+            'rgba(99, 102, 241, 0.75)',
+            'rgba(129, 140, 248, 0.75)',
+            'rgba(167, 139, 250, 0.75)',
+            'rgba(244, 63, 94, 0.85)',
+            'rgba(52, 211, 153, 0.75)',
+            'rgba(251, 191, 36, 0.75)'
+          ],
+          borderColor: [
+            '#38bdf8', '#6366f1', '#818cf8', '#a78bfa', '#f43f5e', '#34d399', '#fbbf24'
+          ],
+          borderWidth: 1.5,
+          borderRadius: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (context) => ` ${context.raw} seconds`
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', size: 11 } }
+          },
+          y: {
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            ticks: { 
+              color: '#94a3b8', 
+              font: { family: 'Plus Jakarta Sans', size: 11 },
+              callback: v => v + 's'
+            }
+          }
+        }
+      }
+    });
+
+    // 2. Percentile Curve Chart
+    const ctxPerc = document.getElementById('percentileChart').getContext('2d');
+    new Chart(ctxPerc, {
+      type: 'line',
+      data: {
+        labels: ['Min', 'p25', 'p50 (Median)', 'p75', 'p90', 'p95', 'p99', 'Max'],
+        datasets: [{
+          label: 'Latency (Seconds)',
+          data: [
+            8.61,
+            13.31,
+            18.01,
+            21.08,
+            24.15,
+            25.76,
+            27.44,
+            28.16
+          ],
+          borderColor: '#8b5cf6',
+          backgroundColor: 'rgba(139, 92, 246, 0.15)',
+          fill: true,
+          tension: 0.35,
+          pointBackgroundColor: '#8b5cf6',
+          pointBorderColor: '#fff',
+          pointRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (context) => ` ${context.raw} seconds`
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', size: 11 } }
+          },
+          y: {
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            ticks: { 
+              color: '#94a3b8', 
+              font: { family: 'Plus Jakarta Sans', size: 11 },
+              callback: v => v + 's'
+            }
+          }
+        }
+      }
+    });
+
+    // 3. Search and Filtering Logic
+    const searchInput = document.getElementById('searchInput');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const tableRows = document.querySelectorAll('#ordersTable tbody tr');
+
+    let currentFilter = 'all';
+
+    function applyFilterAndSearch() {
+      const q = searchInput.value.toLowerCase().trim();
+
+      tableRows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        const matchesSearch = !q || text.includes(q);
+        const category = row.getAttribute('data-category');
+        const duration = parseInt(row.getAttribute('data-duration'), 10);
+
+        let matchesFilter = true;
+        if (currentFilter === 'close') matchesFilter = (category === 'close');
+        else if (currentFilter === 'set') matchesFilter = (category === 'set');
+        else if (currentFilter === 'fast') matchesFilter = (duration < 15000);
+        else if (currentFilter === 'slow') matchesFilter = (duration > 20000);
+
+        if (matchesSearch && matchesFilter) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
+    searchInput.addEventListener('input', applyFilterAndSearch);
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.getAttribute('data-filter');
+        applyFilterAndSearch();
+      });
+    });
+  </script>
+</body>
+</html>

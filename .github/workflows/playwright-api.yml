@@ -1,0 +1,85 @@
+name: Qatarat Enterprise API Automation Tests & Live Report
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      test_scope:
+        description: 'Select Test Scope / Module to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - 'all'
+          - 'enterprise'
+          - 'auth'
+          - 'cart'
+          - 'payment'
+          - 'subs'
+          - 'cd'
+          - 'e2e'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  api-tests:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js 22
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: 'npm'
+
+    - name: Install Dependencies
+      run: npm ci || npm install
+
+    - name: Run Playwright API Tests
+      run: |
+        SCOPE="${{ github.event.inputs.test_scope || 'all' }}"
+        echo "Selected Test Scope: $SCOPE"
+        
+        if [ "$SCOPE" = "enterprise" ]; then
+          npm run test:api:enterprise
+        elif [ "$SCOPE" = "auth" ]; then
+          npm run test:api:auth
+        elif [ "$SCOPE" = "cart" ]; then
+          npm run test:api:cart
+        elif [ "$SCOPE" = "payment" ]; then
+          npm run test:api:payment
+        elif [ "$SCOPE" = "subs" ]; then
+          npm run test:api:subs
+        elif [ "$SCOPE" = "cd" ]; then
+          npm run test:api:cd
+        elif [ "$SCOPE" = "e2e" ]; then
+          npm run test:api:e2e-order && npm run test:api:e2e-subs
+        else
+          npm run test:api
+        fi
+      env:
+        CI: true
+        API_BASE_URL: ${{ secrets.API_BASE_URL || 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com' }}
+        DB_HOST: ${{ secrets.DB_HOST }}
+        DB_USERNAME: ${{ secrets.DB_USERNAME }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_DATABASE: ${{ secrets.DB_DATABASE }}
+
+    - name: Upload Playwright Test Report Artifact
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 14
+

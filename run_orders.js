@@ -10,6 +10,7 @@ let userMode = 'single';      // 'single' | 'multi'
 let category = 'close-dist';  // 'close-dist' | 'mixed' | 'set-order'
 let executionMode = 'fast';   // 'fast' | 'browser'
 let cardType = 'myfatoorah';
+let concurrency = 10;
 
 // Positional arguments parser
 if (args[0] && !args[0].startsWith('--')) {
@@ -38,6 +39,7 @@ for (let i = 0; i < args.length; i++) {
   if (args[i] === '--category' && args[i + 1]) category = args[i + 1].toLowerCase();
   if (args[i] === '--mode' && args[i + 1]) executionMode = args[i + 1].toLowerCase();
   if (args[i] === '--card' && args[i + 1]) cardType = args[i + 1].toLowerCase();
+  if ((args[i] === '--concurrency' || args[i] === '-c') && args[i + 1]) concurrency = parseInt(args[i + 1], 10);
   if (args[i] === '--browser') executionMode = 'browser';
   if (args[i] === '--multi') userMode = 'multi';
   if (args[i] === '--single') userMode = 'single';
@@ -55,7 +57,8 @@ async function main() {
       userMode,
       category,
       executionMode,
-      cardType
+      cardType,
+      concurrency
     });
 
     console.log('\n================================================================================');

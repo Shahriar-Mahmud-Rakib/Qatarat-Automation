@@ -1,223 +1,206 @@
+#!/usr/bin/env node
+require('dotenv').config();
 const { spawn } = require('child_process');
+const path = require('path');
 
-const command = process.argv[2] || 'help';
+const command = (process.argv[2] || 'help').toLowerCase();
 const restArgs = process.argv.slice(3);
 
-function runScript(scriptPath, args = []) {
-  const child = spawn('node', [scriptPath, ...args], { stdio: 'inherit' });
+function runScript(scriptRelativePath, args = []) {
+  const fullPath = path.resolve(__dirname, scriptRelativePath);
+  const child = spawn(process.execPath, [fullPath, ...args], {
+    stdio: 'inherit',
+    env: { ...process.env, DISPLAY: process.env.DISPLAY || ':0' }
+  });
   child.on('exit', code => process.exit(code || 0));
 }
 
-switch (command.toLowerCase()) {
-  case 'orders':
-  case 'order':
-    // Examples: node index.js orders 50 single
-    //           node index.js orders 50 multi
-    runScript('./run_orders.js', restArgs.length > 0 ? restArgs : ['5', 'single']);
+switch (command) {
+  // ============================================================================
+  // 1. PAYMENT MODEL (Full user lifecycle: Cart -> Gift -> Live Gateway -> Admin -> Close Dist -> WebApp)
+  // ============================================================================
+  case 'payment':
+  case 'payment-test':
+  case 'payments':
+  case 'pay':
+    console.log('🚀 Running Qatarat Payment Model (Live Browser)...\n');
+    runScript('./src/models/paymentModel.js', restArgs);
     break;
 
+  // ============================================================================
+  // 2. PHONE / AUTH MODEL (All phone refactoring, uniqueness, multi-role, 00 prefixes, OTP)
+  // ============================================================================
+  case 'phone':
+  case 'phone-number':
+  case 'phonenumber':
+  case 'auth':
+  case 'test-auth':
+  case 'test-phone':
+    console.log('🚀 Running Qatarat Phone Refactor Model...\n');
+    runScript('./src/models/phoneModel.js', restArgs);
+    break;
+
+  // ============================================================================
+  // 3. CLOSE DISTRIBUTION MODEL (5-Point predicate audit vs Driver delivery)
+  // ============================================================================
+  case 'close-dist':
+  case 'close-distribution':
+  case 'closedist':
+  case 'cd':
+    console.log('🚀 Running Qatarat Close Distribution Model...\n');
+    runScript('./src/models/closeDistributionModel.js', restArgs);
+    break;
+
+  // ============================================================================
+  // 4. SUBSCRIPTION MODEL (Deduplication, Next Generate Date & Worker API)
+  // ============================================================================
   case 'subscription':
+  case 'subscriptions':
   case 'subs':
   case 'sub':
-    // Examples: node index.js subs 50
-    //           node index.js subs single 9216
-    runScript('./run_subscription.js', restArgs.length > 0 ? restArgs : ['5']);
+    console.log('🚀 Running Qatarat Subscription Model...\n');
+    runScript('./src/models/subscriptionModel.js', restArgs);
     break;
 
+  // ============================================================================
+  // 5. FULL / MASTER SUITE (Executes all 4 models sequentially)
+  // ============================================================================
+  case 'full':
+  case 'all':
+  case 'master':
+  case 'full-test':
+  case 'test-all':
+    console.log('🚀 Running Full Qatarat Master Suite (All Models Sequentially)...\n');
+    runScript('./src/models/allModel.js', restArgs);
+    break;
+
+  // ============================================================================
+  // UTILITY: OTP Helper
+  // ============================================================================
   case 'otp':
   case 'get-otp':
-  case 'code':
-    // Example: node index.js otp 01772173075
-    //          node index.js otp 8801772173075 --watch
     runScript('./get_otp.js', restArgs);
     break;
 
-  case 'gateway':
-  case 'gateway-switch':
-  case 'switch':
-    // Payment Gateway Switching (MyFatoorah <-> PayTabs Abandon & Pay)
-    runScript('./test_gateway_switch_scenarios.js');
-    break;
-
-  case 'rule5':
-  case 'rule05':
-  case 'status':
-    // Rule 05 Audit (order_detail_status IN 1, 6 vs 4)
-    runScript('./test_rule5_audit.js');
-    break;
-
-  case 'pdf':
-  case 'pdf-test':
-  case 'investigation':
-    // PDF Report 5-point live investigation test
-    runScript('./test_pdf_investigation_flow.js');
-    break;
-
-  case 'template':
-  case 'templates':
-  case 'preset':
-    // Examples: node index.js template same-user-50-close-dist
-    //           node index.js template multi-user-50-close-dist
-    runScript('./run_template.js', restArgs);
-    break;
-
-  case 'verify':
-    runScript('./test_close_distribution.js', restArgs);
-    break;
-
-  case 'auth':
-  case 'test-auth':
-  case 'phone':
-    // Refactored Phone Uniqueness & Multi-Role Test Suite
-    runScript('./test_phone_unique_multi_role.js');
-    break;
-
-  case 'payment':
-  case 'test-payment':
-  case 'payments':
-    // Refactored Payment System & Outbox Test Suite
-    runScript('./test_refactored_payment_system.js');
-    break;
-
-  case 'subscription-refactor':
-  case 'test-subscription':
-  case 'subs-refactor':
-    // Refactored Subscription System & Unique Active Flag Suite
-    runScript('./test_refactored_subscription_system.js');
-    break;
-
-  case 'all':
-  case 'test-all':
-  case 'master':
-    // Master Test Suite executing all refactored modules
-    runScript('./test_all_refactored_modules.js');
+  // ============================================================================
+  // EXTENDED QA SUITES & BACKWARD COMPATIBILITY
+  // ============================================================================
+  case 'orders':
+  case 'order':
+    runScript('./run_orders.js', restArgs);
     break;
 
   case 'test-100':
   case '100':
   case 'multi-role-100':
   case 'prefix-100':
-    // 100+ Multi-Role separate logins and all database '00' prefix live login test
-    runScript('./test_100_multi_role_and_prefix_logins.js');
+    runScript('./test_100_multi_role_and_prefix_logins.js', restArgs);
     break;
 
   case 'qatar-759':
   case '759':
   case 'compliance':
   case 'phone-audit':
-    // Full QATAR-759 Standardization & Multi-Role Compliance Audit
-    runScript('./test_qatar_759_compliance.js');
+    runScript('./test_qatar_759_compliance.js', restArgs);
     break;
 
   case 'qatar-796':
   case '796':
   case 'webapp-qa':
   case 'admin-qa':
-    // Full QATAR-796 WebApp & Admin Dashboard End-to-End QA Verification Suite
-    runScript('./test_qatar_796_compliance.js');
+    runScript('./test_qatar_796_compliance.js', restArgs);
     break;
 
   case 'close-dist-flow':
   case 'close-distribution-flow':
   case 'close-flow':
   case 'live-close':
-    // Live Close Distribution Workflow (Gift order, 2 Close Dist, 1 Driver + Admin Completion)
-    runScript('./run_close_distribution_live_workflow.js');
+    runScript('./run_close_distribution_live_workflow.js', restArgs);
     break;
 
   case 'admin-ui':
   case 'admin-complete':
   case 'admin-e2e':
   case 'dashboard-ui':
-    // Complete Admin Dashboard QA Suite (Live UI Automation + Code Structure + Database Audit)
-    runScript('./test_admin_ui_and_matrix_complete.js');
+    runScript('./test_admin_ui_and_matrix_complete.js', restArgs);
     break;
 
   case 'admin-matrix':
   case 'matrix':
   case 'admin-dashboard':
   case 'dashboard-qa':
-    // Full Comprehensive Admin Dashboard QA Matrix (Positive, Negative, Security, BVA, SQL Injection, Modules 1-6)
-    runScript('./test_admin_dashboard_full_matrix.js');
+    runScript('./test_admin_dashboard_full_matrix.js', restArgs);
+    break;
+
+  case 'gateway-switch':
+  case 'switch':
+    runScript('./test_gateway_switch_scenarios.js', restArgs);
+    break;
+
+  case 'rule5':
+    runScript('./test_rule5_audit.js', restArgs);
+    break;
+
+  case 'pdf-test':
+  case 'pdf':
+    runScript('./test_pdf_investigation_flow.js', restArgs);
+    break;
+
+  case 'templates':
+  case 'template':
+    runScript('./run_templates.js', restArgs);
+    break;
+
+  case 'verify':
+    runScript('./test_close_distribution.js', restArgs);
     break;
 
   case 'report':
   case 'html':
   case 'html-report':
-    // Generate interactive HTML report dashboard
-    runScript('./generate_report_html.js');
+    runScript('./generate_report_html.js', restArgs);
     break;
 
+  // ============================================================================
+  // DEFAULT / HELP MENU
+  // ============================================================================
   default:
     console.log(`
-================================================================================
-🌟 QATARAT MASTER QA AUTOMATION SUITE — DEDICATED COMMAND CHEAT SHEET
-================================================================================
+================================================================================================
+🌟 QATARAT AUTOMATION — MODULAR ARCHITECTURE CLI
+================================================================================================
 
-🎯 0. Admin Dashboard Comprehensive QA Test Matrix:
-   - Full 6 Modules (Login, Users, Drivers, Orders, Subs/Payments, Campaigns) across Positive, Negative, Security, BVA, SQL Injection:
-     👉 node index.js admin-matrix
+🎯 1. PAYMENT MODEL (Real User Journey):
+   Runs the end-to-end checkout & payment lifecycle on real staging browser:
+   (Login -> DB OTP -> Clear Cart -> Add Item -> Add Gift -> MyFatoorah Live -> Admin Search Wait -> Close Dist -> Web App)
+   👉 node index.js payment
+   👉 npm run test:payment
 
-🎯 1. Direct Order Generation (Single vs. Multi-User):
-   - Same User (e.g. 50 orders for 1 user):
-     👉 node index.js orders 50 single
-   - Multi Users (e.g. 50 orders for 50 distinct users):
-     👉 node index.js orders 50 multi
-   - Any Custom Order Count & Speed:
-     👉 node index.js orders 10 single mixed browser
+🎯 2. PHONE NUMBER MODEL (Refactor & Schema Suite):
+   Tests all phone number refactoring wherever and however it is used in Qatarat:
+   (Normalization, DB Uniqueness, Multi-Role User/Driver/Admin, OTP dispatch, Legacy 00 Prefix Audit)
+   👉 node index.js phone
+   👉 npm run test:phone
 
---------------------------------------------------------------------------------
+🎯 3. CLOSE DISTRIBUTION MODEL (5-Point Audit):
+   Audits the 5 predicate business rules (need_delivery = 0, driver_id NULL, one-time, paid, pending)
+   👉 node index.js close-dist
+   👉 npm run test:close-dist
 
-🎯 2. Subscription Worker Testing (Dynamic N Users):
-   - Dynamic N Distinct Users Subscriptions:
-     👉 node index.js subs 50
-   - Single Subscription Test:
-     👉 node index.js subs single 9216
+🎯 4. SUBSCRIPTION MODEL (Deduplication & Worker):
+   Tests unique active constraints, next_generate_date scheduling, and worker auto-generation
+   👉 node index.js subscription
+   👉 npm run test:subscription
 
---------------------------------------------------------------------------------
+🎯 5. FULL MASTER SUITE (All Models Sequentially):
+   Executes all 4 models in sequence and produces a unified summary report:
+   👉 node index.js full
+   👉 npm run test:all
 
-🎯 3. Instant User Login OTP Fetcher (App / Web / Admin):
-   - Get OTP by phone number:
-     👉 node index.js otp 01772173075
-     👉 node index.js otp 8801772173075
-   - Wait & Live-poll for incoming OTP from app:
-     👉 node index.js otp 01772173075 --watch
+🔧 UTILITY:
+   👉 node index.js otp <phone>   (Fetch instant WhatsApp OTP from DB)
 
---------------------------------------------------------------------------------
-
-🎯 4. Payment Gateway Cancel & Switch Test (MyFatoorah ➔ PayTabs / PayTabs ➔ MyFatoorah):
-   - Tests abandoning Gateway A and paying via Gateway B on Direct & Subscription orders:
-     👉 node index.js gateway-switch
-
---------------------------------------------------------------------------------
-
-🎯 5. Rule 05 Audit Test (order_detail_status IN 1, 6):
-   - Tests status 1 (Direct) vs status 6 (Subscription) vs status 4 (Closed):
-     👉 node index.js rule5
-
---------------------------------------------------------------------------------
-
-🎯 6. PDF 5-Point Live Investigation Test:
-   - Tests the exact 5-point database routing logic from the PDF report:
-     👉 node index.js pdf-test
-
---------------------------------------------------------------------------------
-
-🎯 7. Pre-configured Preset Templates:
-   - List all available templates:
-     👉 node index.js templates
-   - Run a template:
-     👉 node index.js template same-user-50-close-dist
-     👉 node index.js template multi-user-50-close-dist
-     👉 node index.js template multi-user-50-subscription
-
---------------------------------------------------------------------------------
-
-🎯 8. Verify Any Live Order in Database:
-   - Check an order by order number:
-     👉 node index.js verify 260928334297
-
-================================================================================
+================================================================================================
 `);
     break;
 }
