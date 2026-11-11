@@ -19,6 +19,7 @@
     "test:api:cd": "npx playwright test tests/08-close-distribution-predicates.spec.js",
     "test:api:notifications": "npx playwright test tests/09-subscription-notifications.spec.js",
     "test:notifications": "node run_subscription_notifications.js",
+    "test:user:sub-today": "node scripts/run_user_subscription_today.js",
     "test:api:e2e-order": "npx playwright test tests/e2e-order-payment-lifecycle.spec.js",
     "test:api:e2e-subs": "npx playwright test tests/e2e-subscription-recurring-lifecycle.spec.js",
     "test:api:report": "npx playwright show-report",
