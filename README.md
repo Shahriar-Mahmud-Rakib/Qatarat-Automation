@@ -38,6 +38,7 @@ flowchart TD
         S6["GiftService.js"]
         S7["SystemService.js"]
         S8["NotificationService.js (Indonesian Localization & Notifications)"]
+        S9["WhatsAppOrderService.js (WhatsApp 1-Click Checkout Generator)"]
     end
 
     subgraph Validation & Helpers
@@ -55,6 +56,7 @@ flowchart TD
         C4["payment.schema.js"]
         C5["subscription.schema.js"]
         C6["notification.schema.js (Indonesian, English, Arabic)"]
+        C7["whatsapp-order.schema.js (List Packages & Create Draft)"]
     end
 
     subgraph CI/CD & Reporting
@@ -103,8 +105,11 @@ npm run test:api:subs          # Subscription Worker & Deduplication
 npm run test:api:cd            # Close Distribution 5-Point DB Audit
 npm run test:api:profile       # Profile Contracts & Updates
 npm run test:api:notifications # Subscription Notifications (Indonesian 'id')
+npm run test:api:wa            # WhatsApp 1-Click Ordering & Draft Orders
 
-# 5. Run Subscription Notification Automation (Indonesian):
+# 5. Run Live WhatsApp & Notification Runners:
+npm run wa:order               # Generate 1-Click WhatsApp Order & Direct Checkout Link
+npm run test:user:sub-today    # Trigger Subscription Today & Reconcile Payment
 npm run test:notifications     # Node runner for Reminder & Order Created notifications
 
 # 6. Run End-to-End Lifecycle Journeys:
