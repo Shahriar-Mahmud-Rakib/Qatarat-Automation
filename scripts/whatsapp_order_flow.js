@@ -35,7 +35,8 @@ async function runWhatsAppOrder() {
   const quantity = parseInt(args[3] || '50', 10);
 
   const phone = normalizePhone(rawPhone);
-  const baseApi = process.env.API_BASE_URL || 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+  const baseApi = process.env.API_BASE_URL || 'https://ws01dev.prowhats.com';
+  const webappBase = (process.env.WEB_APP_URL || 'https://dev01.prowhats.com/en').replace(/\/$/, '');
   const endpoint = `${baseApi}/api/whatsapp/order`;
 
   console.log('================================================================================');
@@ -46,7 +47,8 @@ async function runWhatsAppOrder() {
   console.log(`📌 Destination Path: ${path} (${path === 'grand_mosque' ? 'الحرم المكي (Grand Mosque)' : 'مساجد مكة (Mecca Mosques)'})`);
   console.log(`📌 Service Type:     ${service} (${service === 'water' ? 'سقيا الماء (Water)' : 'إطعام / وجبات (Meals)'})`);
   console.log(`📌 Quantity:         ${quantity} units`);
-  console.log(`📡 API Endpoint:     ${endpoint}\n`);
+  console.log(`📡 API Endpoint:     ${endpoint}`);
+  console.log(`🌐 Target Webapp:    ${webappBase}\n`);
 
   // ----------------------------------------------------------------------------
   // STEP 1: Query List Packages
@@ -98,11 +100,16 @@ async function runWhatsAppOrder() {
     draft_id,
     order_number,
     order_uid,
-    checkout_url,
+    checkout_url: rawCheckoutUrl,
     checkout_token_expires_at,
     order_summary,
     customer
   } = orderData;
+
+  // Format checkout URL to target DEV Webapp (https://dev01.prowhats.com/en/checkout)
+  const checkoutUrlObj = new URL(rawCheckoutUrl);
+  const webappBaseObj = new URL(webappBase);
+  const checkout_url = `${webappBaseObj.origin}${webappBaseObj.pathname}/checkout${checkoutUrlObj.search}`.replace(/\/+/g, '/').replace('https:/', 'https://');
 
   // ----------------------------------------------------------------------------
   // STEP 3: Verify Draft Order in MySQL Database
@@ -199,3 +206,4 @@ runWhatsAppOrder().catch(err => {
   pool.end();
   process.exit(1);
 });
+
