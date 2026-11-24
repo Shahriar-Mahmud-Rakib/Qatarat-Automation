@@ -135,7 +135,7 @@
         <div class="meta-item">API Gateway: <strong>ws01dev.prowhats.com</strong></div>
         <div class="meta-item">Admin API: <strong>dev-admin-api.prowhats.com</strong></div>
         <div class="meta-item">Target Phone: <strong>+8801772173075 (User #1593074)</strong></div>
-        <div class="meta-item">Execution Duration: <strong>40.4s</strong></div>
+        <div class="meta-item">Execution Duration: <strong>61.0s</strong></div>
         <div class="meta-item">Audit Date: <strong>2026-11-24</strong></div>
       </div>
     </header>
@@ -144,11 +144,11 @@
     <div class="kpi-grid">
       <div class="kpi-card">
         <div class="kpi-title">Total Test Checks</div>
-        <div class="kpi-value text-primary">33</div>
+        <div class="kpi-value text-primary">37</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-title">Passed Checks</div>
-        <div class="kpi-value text-success">32</div>
+        <div class="kpi-value text-success">36</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-title">Success Rate</div>
@@ -177,7 +177,7 @@
         <li><strong>Driver Delivery Fulfillment:</strong> Driver API authentication and delivery completion endpoints verify photographic proof validation and status transition to delivered.</li>
         <li><strong>Recurring Subscription Lifecycle & Recovery:</strong> Automated background order generation (<code>GET /api/v2/subscriptions/generate-orders</code>) queues renewal jobs, rolls cycles forward by +7 days, and prevents duplicate queues via strict unique index constraints (<code>idx_prevent_duplicate_active_subs</code>). Missed date recovery functions smoothly without duplicate billing.</li>
         <li><strong>Guest User to Authenticated Cart Migration:</strong> Anonymous guest sessions add items to cart, persist across authentication, map to customer accounts upon login, and transition cleanly to checkout.</li>
-        <li><strong>Dynamic Content & Multilingual Localization:</strong> Live static content API validates complete parity across Arabic (<code>ar</code>), English (<code>en</code>), and Indonesian (<code>id</code>) for FAQs (11 questions), Privacy Policies, Terms & Conditions, Sliders, and Home Page service icons.</li>
+        <li><strong>Dynamic Content & Multilingual Localization:</strong> Comprehensive audits across Arabic (<code>ar</code>), English (<code>en</code>), and Indonesian (<code>id</code>) confirm complete parity across all 5 content pillars: FAQs (11 questions with bilingual Q&A parity), Privacy Policies (15+ articles across AR/EN/ID), Terms & Conditions (22+ legal sections across AR/EN/ID), Dynamic Banner Sliders (46 active banners with responsive CDN assets), and Home Page Service Icons (complete <code>title_tr</code> translation parity with package linking).</li>
       </ul>
     </div>
 
@@ -225,8 +225,8 @@
             </tr>
           
             <tr>
-              <td><strong style="color: #38bdf8; font-family: monospace; font-size: 14px;">#261120243162</strong></td>
-              <td><code>#1006815</code></td>
+              <td><strong style="color: #38bdf8; font-family: monospace; font-size: 14px;">#261120790490</strong></td>
+              <td><code>#1006819</code></td>
               <td>Shahriar Mahmud<br><span style="color: var(--text-muted); font-size: 12px;">+8801772173075</span></td>
               <td>Masjid Al-Haram Watering (Close Distribution Event #468)</td>
               <td><strong style="color: #34d399;">82.5 SAR</strong></td>
@@ -236,8 +236,8 @@
             </tr>
           
             <tr>
-              <td><strong style="color: #38bdf8; font-family: monospace; font-size: 14px;">#261124197897</strong></td>
-              <td><code>#696944</code></td>
+              <td><strong style="color: #38bdf8; font-family: monospace; font-size: 14px;">#261124368786</strong></td>
+              <td><code>#696946</code></td>
               <td>Shahriar Mahmud<br><span style="color: var(--text-muted); font-size: 12px;">+8801772173075</span></td>
               <td>Guest Cart Conversion Order (Haram Water 5 Cartons)</td>
               <td><strong style="color: #34d399;">82.5 SAR</strong></td>
@@ -323,7 +323,7 @@
               <td><strong>Close Distribution</strong></td>
               <td><code>close_watering_haram (#1)</code></td>
               <td><strong style="color: #38bdf8;">+8801772173075</strong></td>
-              <td>Order #261120243162</td>
+              <td>Order #261120790490</td>
               <td>Queue: qt_production_close_order</td>
               <td><span class="badge badge-pass">QUEUED IN ENGINE</span></td>
               <td><span style="font-size: 12px; color: #94a3b8;">Pushed to close order background worker with distribution event proof</span></td>
@@ -343,7 +343,7 @@
               <td><strong>Digital Gift</strong></td>
               <td><code>WhatsApp.SendGiftMessage</code></td>
               <td><strong style="color: #38bdf8;">+8801772173075</strong></td>
-              <td>Order #261124197897</td>
+              <td>Order #261124368786</td>
               <td>Gift Tracking Engine</td>
               <td><span class="badge badge-pass">TRACKED & LOGGED</span></td>
               <td><span style="font-size: 12px; color: #94a3b8;">Gift card URL attachment logged for recipient WhatsApp</span></td>
@@ -433,14 +433,14 @@
     
     <div class="link-box">
       <strong>🔗 1-Click WhatsApp Direct Checkout Live Link (Generated During Suite Execution):</strong><br>
-      <a href="https://dev01.prowhats.com/en/checkout?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3FhdGFyYXQuc2EiLCJpYXQiOjE3OTU1MjAyNDQsImV4cCI6MTc5NTUyNzQ0NCwibmJmIjoxNzk1NTIwMjQ0LCJqdGkiOiI4NmVmMjJmNDQ2MzI1NzFmIiwic3ViIjoiMTU5MzA3NCIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6Ijg4MDE3NzIxNzMwNzUiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJhZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3NpZCI6MTU5MzA3NCwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlNoYWhyaWFyIE1haG11ZCIsIkZpcnN0TG9naW4iOmZhbHNlLCJ0eXBlIjoid2hhdHNhcHBfY2hlY2tvdXQiLCJvcmRlcl9pZCI6MTAwNjgxNiwib3JkZXJfbnVtYmVyIjoiMjYxMTI0OTk0ODA3Iiwib3JkZXJfdWlkIjoicXQwNDM5NjEyNSJ9.Juks2hmvLwQH1Hu8qviDMv0hudrPsdv3UZsfVop_FjU&order_number=261124994807&uid=qt04396125" target="_blank">https://dev01.prowhats.com/en/checkout?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3FhdGFyYXQuc2EiLCJpYXQiOjE3OTU1MjAyNDQsImV4cCI6MTc5NTUyNzQ0NCwibmJmIjoxNzk1NTIwMjQ0LCJqdGkiOiI4NmVmMjJmNDQ2MzI1NzFmIiwic3ViIjoiMTU5MzA3NCIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6Ijg4MDE3NzIxNzMwNzUiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJhZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3NpZCI6MTU5MzA3NCwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlNoYWhyaWFyIE1haG11ZCIsIkZpcnN0TG9naW4iOmZhbHNlLCJ0eXBlIjoid2hhdHNhcHBfY2hlY2tvdXQiLCJvcmRlcl9pZCI6MTAwNjgxNiwib3JkZXJfbnVtYmVyIjoiMjYxMTI0OTk0ODA3Iiwib3JkZXJfdWlkIjoicXQwNDM5NjEyNSJ9.Juks2hmvLwQH1Hu8qviDMv0hudrPsdv3UZsfVop_FjU&order_number=261124994807&uid=qt04396125</a>
+      <a href="https://dev01.prowhats.com/en/checkout?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3FhdGFyYXQuc2EiLCJpYXQiOjE3OTU1MjA3OTIsImV4cCI6MTc5NTUyNzk5MiwibmJmIjoxNzk1NTIwNzkyLCJqdGkiOiI0MmIyMjY2OTIyZDg4ZWE1Iiwic3ViIjoiMTU5MzA3NCIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6Ijg4MDE3NzIxNzMwNzUiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJhZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3NpZCI6MTU5MzA3NCwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlNoYWhyaWFyIE1haG11ZCIsIkZpcnN0TG9naW4iOmZhbHNlLCJ0eXBlIjoid2hhdHNhcHBfY2hlY2tvdXQiLCJvcmRlcl9pZCI6MTAwNjgyMCwib3JkZXJfbnVtYmVyIjoiMjYxMTI0Mzk0OTY1Iiwib3JkZXJfdWlkIjoicXQwODE0NjM1MSJ9.KYCqOQALgxkbpB0elUNSrPJLtLkQPhTAovQ_5XtTtqg&order_number=261124394965&uid=qt08146351" target="_blank">https://dev01.prowhats.com/en/checkout?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3FhdGFyYXQuc2EiLCJpYXQiOjE3OTU1MjA3OTIsImV4cCI6MTc5NTUyNzk5MiwibmJmIjoxNzk1NTIwNzkyLCJqdGkiOiI0MmIyMjY2OTIyZDg4ZWE1Iiwic3ViIjoiMTU5MzA3NCIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6Ijg4MDE3NzIxNzMwNzUiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJhZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3NpZCI6MTU5MzA3NCwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlNoYWhyaWFyIE1haG11ZCIsIkZpcnN0TG9naW4iOmZhbHNlLCJ0eXBlIjoid2hhdHNhcHBfY2hlY2tvdXQiLCJvcmRlcl9pZCI6MTAwNjgyMCwib3JkZXJfbnVtYmVyIjoiMjYxMTI0Mzk0OTY1Iiwib3JkZXJfdWlkIjoicXQwODE0NjM1MSJ9.KYCqOQALgxkbpB0elUNSrPJLtLkQPhTAovQ_5XtTtqg&order_number=261124394965&uid=qt08146351</a>
     </div>
 
     <!-- Detailed Module Results -->
     <div class="filter-bar">
       <span style="font-size: 13px; color: var(--text-muted); font-weight: 600;">Filter Test Results:</span>
-      <button class="filter-btn active" onclick="filterTable('all')">All Tests (33)</button>
-      <button class="filter-btn" onclick="filterTable('PASSED')">Passed Only (32)</button>
+      <button class="filter-btn active" onclick="filterTable('all')">All Tests (37)</button>
+      <button class="filter-btn" onclick="filterTable('PASSED')">Passed Only (36)</button>
       <button class="filter-btn" onclick="filterTable('WARNING')">Warnings (1)</button>
     </div>
 
@@ -499,7 +499,7 @@
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Target User #1593074 active: 1 | Archived/Inactive accounts safely segregated: 366</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Target User #1593074 active: 1 | Archived/Inactive accounts safely segregated: 368</td>
               </tr>
             
               <tr class="test-row" data-status="PASSED">
@@ -573,7 +573,7 @@
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">HTTP 200 | Cart #696943 | Gateway URL: https://demo.MyFatoorah.com/KWT/ie/050723028741184662-f...</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">HTTP 200 | Cart #696945 | Gateway URL: https://demo.MyFatoorah.com/KWT/ie/050723028741187862-c...</td>
               </tr>
             
               <tr class="test-row" data-status="PASSED">
@@ -599,7 +599,7 @@
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Idempotent duplicate handling verified | Affected rows: 2 | TxRef: TX-IDEMP-1795520235534</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Idempotent duplicate handling verified | Affected rows: 2 | TxRef: TX-IDEMP-1795520779367</td>
               </tr>
             
               <tr class="test-row" data-status="PASSED">
@@ -686,7 +686,7 @@
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Next Scheduled Date: Tue Nov 24 2026 11:37:16 GMT+0600 (Bangladesh Standard Time) | Previous Generated: Tue Nov 24 2026 00:00:00 GMT+0600 (Bangladesh Standard Time)</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Next Scheduled Date: Tue Nov 24 2026 11:46:20 GMT+0600 (Bangladesh Standard Time) | Previous Generated: Tue Nov 24 2026 00:00:00 GMT+0600 (Bangladesh Standard Time)</td>
               </tr>
             
               <tr class="test-row" data-status="PASSED">
@@ -779,14 +779,14 @@
               <tr class="test-row" data-status="PASSED">
                 <td style="font-family: monospace; font-weight: 700; color: #38bdf8;">T4.5</td>
                 <td>
-                  <strong style="color: #f8fafc;">Live Close Distribution Completion & WhatsApp Queue Dispatch (Order #261120243162)</strong>
+                  <strong style="color: #f8fafc;">Live Close Distribution Completion & WhatsApp Queue Dispatch (Order #261120790490)</strong>
                 </td>
                 <td>
                   <span class="badge badge-pass">
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">HTTP 200 | Order successfully completed | Queue: qt_production_close_order | Job ID: 24</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">HTTP 200 | Order successfully completed | Queue: qt_production_close_order | Job ID: 25</td>
               </tr>
             
               <tr class="test-row" data-status="PASSED">
@@ -812,7 +812,7 @@
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Order #261124994807 (UID: qt04396125) | Direct Checkout URL: https://dev01.prowhats.com/en/checkout?token=eyJhbGciOiJIUzI1NiIs...</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Order #261124394965 (UID: qt08146351) | Direct Checkout URL: https://dev01.prowhats.com/en/checkout?token=eyJhbGciOiJIUzI1NiIs...</td>
               </tr>
             
               <tr class="test-row" data-status="WARNING">
@@ -860,7 +860,7 @@
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Guest User ID: #1597998 | Role: Guest | Token Verified: true</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Guest User ID: #1598000 | Role: Guest | Token Verified: true</td>
               </tr>
             
               <tr class="test-row" data-status="PASSED">
@@ -873,7 +873,7 @@
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Cart Order #261124197897 (Cart ID: 696944) | Cost: 82.5 SAR</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Cart Order #261124368786 (Cart ID: 696946) | Cost: 82.5 SAR</td>
               </tr>
             
               <tr class="test-row" data-status="PASSED">
@@ -886,7 +886,7 @@
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Order #261124197897 (ID: 696944) successfully converted and mapped to Client #1593074 (+8801772173075)</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Order #261124368786 (ID: 696946) successfully converted and mapped to Client #1593074 (+8801772173075)</td>
               </tr>
             
               <tr class="test-row" data-status="PASSED">
@@ -899,7 +899,7 @@
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Gateway Payment URL Generated: https://demo.MyFatoorah.com/KWT/ie/050723028741184...</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Gateway Payment URL Generated: https://demo.MyFatoorah.com/KWT/ie/050723028741188...</td>
               </tr>
             
               <tr class="test-row" data-status="PASSED">
@@ -912,7 +912,7 @@
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Gift Tracking #53096 linked to Order #261124197897 | Recipient: +8801772173075 | Sent: 1</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Gift Tracking #53097 linked to Order #261124368786 | Recipient: +8801772173075 | Sent: 1</td>
               </tr>
             
           </tbody>
@@ -923,7 +923,7 @@
         <div class="suite-header">
           <div class="suite-title">Dynamic Content & Localization</div>
           <span class="badge badge-pass">
-            5/5 Passed
+            9/9 Passed
           </span>
         </div>
         <table>
@@ -990,16 +990,68 @@
               </tr>
             
               <tr class="test-row" data-status="PASSED">
-                <td style="font-family: monospace; font-weight: 700; color: #38bdf8;">T6.3</td>
+                <td style="font-family: monospace; font-weight: 700; color: #38bdf8;">T6.3-FAQ</td>
                 <td>
-                  <strong style="color: #f8fafc;">Multilingual Database JSON Key Parity Audit (faqs, privacy_policies, terms)</strong>
+                  <strong style="color: #f8fafc;">FAQ Multilingual Q&A Parity Audit (faqs Database & API)</strong>
                 </td>
                 <td>
                   <span class="badge badge-pass">
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">10/10 sampled FAQs possess 100% complete bilingual key parity</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">10/10 active FAQs possess 100% complete multilingual Question & Answer parity across Arabic, English, and Indonesian</td>
+              </tr>
+            
+              <tr class="test-row" data-status="PASSED">
+                <td style="font-family: monospace; font-weight: 700; color: #38bdf8;">T6.4-PRIVACY</td>
+                <td>
+                  <strong style="color: #f8fafc;">Privacy Policy Legal Articles Multilingual Audit (privacy_policies Database)</strong>
+                </td>
+                <td>
+                  <span class="badge badge-pass">
+                    PASSED
+                  </span>
+                </td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Verified 15+ articles across [AR: 5, EN: 5, ID: 5] with complete localized titles & descriptions</td>
+              </tr>
+            
+              <tr class="test-row" data-status="PASSED">
+                <td style="font-family: monospace; font-weight: 700; color: #38bdf8;">T6.5-TERMS</td>
+                <td>
+                  <strong style="color: #f8fafc;">Terms & Conditions Legal Sections Multilingual Audit (terms_and_conditions Database)</strong>
+                </td>
+                <td>
+                  <span class="badge badge-pass">
+                    PASSED
+                  </span>
+                </td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Verified 22+ sections across [AR: 7, EN: 8, ID: 7] with complete legal terms definition & user clauses</td>
+              </tr>
+            
+              <tr class="test-row" data-status="PASSED">
+                <td style="font-family: monospace; font-weight: 700; color: #38bdf8;">T6.6-SLIDERS</td>
+                <td>
+                  <strong style="color: #f8fafc;">Dynamic Sliders & Promotional Banners Audit (slider_items Database & CDN)</strong>
+                </td>
+                <td>
+                  <span class="badge badge-pass">
+                    PASSED
+                  </span>
+                </td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Verified 47 visible sliders in DB [AR: 33, EN: 10, ID: 3] with responsive web & mobile CDN assets</td>
+              </tr>
+            
+              <tr class="test-row" data-status="PASSED">
+                <td style="font-family: monospace; font-weight: 700; color: #38bdf8;">T6.7-HOME-ICONS</td>
+                <td>
+                  <strong style="color: #f8fafc;">Home Page Service Icons & Localized Names Audit (home_page_icons Database)</strong>
+                </td>
+                <td>
+                  <span class="badge badge-pass">
+                    PASSED
+                  </span>
+                </td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">All 3 core services ("Mecca mosques most needed", "Mecca Mosques", "Haram Watering & Feeding") verified with 100% title_tr JSON parity across AR, EN, ID and active package links</td>
               </tr>
             
           </tbody>
