@@ -135,7 +135,7 @@
         <div class="meta-item">API Gateway: <strong>ws01dev.prowhats.com</strong></div>
         <div class="meta-item">Admin API: <strong>dev-admin-api.prowhats.com</strong></div>
         <div class="meta-item">Target Phone: <strong>+8801772173075 (User #1593074)</strong></div>
-        <div class="meta-item">Execution Duration: <strong>90.6s</strong></div>
+        <div class="meta-item">Execution Duration: <strong>40.4s</strong></div>
         <div class="meta-item">Audit Date: <strong>2026-11-24</strong></div>
       </div>
     </header>
@@ -166,18 +166,18 @@
 
     <!-- Executive Summary for Clients -->
     <div class="summary-box">
-      <h2>Executive Summary / সারাংশ (For Qatarat Leadership & Clients)</h2>
+      <h2>Executive Summary (For Qatarat Leadership & Stakeholders)</h2>
       <p>
         The Qatarat backend and frontend ecosystems have been thoroughly audited and tested against real databases and live API endpoints. All refactored architecture modules are fully compliant with enterprise standards:
       </p>
       <ul>
-        <li><strong>Multi-User Phone Uniqueness & Deduplication (মাল্টি-ইউজার রিফ্যাক্টর):</strong> Phone de-duplication rules are strictly enforced. Account <code>+8801772173075</code> cleanly maintains a single active identity (User #1593074) with conflict-free coexistence of <code>user</code>, <code>driver</code>, and <code>admin</code> roles. Cleaned duplicate account (#1593708) is safely isolated with soft-deletion.</li>
-        <li><strong>Real Payment Gateway & Automated 3DS Execution (পেমেন্ট সিস্টেম):</strong> Real orders execute through MyFatoorah gateway with automated 3DS verification and callback processing, successfully advancing order state to <code>Paid (2)</code> and setting <code>is_sent_payment_done_template = 1</code>. Webhook replay attack protection is validated via idempotent outbox table deduplication.</li>
-        <li><strong>Close Distribution Mosque Delivery (ক্লোজ ডিস্ট্রিবিউশন):</strong> Admin Mosque Distribution API (<code>make-sub-orders-delivered</code>) executes cleanly, advancing sub-order status and pushing distribution notification jobs to queue <code>qt_production_close_order</code> for Event #468 with attached proof.</li>
-        <li><strong>Driver Delivery Fulfillment (ড্রাইভার ডেলিভারি):</strong> Driver API authentication and delivery completion endpoints verify photographic proof validation and status transition to delivered.</li>
-        <li><strong>Recurring Subscription Lifecycle & Recovery (সাবস্ক্রিপশন ইঞ্জিন):</strong> Automated background order generation (<code>GET /api/v2/subscriptions/generate-orders</code>) queues renewal jobs, rolls cycles forward by +7 days, and prevents duplicate queues via strict unique index constraints (<code>idx_prevent_duplicate_active_subs</code>). Missed date recovery functions smoothly without duplicate billing.</li>
-        <li><strong>Guest User to Authenticated Cart Migration (গেস্ট ইউজার অর্ডার ও কার্ট ট্রান্সফার):</strong> Anonymous guest sessions add items to cart, persist across authentication, map to customer accounts upon login, and transition cleanly to checkout.</li>
-        <li><strong>Dynamic Content & Multilingual Localization (ডায়নামিক কনটেন্ট ও মাল্টি-ল্যাঙ্গুয়েজ):</strong> Live static content API validates complete parity across Arabic (<code>ar</code>), English (<code>en</code>), and Indonesian (<code>id</code>) for FAQs (11 questions), Privacy Policies, Terms & Conditions, Sliders, and Home Page service icons.</li>
+        <li><strong>Multi-User Phone Uniqueness & Deduplication:</strong> Phone de-duplication rules are strictly enforced. Account <code>+8801772173075</code> cleanly maintains a single active identity (User #1593074) with conflict-free coexistence of <code>user</code>, <code>driver</code>, and <code>admin</code> roles. Cleaned duplicate account (#1593708) is safely isolated with soft-deletion.</li>
+        <li><strong>Real Payment Gateway & Automated 3DS Execution:</strong> Real orders execute through MyFatoorah gateway with automated 3DS verification and callback processing, successfully advancing order state to <code>Paid (2)</code> and setting <code>is_sent_payment_done_template = 1</code>. Webhook replay attack protection is validated via idempotent outbox table deduplication.</li>
+        <li><strong>Close Distribution Mosque Delivery:</strong> Admin Mosque Distribution API (<code>make-sub-orders-delivered</code>) executes cleanly, advancing sub-order status and pushing distribution notification jobs to queue <code>qt_production_close_order</code> for Event #468 with attached proof.</li>
+        <li><strong>Driver Delivery Fulfillment:</strong> Driver API authentication and delivery completion endpoints verify photographic proof validation and status transition to delivered.</li>
+        <li><strong>Recurring Subscription Lifecycle & Recovery:</strong> Automated background order generation (<code>GET /api/v2/subscriptions/generate-orders</code>) queues renewal jobs, rolls cycles forward by +7 days, and prevents duplicate queues via strict unique index constraints (<code>idx_prevent_duplicate_active_subs</code>). Missed date recovery functions smoothly without duplicate billing.</li>
+        <li><strong>Guest User to Authenticated Cart Migration:</strong> Anonymous guest sessions add items to cart, persist across authentication, map to customer accounts upon login, and transition cleanly to checkout.</li>
+        <li><strong>Dynamic Content & Multilingual Localization:</strong> Live static content API validates complete parity across Arabic (<code>ar</code>), English (<code>en</code>), and Indonesian (<code>id</code>) for FAQs (11 questions), Privacy Policies, Terms & Conditions, Sliders, and Home Page service icons.</li>
       </ul>
     </div>
 
@@ -225,8 +225,8 @@
             </tr>
           
             <tr>
-              <td><strong style="color: #38bdf8; font-family: monospace; font-size: 14px;">#261119674035</strong></td>
-              <td><code>#1006811</code></td>
+              <td><strong style="color: #38bdf8; font-family: monospace; font-size: 14px;">#261120243162</strong></td>
+              <td><code>#1006815</code></td>
               <td>Shahriar Mahmud<br><span style="color: var(--text-muted); font-size: 12px;">+8801772173075</span></td>
               <td>Masjid Al-Haram Watering (Close Distribution Event #468)</td>
               <td><strong style="color: #34d399;">82.5 SAR</strong></td>
@@ -236,8 +236,8 @@
             </tr>
           
             <tr>
-              <td><strong style="color: #38bdf8; font-family: monospace; font-size: 14px;">#261124187290</strong></td>
-              <td><code>#696942</code></td>
+              <td><strong style="color: #38bdf8; font-family: monospace; font-size: 14px;">#261124197897</strong></td>
+              <td><code>#696944</code></td>
               <td>Shahriar Mahmud<br><span style="color: var(--text-muted); font-size: 12px;">+8801772173075</span></td>
               <td>Guest Cart Conversion Order (Haram Water 5 Cartons)</td>
               <td><strong style="color: #34d399;">82.5 SAR</strong></td>
@@ -323,7 +323,7 @@
               <td><strong>Close Distribution</strong></td>
               <td><code>close_watering_haram (#1)</code></td>
               <td><strong style="color: #38bdf8;">+8801772173075</strong></td>
-              <td>Order #261119674035</td>
+              <td>Order #261120243162</td>
               <td>Queue: qt_production_close_order</td>
               <td><span class="badge badge-pass">QUEUED IN ENGINE</span></td>
               <td><span style="font-size: 12px; color: #94a3b8;">Pushed to close order background worker with distribution event proof</span></td>
@@ -343,7 +343,7 @@
               <td><strong>Digital Gift</strong></td>
               <td><code>WhatsApp.SendGiftMessage</code></td>
               <td><strong style="color: #38bdf8;">+8801772173075</strong></td>
-              <td>Order #261124187290</td>
+              <td>Order #261124197897</td>
               <td>Gift Tracking Engine</td>
               <td><span class="badge badge-pass">TRACKED & LOGGED</span></td>
               <td><span style="font-size: 12px; color: #94a3b8;">Gift card URL attachment logged for recipient WhatsApp</span></td>
@@ -357,20 +357,20 @@
     <div class="diagnostic-banner">
       <h3>💡 WhatsApp Multi-Channel Architecture: OTP vs. Meta Business Notifications</h3>
       <p>
-        <strong>হোয়াটসঅ্যাপ নোটিফিকেশন চ্যানেল অডিট ও টেকনিক্যাল ব্যাখ্যা:</strong><br>
-        সিস্টেম আর্কিটেকচার অনুযায়ী কাতারাত দুটি সম্পূর্ণ আলাদা স্ট্র্যাটেজি ব্যবহার করে নোটিফিকেশন হ্যান্ডেল করে:
+        <strong>Technical Architecture & Verification Insights:</strong><br>
+        The Qatarat platform implements a decoupled dual-channel messaging strategy to handle transactional authentication and asynchronous business lifecycle events:
       </p>
       <div class="diag-compare">
         <div class="diag-box success">
           <h4>✅ 1. Direct Authentication Channel (100% Instant Delivery)</h4>
           <p>
-            ইউজার/ড্রাইভার/এডমিন লগইন ওটিপি সরাসরি গেটওয়ে এপিআই (<code>POST /api/v2/Accounts/SendWhatsAppOtp</code>) এর মাধ্যমে পাঠানো হয়। এটিতে কোনো প্রি-অ্যাপ্রুভড মেটা টেমপ্লেটের প্রয়োজন নেই। আপনার টেস্ট নম্বরে (<code>+8801772173075</code>) ওটিপি শতভাগ তাৎক্ষণিকভাবে সফলভাবে ডেলিভার হয়েছে।
+            One-Time Passwords (OTPs) for Customer, Driver, and Admin authentication are dispatched directly through the real-time gateway API (<code>POST /api/v2/Accounts/SendWhatsAppOtp</code>). This channel operates independently of pre-approved Meta Cloud templates, achieving 100% instantaneous delivery to client phone (<code>+8801772173075</code>).
           </p>
         </div>
         <div class="diag-box warn">
-          <h4>⏳ 2. Business Lifecycle Queue Worker (Meta WABA Approval)</h4>
+          <h4>⏳ 2. Business Lifecycle Queue Workers (Meta WABA Cloud Sender)</h4>
           <p>
-            পেমেন্ট কমপ্লিট, ক্লোজ ডিস্ট্রিবিউশন, ড্রাইভার ডেলিভারি এবং সাবস্ক্রিপশন রিমাইন্ডারের মতো নোটিফিকেশনগুলো ব্যাকএন্ড কিউতে (<code>qt_production_close_order</code>, <code>qt_production_subscription</code>) সফলভাবে পুশ হচ্ছে। মেটা ক্লাউড এপিআই ড্যাশবোর্ডে সেন্ডার নেম ও টেমপ্লেট লাইভ হলে কিউ থেকে স্বয়ংক্রিয়ভাবে মেসেজ পৌঁছে যাবে।
+            Business lifecycle events—such as Payment Confirmation, Close Distribution mosque delivery with proof photos, Driver Delivery confirmations, and Subscription Renewal reminders—are pushed to background queues (<code>qt_production_close_order</code>, <code>qt_production_subscription</code>). In the DEV environment, message delivery to recipients depends on the activation and registration of the Meta WhatsApp Business Account (WABA) sender template in Meta Business Manager.
           </p>
         </div>
       </div>
@@ -433,7 +433,7 @@
     
     <div class="link-box">
       <strong>🔗 1-Click WhatsApp Direct Checkout Live Link (Generated During Suite Execution):</strong><br>
-      <a href="https://dev01.prowhats.com/en/checkout?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3FhdGFyYXQuc2EiLCJpYXQiOjE3OTU1MTk2NzYsImV4cCI6MTc5NTUyNjg3NiwibmJmIjoxNzk1NTE5Njc2LCJqdGkiOiJhNjAwNjJiODAyYzUxMjEzIiwic3ViIjoiMTU5MzA3NCIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6Ijg4MDE3NzIxNzMwNzUiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJhZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3NpZCI6MTU5MzA3NCwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlNoYWhyaWFyIE1haG11ZCIsIkZpcnN0TG9naW4iOmZhbHNlLCJ0eXBlIjoid2hhdHNhcHBfY2hlY2tvdXQiLCJvcmRlcl9pZCI6MTAwNjgxMiwib3JkZXJfbnVtYmVyIjoiMjYxMTI0OTI2NzY4Iiwib3JkZXJfdWlkIjoicXQwNjUzMjMwMyJ9.LXZkv6AQ-1SL78wUOeFdrGepS0z6HgzoqE3zCCcDRd8&order_number=261124926768&uid=qt06532303" target="_blank">https://dev01.prowhats.com/en/checkout?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3FhdGFyYXQuc2EiLCJpYXQiOjE3OTU1MTk2NzYsImV4cCI6MTc5NTUyNjg3NiwibmJmIjoxNzk1NTE5Njc2LCJqdGkiOiJhNjAwNjJiODAyYzUxMjEzIiwic3ViIjoiMTU5MzA3NCIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6Ijg4MDE3NzIxNzMwNzUiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJhZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3NpZCI6MTU5MzA3NCwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlNoYWhyaWFyIE1haG11ZCIsIkZpcnN0TG9naW4iOmZhbHNlLCJ0eXBlIjoid2hhdHNhcHBfY2hlY2tvdXQiLCJvcmRlcl9pZCI6MTAwNjgxMiwib3JkZXJfbnVtYmVyIjoiMjYxMTI0OTI2NzY4Iiwib3JkZXJfdWlkIjoicXQwNjUzMjMwMyJ9.LXZkv6AQ-1SL78wUOeFdrGepS0z6HgzoqE3zCCcDRd8&order_number=261124926768&uid=qt06532303</a>
+      <a href="https://dev01.prowhats.com/en/checkout?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3FhdGFyYXQuc2EiLCJpYXQiOjE3OTU1MjAyNDQsImV4cCI6MTc5NTUyNzQ0NCwibmJmIjoxNzk1NTIwMjQ0LCJqdGkiOiI4NmVmMjJmNDQ2MzI1NzFmIiwic3ViIjoiMTU5MzA3NCIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6Ijg4MDE3NzIxNzMwNzUiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJhZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3NpZCI6MTU5MzA3NCwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlNoYWhyaWFyIE1haG11ZCIsIkZpcnN0TG9naW4iOmZhbHNlLCJ0eXBlIjoid2hhdHNhcHBfY2hlY2tvdXQiLCJvcmRlcl9pZCI6MTAwNjgxNiwib3JkZXJfbnVtYmVyIjoiMjYxMTI0OTk0ODA3Iiwib3JkZXJfdWlkIjoicXQwNDM5NjEyNSJ9.Juks2hmvLwQH1Hu8qviDMv0hudrPsdv3UZsfVop_FjU&order_number=261124994807&uid=qt04396125" target="_blank">https://dev01.prowhats.com/en/checkout?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3FhdGFyYXQuc2EiLCJpYXQiOjE3OTU1MjAyNDQsImV4cCI6MTc5NTUyNzQ0NCwibmJmIjoxNzk1NTIwMjQ0LCJqdGkiOiI4NmVmMjJmNDQ2MzI1NzFmIiwic3ViIjoiMTU5MzA3NCIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6Ijg4MDE3NzIxNzMwNzUiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJhZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3NpZCI6MTU5MzA3NCwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlNoYWhyaWFyIE1haG11ZCIsIkZpcnN0TG9naW4iOmZhbHNlLCJ0eXBlIjoid2hhdHNhcHBfY2hlY2tvdXQiLCJvcmRlcl9pZCI6MTAwNjgxNiwib3JkZXJfbnVtYmVyIjoiMjYxMTI0OTk0ODA3Iiwib3JkZXJfdWlkIjoicXQwNDM5NjEyNSJ9.Juks2hmvLwQH1Hu8qviDMv0hudrPsdv3UZsfVop_FjU&order_number=261124994807&uid=qt04396125</a>
     </div>
 
     <!-- Detailed Module Results -->
@@ -499,7 +499,7 @@
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Target User #1593074 active: 1 | Archived/Inactive accounts safely segregated: 364</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Target User #1593074 active: 1 | Archived/Inactive accounts safely segregated: 366</td>
               </tr>
             
               <tr class="test-row" data-status="PASSED">
@@ -573,7 +573,7 @@
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">HTTP 200 | Cart #696941 | Gateway URL: https://demo.MyFatoorah.com/KWT/ie/050723028741179162-b...</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">HTTP 200 | Cart #696943 | Gateway URL: https://demo.MyFatoorah.com/KWT/ie/050723028741184662-f...</td>
               </tr>
             
               <tr class="test-row" data-status="PASSED">
@@ -599,7 +599,7 @@
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Idempotent duplicate handling verified | Affected rows: 2 | TxRef: TX-IDEMP-1795519662176</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Idempotent duplicate handling verified | Affected rows: 2 | TxRef: TX-IDEMP-1795520235534</td>
               </tr>
             
               <tr class="test-row" data-status="PASSED">
@@ -686,7 +686,7 @@
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Next Scheduled Date: Tue Nov 24 2026 11:27:43 GMT+0600 (Bangladesh Standard Time) | Previous Generated: Tue Nov 24 2026 00:00:00 GMT+0600 (Bangladesh Standard Time)</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Next Scheduled Date: Tue Nov 24 2026 11:37:16 GMT+0600 (Bangladesh Standard Time) | Previous Generated: Tue Nov 24 2026 00:00:00 GMT+0600 (Bangladesh Standard Time)</td>
               </tr>
             
               <tr class="test-row" data-status="PASSED">
@@ -779,14 +779,14 @@
               <tr class="test-row" data-status="PASSED">
                 <td style="font-family: monospace; font-weight: 700; color: #38bdf8;">T4.5</td>
                 <td>
-                  <strong style="color: #f8fafc;">Live Close Distribution Completion & WhatsApp Queue Dispatch (Order #261119674035)</strong>
+                  <strong style="color: #f8fafc;">Live Close Distribution Completion & WhatsApp Queue Dispatch (Order #261120243162)</strong>
                 </td>
                 <td>
                   <span class="badge badge-pass">
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">HTTP 200 | Order successfully completed | Queue: qt_production_close_order | Job ID: 23</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">HTTP 200 | Order successfully completed | Queue: qt_production_close_order | Job ID: 24</td>
               </tr>
             
               <tr class="test-row" data-status="PASSED">
@@ -812,7 +812,7 @@
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Order #261124926768 (UID: qt06532303) | Direct Checkout URL: https://dev01.prowhats.com/en/checkout?token=eyJhbGciOiJIUzI1NiIs...</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Order #261124994807 (UID: qt04396125) | Direct Checkout URL: https://dev01.prowhats.com/en/checkout?token=eyJhbGciOiJIUzI1NiIs...</td>
               </tr>
             
               <tr class="test-row" data-status="WARNING">
@@ -860,7 +860,7 @@
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Guest User ID: #1597996 | Role: Guest | Token Verified: true</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Guest User ID: #1597998 | Role: Guest | Token Verified: true</td>
               </tr>
             
               <tr class="test-row" data-status="PASSED">
@@ -873,7 +873,7 @@
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Cart Order #261124187290 (Cart ID: 696942) | Cost: 82.5 SAR</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Cart Order #261124197897 (Cart ID: 696944) | Cost: 82.5 SAR</td>
               </tr>
             
               <tr class="test-row" data-status="PASSED">
@@ -886,7 +886,7 @@
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Order #261124187290 (ID: 696942) successfully converted and mapped to Client #1593074 (+8801772173075)</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Order #261124197897 (ID: 696944) successfully converted and mapped to Client #1593074 (+8801772173075)</td>
               </tr>
             
               <tr class="test-row" data-status="PASSED">
@@ -899,7 +899,7 @@
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Gateway Payment URL Generated: https://demo.MyFatoorah.com/KWT/ie/050723028741179...</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Gateway Payment URL Generated: https://demo.MyFatoorah.com/KWT/ie/050723028741184...</td>
               </tr>
             
               <tr class="test-row" data-status="PASSED">
@@ -912,7 +912,7 @@
                     PASSED
                   </span>
                 </td>
-                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Gift Tracking #53095 linked to Order #261124187290 | Recipient: +8801772173075 | Sent: 1</td>
+                <td style="font-size: 12px; color: #cbd5e1; line-height: 1.5;">Gift Tracking #53096 linked to Order #261124197897 | Recipient: +8801772173075 | Sent: 1</td>
               </tr>
             
           </tbody>

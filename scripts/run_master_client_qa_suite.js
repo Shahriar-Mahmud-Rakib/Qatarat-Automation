@@ -1178,18 +1178,18 @@ function generateHtmlReport({ duration, testResults, liveOrdersList, whatsappNot
 
     <!-- Executive Summary for Clients -->
     <div class="summary-box">
-      <h2>Executive Summary / সারাংশ (For Qatarat Leadership & Clients)</h2>
+      <h2>Executive Summary (For Qatarat Leadership & Stakeholders)</h2>
       <p>
         The Qatarat backend and frontend ecosystems have been thoroughly audited and tested against real databases and live API endpoints. All refactored architecture modules are fully compliant with enterprise standards:
       </p>
       <ul>
-        <li><strong>Multi-User Phone Uniqueness & Deduplication (মাল্টি-ইউজার রিফ্যাক্টর):</strong> Phone de-duplication rules are strictly enforced. Account <code>+${primaryPhone}</code> cleanly maintains a single active identity (User #${primaryUserId}) with conflict-free coexistence of <code>user</code>, <code>driver</code>, and <code>admin</code> roles. Cleaned duplicate account (#1593708) is safely isolated with soft-deletion.</li>
-        <li><strong>Real Payment Gateway & Automated 3DS Execution (পেমেন্ট সিস্টেম):</strong> Real orders execute through MyFatoorah gateway with automated 3DS verification and callback processing, successfully advancing order state to <code>Paid (2)</code> and setting <code>is_sent_payment_done_template = 1</code>. Webhook replay attack protection is validated via idempotent outbox table deduplication.</li>
-        <li><strong>Close Distribution Mosque Delivery (ক্লোজ ডিস্ট্রিবিউশন):</strong> Admin Mosque Distribution API (<code>make-sub-orders-delivered</code>) executes cleanly, advancing sub-order status and pushing distribution notification jobs to queue <code>qt_production_close_order</code> for Event #468 with attached proof.</li>
-        <li><strong>Driver Delivery Fulfillment (ড্রাইভার ডেলিভারি):</strong> Driver API authentication and delivery completion endpoints verify photographic proof validation and status transition to delivered.</li>
-        <li><strong>Recurring Subscription Lifecycle & Recovery (সাবস্ক্রিপশন ইঞ্জিন):</strong> Automated background order generation (<code>GET /api/v2/subscriptions/generate-orders</code>) queues renewal jobs, rolls cycles forward by +7 days, and prevents duplicate queues via strict unique index constraints (<code>idx_prevent_duplicate_active_subs</code>). Missed date recovery functions smoothly without duplicate billing.</li>
-        <li><strong>Guest User to Authenticated Cart Migration (গেস্ট ইউজার অর্ডার ও কার্ট ট্রান্সফার):</strong> Anonymous guest sessions add items to cart, persist across authentication, map to customer accounts upon login, and transition cleanly to checkout.</li>
-        <li><strong>Dynamic Content & Multilingual Localization (ডায়নামিক কনটেন্ট ও মাল্টি-ল্যাঙ্গুয়েজ):</strong> Live static content API validates complete parity across Arabic (<code>ar</code>), English (<code>en</code>), and Indonesian (<code>id</code>) for FAQs (11 questions), Privacy Policies, Terms & Conditions, Sliders, and Home Page service icons.</li>
+        <li><strong>Multi-User Phone Uniqueness & Deduplication:</strong> Phone de-duplication rules are strictly enforced. Account <code>+${primaryPhone}</code> cleanly maintains a single active identity (User #${primaryUserId}) with conflict-free coexistence of <code>user</code>, <code>driver</code>, and <code>admin</code> roles. Cleaned duplicate account (#1593708) is safely isolated with soft-deletion.</li>
+        <li><strong>Real Payment Gateway & Automated 3DS Execution:</strong> Real orders execute through MyFatoorah gateway with automated 3DS verification and callback processing, successfully advancing order state to <code>Paid (2)</code> and setting <code>is_sent_payment_done_template = 1</code>. Webhook replay attack protection is validated via idempotent outbox table deduplication.</li>
+        <li><strong>Close Distribution Mosque Delivery:</strong> Admin Mosque Distribution API (<code>make-sub-orders-delivered</code>) executes cleanly, advancing sub-order status and pushing distribution notification jobs to queue <code>qt_production_close_order</code> for Event #468 with attached proof.</li>
+        <li><strong>Driver Delivery Fulfillment:</strong> Driver API authentication and delivery completion endpoints verify photographic proof validation and status transition to delivered.</li>
+        <li><strong>Recurring Subscription Lifecycle & Recovery:</strong> Automated background order generation (<code>GET /api/v2/subscriptions/generate-orders</code>) queues renewal jobs, rolls cycles forward by +7 days, and prevents duplicate queues via strict unique index constraints (<code>idx_prevent_duplicate_active_subs</code>). Missed date recovery functions smoothly without duplicate billing.</li>
+        <li><strong>Guest User to Authenticated Cart Migration:</strong> Anonymous guest sessions add items to cart, persist across authentication, map to customer accounts upon login, and transition cleanly to checkout.</li>
+        <li><strong>Dynamic Content & Multilingual Localization:</strong> Live static content API validates complete parity across Arabic (<code>ar</code>), English (<code>en</code>), and Indonesian (<code>id</code>) for FAQs (11 questions), Privacy Policies, Terms & Conditions, Sliders, and Home Page service icons.</li>
       </ul>
     </div>
 
@@ -1276,20 +1276,20 @@ function generateHtmlReport({ duration, testResults, liveOrdersList, whatsappNot
     <div class="diagnostic-banner">
       <h3>💡 WhatsApp Multi-Channel Architecture: OTP vs. Meta Business Notifications</h3>
       <p>
-        <strong>হোয়াটসঅ্যাপ নোটিফিকেশন চ্যানেল অডিট ও টেকনিক্যাল ব্যাখ্যা:</strong><br>
-        সিস্টেম আর্কিটেকচার অনুযায়ী কাতারাত দুটি সম্পূর্ণ আলাদা স্ট্র্যাটেজি ব্যবহার করে নোটিফিকেশন হ্যান্ডেল করে:
+        <strong>Technical Architecture & Verification Insights:</strong><br>
+        The Qatarat platform implements a decoupled dual-channel messaging strategy to handle transactional authentication and asynchronous business lifecycle events:
       </p>
       <div class="diag-compare">
         <div class="diag-box success">
           <h4>✅ 1. Direct Authentication Channel (100% Instant Delivery)</h4>
           <p>
-            ইউজার/ড্রাইভার/এডমিন লগইন ওটিপি সরাসরি গেটওয়ে এপিআই (<code>POST /api/v2/Accounts/SendWhatsAppOtp</code>) এর মাধ্যমে পাঠানো হয়। এটিতে কোনো প্রি-অ্যাপ্রুভড মেটা টেমপ্লেটের প্রয়োজন নেই। আপনার টেস্ট নম্বরে (<code>+${primaryPhone}</code>) ওটিপি শতভাগ তাৎক্ষণিকভাবে সফলভাবে ডেলিভার হয়েছে।
+            One-Time Passwords (OTPs) for Customer, Driver, and Admin authentication are dispatched directly through the real-time gateway API (<code>POST /api/v2/Accounts/SendWhatsAppOtp</code>). This channel operates independently of pre-approved Meta Cloud templates, achieving 100% instantaneous delivery to client phone (<code>+${primaryPhone}</code>).
           </p>
         </div>
         <div class="diag-box warn">
-          <h4>⏳ 2. Business Lifecycle Queue Worker (Meta WABA Approval)</h4>
+          <h4>⏳ 2. Business Lifecycle Queue Workers (Meta WABA Cloud Sender)</h4>
           <p>
-            পেমেন্ট কমপ্লিট, ক্লোজ ডিস্ট্রিবিউশন, ড্রাইভার ডেলিভারি এবং সাবস্ক্রিপশন রিমাইন্ডারের মতো নোটিফিকেশনগুলো ব্যাকএন্ড কিউতে (<code>qt_production_close_order</code>, <code>qt_production_subscription</code>) সফলভাবে পুশ হচ্ছে। মেটা ক্লাউড এপিআই ড্যাশবোর্ডে সেন্ডার নেম ও টেমপ্লেট লাইভ হলে কিউ থেকে স্বয়ংক্রিয়ভাবে মেসেজ পৌঁছে যাবে।
+            Business lifecycle events—such as Payment Confirmation, Close Distribution mosque delivery with proof photos, Driver Delivery confirmations, and Subscription Renewal reminders—are pushed to background queues (<code>qt_production_close_order</code>, <code>qt_production_subscription</code>). In the DEV environment, message delivery to recipients depends on the activation and registration of the Meta WhatsApp Business Account (WABA) sender template in Meta Business Manager.
           </p>
         </div>
       </div>
