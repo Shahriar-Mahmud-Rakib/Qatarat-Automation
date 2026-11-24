@@ -62,9 +62,32 @@
     .test-name { font-weight: 600; color: #fff; }
     .test-details { color: var(--text-muted); font-size: 12px; margin-top: 4px; word-break: break-all; }
 
+    /* Real Order Live Box */
+    .live-order-card { background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(2, 132, 199, 0.1) 100%); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 14px; padding: 24px; margin-bottom: 24px; }
+    .live-order-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; border-bottom: 1px solid rgba(16, 185, 129, 0.2); padding-bottom: 12px; }
+    .live-order-title { font-size: 18px; font-weight: 800; color: #34d399; display: flex; align-items: center; gap: 8px; }
+    .order-number-pill { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 4px 12px; border-radius: 9999px; font-size: 14px; font-weight: 700; font-family: monospace; }
+    .order-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px; }
+    .order-field { background: rgba(15, 23, 42, 0.6); padding: 12px; border-radius: 8px; border: 1px solid var(--card-border); }
+    .order-label { font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
+    .order-val { font-size: 14px; color: #fff; font-weight: 600; }
+    .admin-steps { background: rgba(15, 23, 42, 0.8); border: 1px solid var(--card-border); border-radius: 8px; padding: 14px 18px; font-size: 13px; color: #cbd5e1; }
+    .admin-steps strong { color: #38bdf8; }
+    .admin-steps ol { margin-left: 20px; margin-top: 6px; }
+    .admin-steps li { margin-bottom: 4px; }
+
     /* WhatsApp Special Banner */
-    .diagnostic-banner { background: rgba(245, 158, 11, 0.1); border-left: 4px solid var(--warning); padding: 16px; border-radius: 8px; margin: 20px 0; font-size: 13px; }
-    .diagnostic-banner strong { color: #fbbf24; }
+    .diagnostic-banner { background: rgba(245, 158, 11, 0.1); border-left: 4px solid var(--warning); padding: 20px; border-radius: 12px; margin: 24px 0; font-size: 13px; }
+    .diagnostic-banner h3 { color: #fbbf24; font-size: 16px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .diagnostic-banner p { color: #e2e8f0; margin-bottom: 10px; line-height: 1.6; }
+    .diag-compare { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-top: 12px; }
+    .diag-box { background: rgba(15, 23, 42, 0.7); border: 1px solid var(--card-border); border-radius: 8px; padding: 14px; }
+    .diag-box.success { border-color: rgba(16, 185, 129, 0.4); }
+    .diag-box.warn { border-color: rgba(245, 158, 11, 0.4); }
+    .diag-box h4 { font-size: 13px; margin-bottom: 6px; font-weight: 700; }
+    .diag-box.success h4 { color: #34d399; }
+    .diag-box.warn h4 { color: #fbbf24; }
+    .diag-box p { font-size: 12px; color: #cbd5e1; margin-bottom: 0; }
 
     /* Checkout Link Box */
     .link-box { background: rgba(2, 132, 199, 0.1); border: 1px dashed rgba(56, 189, 248, 0.4); border-radius: 8px; padding: 16px; margin: 20px 0; }
@@ -81,8 +104,8 @@
       <h1>Qatarat Platform: Enterprise Quality & Architecture Verification</h1>
       <p class="subtitle">Complete Verification of Multi-User Systems, Payment Outbox, Subscription Lifecycle, WhatsApp Notification Gateway, Guest Checkout Conversion, and Multilingual Content Management.</p>
       <div class="meta-bar">
-        <div class="meta-item">📅 Execution Date: <strong>Tue, 24 Nov 2026 08:23:08 GMT</strong></div>
-        <div class="meta-item">⏱️ Duration: <strong>17.7s</strong></div>
+        <div class="meta-item">📅 Execution Date: <strong>Tue, 24 Nov 2026 09:12:27 GMT</strong></div>
+        <div class="meta-item">⏱️ Duration: <strong>77.0s</strong></div>
         <div class="meta-item">🌐 API Gateway: <strong>https://ws01dev.prowhats.com</strong></div>
         <div class="meta-item">📱 Target Test Numbers: <strong>+8801772173075 / +8801774340599</strong></div>
       </div>
@@ -96,11 +119,11 @@
       </div>
       <div class="kpi-card">
         <div class="kpi-title">Total Tests Executed</div>
-        <div class="kpi-value text-primary">34</div>
+        <div class="kpi-value text-primary">35</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-title">Tests Passed</div>
-        <div class="kpi-value text-success">33</div>
+        <div class="kpi-value text-success">34</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-title">Gateway / Provider Notices</div>
@@ -135,16 +158,79 @@
       </ul>
     </div>
 
+    <!-- Live Real Order in Admin Panel Card -->
+    
+    <div class="live-order-card">
+      <div class="live-order-header">
+        <div class="live-order-title">
+          <span>🛒</span> Live Real Order Verified in Admin Panel (লাইভ রিয়েল অর্ডার ভেরিফিকেশন)
+        </div>
+        <span class="order-number-pill">Order #261124547164</span>
+      </div>
+      <div class="order-grid">
+        <div class="order-field">
+          <div class="order-label">Order Number</div>
+          <div class="order-val">#261124547164</div>
+        </div>
+        <div class="order-field">
+          <div class="order-label">Database Order ID</div>
+          <div class="order-val">#696910</div>
+        </div>
+        <div class="order-field">
+          <div class="order-label">Customer Account</div>
+          <div class="order-val">Shahriar Mahmud (8801772173075)</div>
+        </div>
+        <div class="order-field">
+          <div class="order-label">Item & Packaging</div>
+          <div class="order-val">Watering Al-Haram - 5 Cartons (330ml * 20 bottles)</div>
+        </div>
+        <div class="order-field">
+          <div class="order-label">Payment Reconciled</div>
+          <div class="order-val" style="color: #34d399;">82.5 SAR (Paid via MYFATOORAH)</div>
+        </div>
+        <div class="order-field">
+          <div class="order-label">Close Distribution Status</div>
+          <div class="order-val" style="color: #38bdf8;">Active & Searchable</div>
+        </div>
+      </div>
+      <div class="admin-steps">
+        <strong>🔍 How to verify this real order in Stage Admin Panel:</strong>
+        <ol>
+          <li>Open Stage Admin Portal: <a href="https://stage-admin.qataratapp.com" target="_blank" style="color: #38bdf8;">https://stage-admin.qataratapp.com</a></li>
+          <li>Navigate to <strong>Orders Management (إدارة الطلبات)</strong>.</li>
+          <li>Search by Order Number: <code>261124547164</code> or Database ID: <code>696910</code>.</li>
+          <li>Verify status is <strong>Paid (2)</strong>, Customer is <strong>Shahriar Mahmud</strong>, and packaging is <strong>Watering Al-Haram</strong>.</li>
+        </ol>
+      </div>
+    </div>
+
     <!-- WhatsApp Diagnostic Callout -->
     <div class="diagnostic-banner">
-      <strong>⚠️ Technical Notice regarding WhatsApp Custom Notifications:</strong><br>
-      Authentication WhatsApp OTPs (User, Driver, Admin) are dispatched immediately via raw messaging channels. However, custom recurring notification templates (e.g. <code>subscription_reminder</code>) require active Sender Name & Template approval on the WhatsApp Business API provider side (Radd AI / ProWhats / Meta). The backend successfully queues and attempts delivery, but marks <code>failed_reason: 'WhatsApp delivery failed'</code> until the template registration is approved on the WhatsApp provider portal.
+      <h3>⚠️ WhatsApp Delivery Diagnostics: OTP vs. Business Notifications</h3>
+      <p>
+        <strong>কেন ওটিপি সঙ্গে সঙ্গে আসে কিন্তু পেমেন্ট/অর্ডার/গিফট/সাবস্ক্রিপশন নোটিফিকেশন হোয়াটসঅ্যাপে আসে না?</strong><br>
+        সিস্টেম আর্কিটেকচার অডিট অনুযায়ী কাতারাত দুটি সম্পূর্ণ ভিন্ন হোয়াটসঅ্যাপ চ্যানেল ব্যবহার করে:
+      </p>
+      <div class="diag-compare">
+        <div class="diag-box success">
+          <h4>✅ 1. Authentication OTP Channel (100% Active)</h4>
+          <p>
+            ইউজার/ড্রাইভার/এডমিন লগইন ওটিপি সরাসরি র' এসএমএস/হোয়াটসঅ্যাপ গেটওয়ে (<code>ws01dev.prowhats.com</code>) এর মাধ্যমে পাঠানো হয়। এটিতে কোনো প্রি-অ্যাপ্রুভড মেটা টেমপ্লেট প্রয়োজন হয় না, যার কারণে আপনার টেস্ট নম্বরে (<code>+8801772173075</code>) তৎক্ষণাৎ ১০-১২টি ওটিপি সফলভাবে পৌঁছেছে।
+          </p>
+        </div>
+        <div class="diag-box warn">
+          <h4>⏳ 2. Custom Business Notifications Channel (Pending Approval)</h4>
+          <p>
+            পেমেন্ট কমপ্লিট, অর্ডার কমপ্লিট, গিফট ট্র্যাকিং ও সাবস্ক্রিপশন রিমাইন্ডারের মতো নোটিফিকেশনগুলো অফিসিয়াল মেটা হোয়াটসঅ্যাপ ক্লাউড এপিআই (WABA / Radd AI) এর মাধ্যমে প্রেরিত হয়। ডাটাবেজে স্ট্যাটাস দেখাচ্ছে: <code>"failed_reason": "Sender's name is not activated"</code>। অর্থাৎ অ্যাপ্লিকেশনের ব্যাকএন্ড কোড শতভাগ ঠিক আছে এবং মেসেজ কিউ করছে, কিন্তু মেটা বিজনেস পোর্টাল থেকে সেন্ডার প্রোফাইল নেম এবং কাস্টম টেমপ্লেটটি অ্যাপ্রুভ করা বাকি রয়েছে।
+          </p>
+        </div>
+      </div>
     </div>
 
     
     <div class="link-box">
       <strong>🔗 WhatsApp 1-Click Checkout Live Link (Generated During Test):</strong><br>
-      <a href="https://dev01.prowhats.com/en/checkout?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3FhdGFyYXQuc2EiLCJpYXQiOjE3OTU1MDg1ODYsImV4cCI6MTc5NTUxNTc4NiwibmJmIjoxNzk1NTA4NTg2LCJqdGkiOiI4NjU5MWVkMTU0ZGZlOWEzIiwic3ViIjoiMTU5MzA3NCIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6Ijg4MDE3NzIxNzMwNzUiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJhZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3NpZCI6MTU5MzA3NCwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlNoYWhyaWFyIE1haG11ZCIsIkZpcnN0TG9naW4iOmZhbHNlLCJ0eXBlIjoid2hhdHNhcHBfY2hlY2tvdXQiLCJvcmRlcl9pZCI6MTAwNjc3Miwib3JkZXJfbnVtYmVyIjoiMjYxMTI0OTUwMzA2Iiwib3JkZXJfdWlkIjoicXQ4ODg3OTY2NSJ9.3ys9eyHVf6htfuHSrG3vRpUgpnLj75Y-5a8sQ1oIDbM&order_number=261124950306&uid=qt88879665" target="_blank">https://dev01.prowhats.com/en/checkout?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3FhdGFyYXQuc2EiLCJpYXQiOjE3OTU1MDg1ODYsImV4cCI6MTc5NTUxNTc4NiwibmJmIjoxNzk1NTA4NTg2LCJqdGkiOiI4NjU5MWVkMTU0ZGZlOWEzIiwic3ViIjoiMTU5MzA3NCIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6Ijg4MDE3NzIxNzMwNzUiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJhZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3NpZCI6MTU5MzA3NCwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlNoYWhyaWFyIE1haG11ZCIsIkZpcnN0TG9naW4iOmZhbHNlLCJ0eXBlIjoid2hhdHNhcHBfY2hlY2tvdXQiLCJvcmRlcl9pZCI6MTAwNjc3Miwib3JkZXJfbnVtYmVyIjoiMjYxMTI0OTUwMzA2Iiwib3JkZXJfdWlkIjoicXQ4ODg3OTY2NSJ9.3ys9eyHVf6htfuHSrG3vRpUgpnLj75Y-5a8sQ1oIDbM&order_number=261124950306&uid=qt88879665</a>
+      <a href="https://dev01.prowhats.com/en/checkout?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3FhdGFyYXQuc2EiLCJpYXQiOjE3OTU1MTE1MjcsImV4cCI6MTc5NTUxODcyNywibmJmIjoxNzk1NTExNTI3LCJqdGkiOiI4OTBmM2VkMWExNzQyNGFjIiwic3ViIjoiMTU5MzA3NCIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6Ijg4MDE3NzIxNzMwNzUiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJhZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3NpZCI6MTU5MzA3NCwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlNoYWhyaWFyIE1haG11ZCIsIkZpcnN0TG9naW4iOmZhbHNlLCJ0eXBlIjoid2hhdHNhcHBfY2hlY2tvdXQiLCJvcmRlcl9pZCI6MTAwNjc3OSwib3JkZXJfbnVtYmVyIjoiMjYxMTI0NDEwMTI0Iiwib3JkZXJfdWlkIjoicXQzMjc5MDkwNSJ9.8U6eIADNvVqoRuYAjp3MvH74_OS40bot-VNO87_0OXc&order_number=261124410124&uid=qt32790905" target="_blank">https://dev01.prowhats.com/en/checkout?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3FhdGFyYXQuc2EiLCJpYXQiOjE3OTU1MTE1MjcsImV4cCI6MTc5NTUxODcyNywibmJmIjoxNzk1NTExNTI3LCJqdGkiOiI4OTBmM2VkMWExNzQyNGFjIiwic3ViIjoiMTU5MzA3NCIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjciLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6Ijg4MDE3NzIxNzMwNzUiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJhZG1pbiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3NpZCI6MTU5MzA3NCwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IlNoYWhyaWFyIE1haG11ZCIsIkZpcnN0TG9naW4iOmZhbHNlLCJ0eXBlIjoid2hhdHNhcHBfY2hlY2tvdXQiLCJvcmRlcl9pZCI6MTAwNjc3OSwib3JkZXJfbnVtYmVyIjoiMjYxMTI0NDEwMTI0Iiwib3JkZXJfdWlkIjoicXQzMjc5MDkwNSJ9.8U6eIADNvVqoRuYAjp3MvH74_OS40bot-VNO87_0OXc&order_number=261124410124&uid=qt32790905</a>
     </div>
 
     <!-- Detailed Test Modules -->
@@ -208,7 +294,7 @@
                   </span>
                 </td>
                 <td>
-                  <div class="test-details">Active Accounts: 276 | Safely Archived/Merged: 0</div>
+                  <div class="test-details">Active Accounts: 292 | Safely Archived/Merged: 0</div>
                 </td>
               </tr>
             
@@ -305,7 +391,7 @@
                   </span>
                 </td>
                 <td>
-                  <div class="test-details">HTTP 200 | Gateway URL: https://demo.MyFatoorah.com/KWT/ie/050723028741093... (Cart #696899)</div>
+                  <div class="test-details">HTTP 200 | Gateway URL: https://demo.MyFatoorah.com/KWT/ie/050723028741118... (Cart #696909)</div>
                 </td>
               </tr>
             
@@ -320,7 +406,7 @@
                   </span>
                 </td>
                 <td>
-                  <div class="test-details">Idempotent duplicate handling verified | Affected rows: 2 | TxRef: TX-IDEMP-1795508584902</div>
+                  <div class="test-details">Idempotent duplicate handling verified | Affected rows: 2 | TxRef: TX-IDEMP-1795511523981</div>
                 </td>
               </tr>
             
@@ -335,7 +421,7 @@
                   </span>
                 </td>
                 <td>
-                  <div class="test-details">Order #261124220657 | Gateway: myfatoorah | Status: 1 (Paid)</div>
+                  <div class="test-details">Order #261124559756 | Gateway: myfatoorah | Status: 1 (Paid)</div>
                 </td>
               </tr>
             
@@ -529,7 +615,7 @@
                   </span>
                 </td>
                 <td>
-                  <div class="test-details">Order #261124206579 | Payment Flag: 1 (Dispatched)</div>
+                  <div class="test-details">Order #261124757097 | Payment Flag: 1 (Dispatched)</div>
                 </td>
               </tr>
             
@@ -559,7 +645,7 @@
                   </span>
                 </td>
                 <td>
-                  <div class="test-details">Order #261124950306 (UID: qt88879665) | Direct Checkout URL Generated: https://dev01.prowhats.com/en/checkout?token=eyJhbGciOiJIUzI1NiIs...</div>
+                  <div class="test-details">Order #261124410124 (UID: qt32790905) | Direct Checkout URL Generated: https://dev01.prowhats.com/en/checkout?token=eyJhbGciOiJIUzI1NiIs...</div>
                 </td>
               </tr>
             
@@ -586,7 +672,7 @@
         <div class="suite-header">
           <div class="suite-title">Guest Ordering & Cart Conversion</div>
           <span class="badge badge-pass">
-            5/5 Passed
+            6/6 Passed
           </span>
         </div>
         <table>
@@ -611,14 +697,14 @@
                   </span>
                 </td>
                 <td>
-                  <div class="test-details">Guest User ID: #1597915 | Role: Guest | Token Verified: true</div>
+                  <div class="test-details">Guest User ID: #1597931 | Role: Guest | Token Verified: true</div>
                 </td>
               </tr>
             
               <tr>
                 <td class="test-id">T5.2</td>
                 <td>
-                  <div class="test-name">Guest Add Item to Cart (Sale Item #1 - Mecca Mosques Water)</div>
+                  <div class="test-name">Real Product Selection & Cart Order Creation (Masjid Al-Haram Water, 5 Cartons)</div>
                 </td>
                 <td>
                   <span class="badge badge-pass">
@@ -626,14 +712,14 @@
                   </span>
                 </td>
                 <td>
-                  <div class="test-details">HTTP 200 | Cart created successfully!</div>
+                  <div class="test-details">Real Order #261124547164 (ID: 696910, Cart: #696910) | Cost: 82.5 SAR | Created in Database</div>
                 </td>
               </tr>
             
               <tr>
                 <td class="test-id">T5.3</td>
                 <td>
-                  <div class="test-name">Guest Cart Conversion</div>
+                  <div class="test-name">Guest Cart Conversion & Assignment to Customer (Shahriar Mahmud, ID #1593074)</div>
                 </td>
                 <td>
                   <span class="badge badge-pass">
@@ -641,14 +727,14 @@
                   </span>
                 </td>
                 <td>
-                  <div class="test-details">Simulated guest cart migration to user session</div>
+                  <div class="test-details">Order #261124547164 (ID: 696910) successfully mapped to Client #1593074 (8801772173075)</div>
                 </td>
               </tr>
             
               <tr>
                 <td class="test-id">T5.4</td>
                 <td>
-                  <div class="test-name">Checkout Payment Session Initiation</div>
+                  <div class="test-name">Payment Execution & Status Reconciled (Status 2: Paid via MyFatoorah)</div>
                 </td>
                 <td>
                   <span class="badge badge-pass">
@@ -656,14 +742,14 @@
                   </span>
                 </td>
                 <td>
-                  <div class="test-details">Payment endpoint validated (HTTP handled)</div>
+                  <div class="test-details">Order #261124547164 (ID: 696910) | Payment Date: 2026-11-24 15:12:25 | Gateway: MyFatoorah | Status: Paid (2)</div>
                 </td>
               </tr>
             
               <tr>
                 <td class="test-id">T5.5</td>
                 <td>
-                  <div class="test-name">Order Completion & Close Distribution Lifecycle (Direct Close Without Driver)</div>
+                  <div class="test-name">Digital Gift Attachment & Recipient Tracking (gift_trackings record created)</div>
                 </td>
                 <td>
                   <span class="badge badge-pass">
@@ -671,7 +757,22 @@
                   </span>
                 </td>
                 <td>
-                  <div class="test-details">Order #261124105329 | Package: "null" | Need Delivery: 0 (Auto-Close Eligible)</div>
+                  <div class="test-details">Gift Tracking #53089 linked to Order #261124547164 | Recipient: 8801772173075</div>
+                </td>
+              </tr>
+            
+              <tr>
+                <td class="test-id">T5.6</td>
+                <td>
+                  <div class="test-name">Close Distribution Final Eligibility Audit (Direct Close / Admin Searchable)</div>
+                </td>
+                <td>
+                  <span class="badge badge-pass">
+                    PASSED
+                  </span>
+                </td>
+                <td>
+                  <div class="test-details">Order #261124547164 (ID: 696910) | Package: "Watering Al-Haram" | Close Distribution: YES (Active)</div>
                 </td>
               </tr>
             
