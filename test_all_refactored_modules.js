@@ -25,7 +25,9 @@ Timestamp: ${new Date().toISOString()}
   const suites = [
     './test_phone_unique_multi_role.js',
     './test_refactored_payment_system.js',
-    './test_refactored_subscription_system.js'
+    './test_refactored_subscription_system.js',
+    './test_close_distribution.js',
+    './scripts/test_all_whatsapp_notifications.js'
   ];
 
   const results = [];
