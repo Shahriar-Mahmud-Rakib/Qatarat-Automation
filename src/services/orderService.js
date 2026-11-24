@@ -116,7 +116,7 @@ class OrderService {
    */
   async automatePaymentGateway(paymentUrl, cardType = 'myfatoorah') {
     const browser = await puppeteer.launch({
-      executablePath: '/usr/bin/google-chrome',
+      executablePath: '/home/rakib/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome',
       headless: 'new',
       args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--window-size=1280,900']
     });
