@@ -40,8 +40,8 @@ test.describe('🔄 [E2E LIFECYCLE] Full User Order, Gift & Payment Circle', () 
         const paymentService = new PaymentService(request, token);
         const payRes = await paymentService.initiateMyFatoorah({
             cart_id: 696600,
-            callbackUrl: 'https://qatarat-stage.vercel.app/en/checkout/success',
-            errorUrl: 'https://qatarat-stage.vercel.app/en/checkout/error',
+            callbackUrl: 'https://dev01.prowhats.com/en/checkout/success',
+            errorUrl: 'https://dev01.prowhats.com/en/checkout/error',
             paymentMethodId: 2,
             phoneNumber: '8801772173075',
             name: 'Shahriar Mahmud',

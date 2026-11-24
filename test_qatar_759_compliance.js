@@ -22,7 +22,7 @@ async function runQatar759Audit() {
   console.log('   Standardize Phone Storage & Multi-Role Login Verification');
   console.log('================================================================================\n');
 
-  const baseApi = process.env.API_BASE_URL || 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+  const baseApi = process.env.API_BASE_URL || 'https://ws01dev.prowhats.com';
   const testPhone = process.env.ADMIN_PHONE || '8801772173075';
   const parsed = authService.parsePhone(testPhone);
 

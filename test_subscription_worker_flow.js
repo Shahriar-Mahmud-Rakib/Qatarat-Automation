@@ -9,7 +9,7 @@ async function runSubscriptionWorkerTest() {
   console.log('🔄 TESTING SUBSCRIPTION WORKER ORDER GENERATION & CLOSE DISTRIBUTION FLOW');
   console.log('================================================================================\n');
 
-  const baseApi = 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+  const baseApi = 'https://ws01dev.prowhats.com';
   const apiKey = 'qatarat-subscription-generate-api-key-dev';
 
   // Step 1: Prepare Subscription 9216

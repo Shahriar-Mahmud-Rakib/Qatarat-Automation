@@ -5,7 +5,7 @@ const VerifierService = require('./src/services/verifierService');
 const subscriptionService = require('./src/services/subscriptionService');
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-const baseApi = 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+const baseApi = 'https://ws01dev.prowhats.com';
 
 async function runGatewaySwitchTests() {
   console.log('====================================================================================================');
@@ -43,8 +43,8 @@ async function runGatewaySwitchTests() {
     console.log(`   2. [Attempt 1] User selects MyFatoorah...`);
     const mfRes = await axios.post(`${baseApi}/api/v2/web-payments/initiate/myfatoorah`, {
       cart_id: order1.id,
-      callbackUrl: 'https://qatarat-stage.vercel.app/en/checkout/success',
-      errorUrl: 'https://qatarat-stage.vercel.app/en/checkout/error',
+      callbackUrl: 'https://dev01.prowhats.com/en/checkout/success',
+      errorUrl: 'https://dev01.prowhats.com/en/checkout/error',
       paymentMethodId: 2,
       phoneNumber: '008801772173075',
       name: 'Tester Case 1',

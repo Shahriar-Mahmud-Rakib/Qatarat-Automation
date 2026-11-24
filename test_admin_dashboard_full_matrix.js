@@ -11,8 +11,8 @@ async function runAdminDashboardFullMatrixAudit() {
   console.log('   Categories: Positive, Negative, Security, BVA, SQL Injection, Cross-Module');
   console.log('================================================================================\n');
 
-  const baseApi = process.env.API_BASE_URL || 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
-  const adminApi = 'https://stage-admin-api.qataratapp.com/admin/v2';
+  const baseApi = process.env.API_BASE_URL || 'https://ws01dev.prowhats.com';
+  const adminApi = 'https://dev-admin-api.prowhats.com/admin/v2';
   const testPhone = process.env.ADMIN_PHONE || '8801772173075';
   const parsed = authService.parsePhone(testPhone);
 

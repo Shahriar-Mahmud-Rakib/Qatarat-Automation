@@ -152,7 +152,7 @@ async function performCountrySearchAndLogin(page, userPhone = '8801772173075', u
 
 class PaymentModel {
   constructor(options = {}) {
-    this.baseApi = process.env.API_BASE_URL || 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+    this.baseApi = process.env.API_BASE_URL || 'https://ws01dev.prowhats.com';
     this.userPhone = options.phone || process.env.ADMIN_PHONE || '8801772173075';
     this.headless = options.headless !== undefined ? options.headless : false;
     this.display = options.display || process.env.DISPLAY || ':0';
@@ -208,7 +208,7 @@ class PaymentModel {
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
-        '--host-rules=MAP qatarat-stage.vercel.app 76.76.21.21',
+        '--host-rules=MAP dev01.prowhats.com 76.76.21.21',
         '--window-size=1366,880',
         '--window-position=40,40'
       ]
@@ -228,7 +228,7 @@ class PaymentModel {
       console.log('▶️ STEP 1: QATARAT STOREFRONT — CUSTOMER LOGIN & WHATSAPP OTP');
       console.log('------------------------------------------------------------------------------------------------');
 
-      await page.goto('https://qatarat-stage.vercel.app/en/login', { waitUntil: 'domcontentloaded', timeout: 60000 });
+      await page.goto('https://dev01.prowhats.com/en/login', { waitUntil: 'domcontentloaded', timeout: 60000 });
       await showBanner(page, `📱 [1/10] Customer Login: ${customerName} (+880 1772173075)...`, '#0284c7');
       await sleep(2500);
 
@@ -255,7 +255,7 @@ class PaymentModel {
       console.log('------------------------------------------------------------------------------------------------');
 
       await showBanner(page, '🛒 [3/10] Browsing Sacred Mosques: Adding Watering Al-Haram (5 Cartons)...', '#2563eb');
-      await page.goto('https://qatarat-stage.vercel.app/en/haram-watering-&-feeding', { waitUntil: 'domcontentloaded', timeout: 60000 });
+      await page.goto('https://dev01.prowhats.com/en/haram-watering-&-feeding', { waitUntil: 'domcontentloaded', timeout: 60000 });
       await sleep(3500);
 
       // Click "Add To Cart" in storefront UI
@@ -468,18 +468,18 @@ class PaymentModel {
       console.log('▶️ STEP 7: ADMIN PORTAL — AUTHENTICATION & LOGIN');
       console.log('------------------------------------------------------------------------------------------------');
 
-      await showBanner(page, '🏛️ [7/10] Logging into Admin Portal: https://stage-admin.qataratapp.com ...', '#0284c7');
+      await showBanner(page, '🏛️ [7/10] Logging into Admin Portal: https://admin-dev01.prowhats.com ...', '#0284c7');
       const sanctumToken = await createSanctumAdminToken(customerId);
       console.log(`7.1 Generated Sanctum Admin Token: ${sanctumToken.slice(0, 16)}...`);
 
       await page.setCookie({
         name: 'token',
         value: sanctumToken,
-        domain: 'stage-admin.qataratapp.com',
+        domain: 'admin-dev01.prowhats.com',
         path: '/'
       });
 
-      await page.goto('https://stage-admin.qataratapp.com/auth/login', { waitUntil: 'domcontentloaded', timeout: 30000 });
+      await page.goto('https://admin-dev01.prowhats.com/auth/login', { waitUntil: 'domcontentloaded', timeout: 30000 });
       await page.evaluate((tok) => {
         const userData = {
           id: 1593074,
@@ -502,7 +502,7 @@ class PaymentModel {
       console.log('------------------------------------------------------------------------------------------------');
 
       await showBanner(page, `🔍 [8/10] Order Management: Searching for Order #${latestOrder.order_number}...`, '#0f766e');
-      await page.goto('https://stage-admin.qataratapp.com/order-management', { waitUntil: 'domcontentloaded', timeout: 45000 });
+      await page.goto('https://admin-dev01.prowhats.com/order-management', { waitUntil: 'domcontentloaded', timeout: 45000 });
       console.log('   - Waiting for Admin portal tables to hydrate (5 seconds)...');
       await sleep(5000);
 
@@ -530,7 +530,7 @@ class PaymentModel {
       if (problems.length > 0) {
         console.log(`⚠️ Order #${latestOrder.order_number} flagged in Payment Problems. Resolving...`);
         await showBanner(page, `⚠️ [9/10] Order #${latestOrder.order_number} flagged in Payment Problems — Resolving process...`, '#dc2626');
-        await page.goto('https://stage-admin.qataratapp.com/payment-problems', { waitUntil: 'domcontentloaded', timeout: 30000 });
+        await page.goto('https://admin-dev01.prowhats.com/payment-problems', { waitUntil: 'domcontentloaded', timeout: 30000 });
         await sleep(4000);
         await pool.query('DELETE FROM payment_problems WHERE client_order_id = ?', [latestOrder.client_order_id]);
         console.log(`   - Payment Problem successfully resolved.`);
@@ -549,7 +549,7 @@ class PaymentModel {
       console.log('------------------------------------------------------------------------------------------------');
 
       await showBanner(page, `🕌 [10/10] Close Distribution: Searching & Completing Order #${latestOrder.order_number}...`, '#059669');
-      await page.goto('https://stage-admin.qataratapp.com/close-distribution', { waitUntil: 'domcontentloaded', timeout: 45000 });
+      await page.goto('https://admin-dev01.prowhats.com/close-distribution', { waitUntil: 'domcontentloaded', timeout: 45000 });
       console.log('   - Waiting for Close Distribution table to load (5 seconds)...');
       await sleep(5000);
 

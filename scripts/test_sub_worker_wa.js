@@ -2,7 +2,7 @@ const pool = require('../src/config/db');
 const axios = require('axios');
 
 async function testSubscriptionWorkerWhatsApp() {
-  const baseApi = 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+  const baseApi = 'https://ws01dev.prowhats.com';
   const apiKey = 'qatarat-subscription-generate-api-key-dev';
 
   try {

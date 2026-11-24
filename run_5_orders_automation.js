@@ -54,7 +54,7 @@ const testScenarios = [
 ];
 
 async function runAutomation() {
-  const baseApi = 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+  const baseApi = 'https://ws01dev.prowhats.com';
   
   const db = await mysql.createConnection({
     host: '13.215.213.102',
@@ -129,8 +129,8 @@ async function runAutomation() {
       console.log(`[${orderIndex}.4] Initiating MyFatoorah Web Payment...`);
       const initPayRes = await axios.post(`${baseApi}/api/v2/web-payments/initiate/myfatoorah`, {
         cart_id: result.client_order_id,
-        callbackUrl: 'https://qatarat-stage.vercel.app/en/checkout/success',
-        errorUrl: 'https://qatarat-stage.vercel.app/en/checkout/error',
+        callbackUrl: 'https://dev01.prowhats.com/en/checkout/success',
+        errorUrl: 'https://dev01.prowhats.com/en/checkout/error',
         paymentMethodId: 2,
         phoneNumber: '008801772173075',
         name: 'Shahriar Mahmud',

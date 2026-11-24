@@ -53,7 +53,7 @@ async function run5UsersSubscriptionTest() {
   console.log('🚀 TESTING 5 DIFFERENT USERS SUBSCRIPTION GENERATION & CLOSE DISTRIBUTION FLOW');
   console.log('====================================================================================================\n');
 
-  const baseApi = 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+  const baseApi = 'https://ws01dev.prowhats.com';
   const apiKey = 'qatarat-subscription-generate-api-key-dev';
 
   // 1. Prepare 5 Users & Subscriptions

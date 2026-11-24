@@ -23,9 +23,9 @@ async function runQatar796Audit() {
   console.log('   Phone Number Formatting Across APIs & UI + Multi-Role Login Verification');
   console.log('================================================================================\n');
 
-  const baseApi = process.env.API_BASE_URL || 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
-  const webAppUrl = process.env.WEB_APP_URL || 'https://qatarat-stage.vercel.app/en';
-  const adminUrl = process.env.ADMIN_PORTAL_URL || 'https://stage-admin.qataratapp.com';
+  const baseApi = process.env.API_BASE_URL || 'https://ws01dev.prowhats.com';
+  const webAppUrl = process.env.WEB_APP_URL || 'https://dev01.prowhats.com/en';
+  const adminUrl = process.env.ADMIN_PORTAL_URL || 'https://admin-dev01.prowhats.com';
   const testPhone = process.env.ADMIN_PHONE || '8801772173075';
   const parsed = authService.parsePhone(testPhone);
 
@@ -168,7 +168,7 @@ async function runQatar796Audit() {
     // TC-08: RTL Visual Alignment (Arabic Locale /ar/login)
     // --------------------------------------------------------------------------
     console.log('\n   [TC-08] Testing Arabic RTL Page Alignment (/ar/login):');
-    await page.goto('https://qatarat-stage.vercel.app/ar/login', { waitUntil: 'networkidle2', timeout: 30000 });
+    await page.goto('https://dev01.prowhats.com/ar/login', { waitUntil: 'networkidle2', timeout: 30000 });
     await sleep(2000);
 
     const arTelInput = await page.$('input[type="tel"]');
@@ -344,7 +344,7 @@ async function runQatar796Audit() {
   let adminBlockPass = false;
   if (pureUser.length > 0) {
     try {
-      const res = await axios.post(`https://stage-admin-api.qataratapp.com/admin/v2/auth/login`, {
+      const res = await axios.post(`https://dev-admin-api.prowhats.com/admin/v2/auth/login`, {
         countryCode: pureUser[0].country_code,
         mobileNumber: pureUser[0].mobile_number
       }, { timeout: 8000 });

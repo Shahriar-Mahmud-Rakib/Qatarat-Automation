@@ -29,7 +29,7 @@ async function run() {
   });
 
   console.log('Navigating to login...');
-  await page.goto('https://stage-admin.qataratapp.com/auth/login', { waitUntil: 'networkidle2' });
+  await page.goto('https://admin-dev01.prowhats.com/auth/login', { waitUntil: 'networkidle2' });
   await sleep(3000);
 
   const input = await page.$('input[type="text"], input');

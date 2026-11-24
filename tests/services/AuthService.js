@@ -40,7 +40,7 @@ class AuthService extends BaseService {
      * Admin Portal Auth Login
      */
     async adminLogin(payload, testInfo = null) {
-        const adminUrl = 'https://stage-admin-api.qataratapp.com/admin/v2/auth/login';
+        const adminUrl = 'https://dev-admin-api.prowhats.com/admin/v2/auth/login';
         return this.post(adminUrl, payload, {
             testInfo,
             title: 'Admin Portal Login',

@@ -124,7 +124,7 @@ async function createSanctumAdminToken() {
 async function runVisibleLiveUiOrder() {
   console.log('================================================================================');
   console.log('🖥️ LAUNCHING VISIBLE GOOGLE CHROME FOR FULL LIVE END-TO-END UI ORDER');
-  console.log('   Target: https://qatarat-stage.vercel.app/en');
+  console.log('   Target: https://dev01.prowhats.com/en');
   console.log('   Display: :0 (Screen visible to User)');
   console.log('   Pure Authentic Qatarat & Admin UI (No synthetic injected elements)');
   console.log('================================================================================\n');
@@ -142,7 +142,7 @@ async function runVisibleLiveUiOrder() {
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
-      '--host-rules=MAP qatarat-stage.vercel.app 76.76.21.21',
+      '--host-rules=MAP dev01.prowhats.com 76.76.21.21',
       '--window-size=1366,880',
       '--window-position=40,40'
     ]
@@ -156,7 +156,7 @@ async function runVisibleLiveUiOrder() {
     // STEP 1: OPEN LOGIN & EXECUTE COUNTRY SEARCH + AUTHENTICATION
     // --------------------------------------------------------------------------
     console.log('▶️ [Step 1/5] Opening Qatarat Web Storefront Login Page...');
-    await page.goto('https://qatarat-stage.vercel.app/en/login', { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.goto('https://dev01.prowhats.com/en/login', { waitUntil: 'domcontentloaded', timeout: 30000 });
     await sleep(2500);
 
     // Run Country Search and Live Login
@@ -166,7 +166,7 @@ async function runVisibleLiveUiOrder() {
     // STEP 2: NAVIGATE TO MASJID AL-HARAM CATALOG & ADD TO CART
     // --------------------------------------------------------------------------
     console.log('\n▶️ [Step 2/5] Browsing Sacred Mosques Catalog (Masjid al-Haram)...');
-    await page.goto('https://qatarat-stage.vercel.app/en/haram-watering-&-feeding', { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.goto('https://dev01.prowhats.com/en/haram-watering-&-feeding', { waitUntil: 'domcontentloaded', timeout: 30000 });
     await sleep(3000);
 
     // Add first item to cart
@@ -344,20 +344,20 @@ async function runVisibleLiveUiOrder() {
     await sleep(5000);
 
     // Authenticate Admin Portal session
-    console.log('🏛️ Opening Admin Dashboard: https://stage-admin.qataratapp.com ...');
+    console.log('🏛️ Opening Admin Dashboard: https://admin-dev01.prowhats.com ...');
     const sanctumToken = await createSanctumAdminToken();
     console.log(`   - Generated Admin Session Token: ${sanctumToken.slice(0, 15)}...`);
 
-    // Set cookie on stage-admin.qataratapp.com
+    // Set cookie on admin-dev01.prowhats.com
     await page.setCookie({
       name: 'token',
       value: sanctumToken,
-      domain: 'stage-admin.qataratapp.com',
+      domain: 'admin-dev01.prowhats.com',
       path: '/'
     });
 
     // Seed localStorage on admin
-    await page.goto('https://stage-admin.qataratapp.com/auth/login', { waitUntil: 'domcontentloaded' });
+    await page.goto('https://admin-dev01.prowhats.com/auth/login', { waitUntil: 'domcontentloaded' });
     await page.evaluate((tok) => {
       const userData = {
         id: 1593074,
@@ -373,7 +373,7 @@ async function runVisibleLiveUiOrder() {
 
     // 1. Open Order Management in Admin
     console.log('🌐 Loading Admin Portal — Order Management (/order-management)...');
-    await page.goto('https://stage-admin.qataratapp.com/order-management', { waitUntil: 'domcontentloaded', timeout: 45000 });
+    await page.goto('https://admin-dev01.prowhats.com/order-management', { waitUntil: 'domcontentloaded', timeout: 45000 });
     await sleep(6000);
 
     // Search for order number in admin search input
@@ -395,7 +395,7 @@ async function runVisibleLiveUiOrder() {
     // 2. Open Close Distribution in Admin
     try {
       console.log('\n🌐 Loading Admin Portal — Close Distribution (/close-distribution)...');
-      await page.goto('https://stage-admin.qataratapp.com/close-distribution', { waitUntil: 'domcontentloaded', timeout: 45000 });
+      await page.goto('https://admin-dev01.prowhats.com/close-distribution', { waitUntil: 'domcontentloaded', timeout: 45000 });
       await sleep(6000);
 
       const closeDistSearch = await page.$('input[placeholder*="search" i], input[placeholder*="بحث" i], input[type="search"], input[type="text"]');
@@ -411,7 +411,7 @@ async function runVisibleLiveUiOrder() {
 
     // 3. Navigate back to Order Management and leave open for user inspection
     console.log('\n🌐 Returning to Order Management for live viewing...');
-    await page.goto('https://stage-admin.qataratapp.com/order-management', { waitUntil: 'domcontentloaded' });
+    await page.goto('https://admin-dev01.prowhats.com/order-management', { waitUntil: 'domcontentloaded' });
     await sleep(3000);
 
     console.log('\n✨ LIVE BROWSER RUN COMPLETED SUCCESSFULLY!');

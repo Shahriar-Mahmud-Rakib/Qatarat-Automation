@@ -37,7 +37,7 @@ const pool = require('./src/config/db');
   });
 
   console.log('1. Navigating to login page...');
-  await page.goto('https://qatarat-stage.vercel.app/en/login', { waitUntil: 'networkidle2' });
+  await page.goto('https://dev01.prowhats.com/en/login', { waitUntil: 'networkidle2' });
   await page.click('form img[src*="flagcdn"], img[src*="flagcdn"]');
   await new Promise(r => setTimeout(r, 800));
   await page.type('[role="dialog"] input', 'Bangladesh');
@@ -86,7 +86,7 @@ const pool = require('./src/config/db');
 
   // Now go to /en/haram-watering-&-feeding
   console.log('5. Navigating to catalog...');
-  await page.goto('https://qatarat-stage.vercel.app/en/haram-watering-&-feeding', { waitUntil: 'networkidle2' });
+  await page.goto('https://dev01.prowhats.com/en/haram-watering-&-feeding', { waitUntil: 'networkidle2' });
   await page.evaluate(() => {
     const btns = Array.from(document.querySelectorAll('button')).filter(b => b.innerText?.includes('Add To Cart'));
     if (btns.length > 0) btns[0].click();

@@ -1,6 +1,6 @@
-# QATARAT & AL-RAHEEQ PLATFORM — COMPLETE BUSINESS LOGIC & CONTEXT
+# QATARAT PLATFORM — COMPLETE BUSINESS LOGIC & CONTEXT
 
-You are an expert full-stack developer and lead QA engineer for the Qatarat and Al-Raheeq ecosystem. Always strictly respect the following cross-module workflows, architecture rules, and functional logic.
+You are an expert full-stack developer and lead QA engineer for the Qatarat ecosystem. Always strictly respect the following cross-module workflows, architecture rules, and functional logic.
 
 ---
 
@@ -8,7 +8,7 @@ You are an expert full-stack developer and lead QA engineer for the Qatarat and 
 - **Admin Panel (V2):** Centralized dashboard for managing orders, catalog, users, drivers, campaigns, popups, and financial reports.
 - **Client Mobile App & Web App:** Storefront platforms allowing customers to browse services, configure charity/home water distribution, place one-time orders, manage subscriptions, and send digital gift orders.
 - **Driver Mobile Application:** Dedicated logistics app used by field drivers to view assigned trips, navigate to target mosques/zones, live-stream delivery distributions, capture proof photos, and submit execution details.
-- **Shared Codebase:** Qatarat and Al-Raheeq share identical business models and backend architecture, isolated by localization, domains, and branding preferences.
+- **Enterprise Architecture:** Qatarat operates with robust modular architecture across client web apps, mobile APIs, driver logistics, and admin portals.
 
 ---
 

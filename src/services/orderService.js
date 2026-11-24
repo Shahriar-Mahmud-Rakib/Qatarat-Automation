@@ -42,7 +42,7 @@ const SINGLE_USER_PROFILE = {
 
 class OrderService {
   constructor() {
-    this.baseApi = 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+    this.baseApi = 'https://ws01dev.prowhats.com';
   }
 
   /**
@@ -98,8 +98,8 @@ class OrderService {
 
     const res = await axios.post(`${this.baseApi}/api/v2/web-payments/initiate/myfatoorah`, {
       cart_id: cartId,
-      callbackUrl: 'https://qatarat-stage.vercel.app/en/checkout/success',
-      errorUrl: 'https://qatarat-stage.vercel.app/en/checkout/error',
+      callbackUrl: 'https://dev01.prowhats.com/en/checkout/success',
+      errorUrl: 'https://dev01.prowhats.com/en/checkout/error',
       paymentMethodId: 2,
       phoneNumber: cust.phone,
       name: cust.name,

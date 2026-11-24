@@ -2,7 +2,7 @@ const axios = require('axios');
 const pool = require('../src/config/db');
 
 async function testRealOtpLogin() {
-  const baseApi = 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+  const baseApi = 'https://ws01dev.prowhats.com';
   try {
     // 1. Dispatch OTP
     console.log('Dispatching OTP...');

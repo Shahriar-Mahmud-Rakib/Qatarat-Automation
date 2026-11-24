@@ -12,7 +12,7 @@ async function runUserSubscriptionToday() {
 
   const targetPhone = '8801772173075';
   const targetDate = '2026-11-02';
-  const baseApi = process.env.API_BASE_URL || 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+  const baseApi = process.env.API_BASE_URL || 'https://ws01dev.prowhats.com';
   const apiKey = 'qatarat-subscription-generate-api-key-dev';
 
   console.log(`📌 Target User Phone: ${targetPhone}`);

@@ -65,7 +65,7 @@ async function runVisibleBrowserLiveTest() {
     console.log('▶️ [1/2] ORDER 1: CLOSE DISTRIBUTION ORDER (MASJID AL-HARAM)...');
     
     // 1.1 Open Storefront
-    await page.goto('https://qatarat-stage.vercel.app/en', { waitUntil: 'domcontentloaded', timeout: 45000 });
+    await page.goto('https://dev01.prowhats.com/en', { waitUntil: 'domcontentloaded', timeout: 45000 });
     await showBanner(page, '🕌 [1/2] Creating Close Distribution Order (Masjid al-Haram 5 Cartons)...', '#0284c7');
     await sleep(2500);
 
@@ -212,7 +212,7 @@ async function runVisibleBrowserLiveTest() {
     console.log('\n▶️ [2/2] ORDER 2: ORDER WITH DRIVER (PHYSICAL DELIVERY)...');
     
     // 2.1 Open Storefront
-    await page.goto('https://qatarat-stage.vercel.app/en', { waitUntil: 'domcontentloaded', timeout: 45000 });
+    await page.goto('https://dev01.prowhats.com/en', { waitUntil: 'domcontentloaded', timeout: 45000 });
     await showBanner(page, '🚚 [2/2] Creating Physical Delivery Order (Providing Water 10 Cartons) with Driver...', '#7c3aed');
     await sleep(2500);
 

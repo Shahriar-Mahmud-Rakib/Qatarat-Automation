@@ -2,7 +2,7 @@ const axios = require('axios');
 const pool = require('../src/config/db');
 
 async function checkProfile() {
-  const baseApi = 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+  const baseApi = 'https://ws01dev.prowhats.com';
   try {
     const loginRes = await axios.post(`${baseApi}/api/v2/Accounts/login`, {
       countryCode: '880',

@@ -1,6 +1,6 @@
 // ==============================================================================
 // 📱 QATARAT: ALL WHATSAPP NOTIFICATIONS & LIFECYCLE TEST ENGINE
-// Calibrated from Al-Raheeq Master Notification Audit Engine
+// Calibrated for Qatarat Master Notification Audit Engine
 // Target Numbers: +8801772173075 (Client #1593074) | +8801774340599 (Client #1593708)
 // ==============================================================================
 

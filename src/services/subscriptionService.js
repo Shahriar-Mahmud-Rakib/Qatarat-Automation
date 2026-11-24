@@ -6,7 +6,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 class SubscriptionService {
   constructor() {
-    this.baseApi = 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+    this.baseApi = 'https://ws01dev.prowhats.com';
     this.apiKey = 'qatarat-subscription-generate-api-key-dev';
   }
 

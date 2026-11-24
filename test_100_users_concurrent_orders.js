@@ -60,7 +60,7 @@ async function run100ConcurrentOrdersTest() {
   let successCount = 0;
   let failureCount = 0;
 
-  const baseApi = process.env.API_BASE_URL || 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+  const baseApi = process.env.API_BASE_URL || 'https://ws01dev.prowhats.com';
 
   const worker = async (workerId) => {
     while (currentIndex < TOTAL_ORDERS) {
@@ -157,8 +157,8 @@ async function run100ConcurrentOrdersTest() {
         const tPay0 = Date.now();
         const initPayRes = await axios.post(`${baseApi}/api/v2/web-payments/initiate/myfatoorah`, {
           cart_id: record.clientOrderId,
-          callbackUrl: 'https://qatarat-stage.vercel.app/en/checkout/success',
-          errorUrl: 'https://qatarat-stage.vercel.app/en/checkout/error',
+          callbackUrl: 'https://dev01.prowhats.com/en/checkout/success',
+          errorUrl: 'https://dev01.prowhats.com/en/checkout/error',
           paymentMethodId: 2,
           phoneNumber: customer.phone,
           name: customer.name,

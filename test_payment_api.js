@@ -45,8 +45,8 @@ async function run() {
   });
 
   try {
-    console.log('1. Navigating to https://stage-admin.qataratapp.com/auth/login ...');
-    await page.goto('https://stage-admin.qataratapp.com/auth/login', { waitUntil: 'networkidle2', timeout: 45000 });
+    console.log('1. Navigating to https://admin-dev01.prowhats.com/auth/login ...');
+    await page.goto('https://admin-dev01.prowhats.com/auth/login', { waitUntil: 'networkidle2', timeout: 45000 });
     await sleep(2000);
 
     const input = await page.$('input');
@@ -129,7 +129,7 @@ async function run() {
   console.log(`🎯 BEARER TOKEN ACQUIRED: ${bearerToken.slice(0, 20)}...`);
   console.log(`===============================================================`);
 
-  const apiBase = 'https://stage-admin-api.qataratapp.com/admin/v2';
+  const apiBase = 'https://dev-admin-api.prowhats.com/admin/v2';
   const headers = {
     Authorization: `Bearer ${bearerToken}`,
     lang: 'en',

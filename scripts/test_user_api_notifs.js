@@ -2,7 +2,7 @@ const axios = require('axios');
 const pool = require('../src/config/db');
 
 async function testUserLoginAndNotifs() {
-  const baseApi = 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+  const baseApi = 'https://ws01dev.prowhats.com';
   try {
     // 1. Set known OTP
     await pool.query('UPDATE users SET otp_code = "1234" WHERE id = 1593074');

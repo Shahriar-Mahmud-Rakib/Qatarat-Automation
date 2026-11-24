@@ -41,7 +41,7 @@ async function resolvePaymentProblem() {
 
   try {
     console.log('1. Navigating to Admin Login...');
-    await page.goto('https://stage-admin.qataratapp.com/auth/login', { waitUntil: 'networkidle2', timeout: 45000 });
+    await page.goto('https://admin-dev01.prowhats.com/auth/login', { waitUntil: 'networkidle2', timeout: 45000 });
     await sleep(2500);
 
     const adminPhone = process.env.ADMIN_PHONE || '8801772173075';
@@ -114,7 +114,7 @@ async function resolvePaymentProblem() {
 
     // 5. Navigate directly to Payment Problem 10704
     console.log('\n5. Navigating to Payment Problem 10704 Details page...');
-    await page.goto('https://stage-admin.qataratapp.com/payment-problems/10704', { waitUntil: 'networkidle2', timeout: 45000 });
+    await page.goto('https://admin-dev01.prowhats.com/payment-problems/10704', { waitUntil: 'networkidle2', timeout: 45000 });
     await sleep(3000);
     await page.screenshot({ path: 'admin_payment_problem_10704.png' });
     console.log('📸 Screenshot saved: admin_payment_problem_10704.png');

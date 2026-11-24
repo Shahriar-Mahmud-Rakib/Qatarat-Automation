@@ -44,8 +44,8 @@ async function runSuite1() {
   const testResults = [];
 
   try {
-    console.log('Navigating to https://stage-admin.qataratapp.com/auth/login ...');
-    await page.goto('https://stage-admin.qataratapp.com/auth/login', { waitUntil: 'networkidle2' });
+    console.log('Navigating to https://admin-dev01.prowhats.com/auth/login ...');
+    await page.goto('https://admin-dev01.prowhats.com/auth/login', { waitUntil: 'networkidle2' });
     await sleep(2500);
 
     // =========================================================================

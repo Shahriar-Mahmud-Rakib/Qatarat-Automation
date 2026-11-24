@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com",
+      "url": "https://ws01dev.prowhats.com",
       "description": "AWS API Gateway (Dev/Staging Environment)"
     }
   ],

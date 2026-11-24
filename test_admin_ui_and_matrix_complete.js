@@ -60,8 +60,8 @@ async function runCompleteAdminQA() {
     const page = await browser.newPage();
     await page.setViewport({ width: 1280, height: 900 });
 
-    console.log('🌐 Navigating to https://stage-admin.qataratapp.com/auth/login ...');
-    await page.goto('https://stage-admin.qataratapp.com/auth/login', { waitUntil: 'domcontentloaded', timeout: 30000 });
+    console.log('🌐 Navigating to https://admin-dev01.prowhats.com/auth/login ...');
+    await page.goto('https://admin-dev01.prowhats.com/auth/login', { waitUntil: 'domcontentloaded', timeout: 30000 });
     await sleep(3000);
 
     const initialScreenshot = 'screenshots/suite1_01_login_initial.png';
@@ -187,7 +187,7 @@ async function runCompleteAdminQA() {
     //   i.error(f("auth.unauthorizedRole") || "Access denied. Admin portal requires administrative privileges.");
     //   return;
     // }
-    const loginBundleJs = (await axios.get('https://stage-admin.qataratapp.com/_nuxt/BBn5_MEp.js')).data;
+    const loginBundleJs = (await axios.get('https://admin-dev01.prowhats.com/_nuxt/BBn5_MEp.js')).data;
     const hasRoleCheck = loginBundleJs.includes('auth.unauthorizedRole') || loginBundleJs.includes('Access denied. Admin portal requires administrative privileges');
     const hasEveryUserOrDriver = loginBundleJs.includes('every(h=>h==="user"||h==="driver")') || loginBundleJs.includes('every');
     const test14Pass = hasRoleCheck && hasEveryUserOrDriver;
@@ -232,8 +232,8 @@ async function runCompleteAdminQA() {
   console.log('▶️ MODULE 2: USERS MANAGEMENT (/users & /users/entry)');
   console.log('--------------------------------------------------------------------------------');
 
-  const usersListJs = (await axios.get('https://stage-admin.qataratapp.com/_nuxt/C-fdWEQP.js')).data;
-  const usersEntryJs = (await axios.get('https://stage-admin.qataratapp.com/_nuxt/rQBYYrpm.js')).data;
+  const usersListJs = (await axios.get('https://admin-dev01.prowhats.com/_nuxt/C-fdWEQP.js')).data;
+  const usersEntryJs = (await axios.get('https://admin-dev01.prowhats.com/_nuxt/rQBYYrpm.js')).data;
 
   // 2.1 /users (List) Search phone with '+' (e.g. +96650...) -> Query strips '+'
   console.log('[2.1] Auditing User Search Query Sanitation...');
@@ -336,8 +336,8 @@ async function runCompleteAdminQA() {
   console.log('▶️ MODULE 3: DRIVER MANAGEMENT (/driver-management & /driver-management/entry)');
   console.log('--------------------------------------------------------------------------------');
 
-  const driverListJs = (await axios.get('https://stage-admin.qataratapp.com/_nuxt/DKPFy91p.js')).data;
-  const driverEntryJs = (await axios.get('https://stage-admin.qataratapp.com/_nuxt/DjI1Emk2.js')).data;
+  const driverListJs = (await axios.get('https://admin-dev01.prowhats.com/_nuxt/DKPFy91p.js')).data;
+  const driverEntryJs = (await axios.get('https://admin-dev01.prowhats.com/_nuxt/DjI1Emk2.js')).data;
 
   // 3.1 /driver-management (List) Search driver by phone with '+'
   console.log('[3.1] Auditing Driver Search by Phone with "+"...');
@@ -393,8 +393,8 @@ async function runCompleteAdminQA() {
   console.log('▶️ MODULE 4: ORDERS (/order-management & /order-management/details)');
   console.log('--------------------------------------------------------------------------------');
 
-  const orderListJs = (await axios.get('https://stage-admin.qataratapp.com/_nuxt/CyGPX7lL.js')).data;
-  const orderDetailsJs = (await axios.get('https://stage-admin.qataratapp.com/_nuxt/DqM8-1PM.js')).data;
+  const orderListJs = (await axios.get('https://admin-dev01.prowhats.com/_nuxt/CyGPX7lL.js')).data;
+  const orderDetailsJs = (await axios.get('https://admin-dev01.prowhats.com/_nuxt/DqM8-1PM.js')).data;
 
   // 4.1 Filter orders by phone with leading '+' -> Results return without backend SQL error
   console.log('[4.1] Testing Order Phone Filter for SQL Syntax Safety...');
@@ -466,8 +466,8 @@ async function runCompleteAdminQA() {
   console.log('▶️ MODULE 5: SUBSCRIPTIONS & PAYMENTS (/subscription-order/all & /payment-problems)');
   console.log('--------------------------------------------------------------------------------');
 
-  const subOrderJs = (await axios.get('https://stage-admin.qataratapp.com/_nuxt/xD7iiWaA.js')).data;
-  const payProbJs = (await axios.get('https://stage-admin.qataratapp.com/_nuxt/Diern-HC.js')).data;
+  const subOrderJs = (await axios.get('https://admin-dev01.prowhats.com/_nuxt/xD7iiWaA.js')).data;
+  const payProbJs = (await axios.get('https://admin-dev01.prowhats.com/_nuxt/Diern-HC.js')).data;
 
   // 5.1 /subscription-order/all: Search phone with '+' -> inspect table
   console.log('[5.1] Auditing Subscriptions List Phone Search & Column Display...');
@@ -519,7 +519,7 @@ async function runCompleteAdminQA() {
   console.log('▶️ MODULE 6: CAMPAIGN USERS (/manage-campaign)');
   console.log('--------------------------------------------------------------------------------');
 
-  const campaignJs = (await axios.get('https://stage-admin.qataratapp.com/_nuxt/BbtVezIB.js')).data;
+  const campaignJs = (await axios.get('https://admin-dev01.prowhats.com/_nuxt/BbtVezIB.js')).data;
 
   // 6.1 /manage-campaign: Search phone with '+' -> Search functions with '+' stripped
   console.log('[6.1] Auditing Campaign Search Phone Sanitation...');

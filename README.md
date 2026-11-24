@@ -1,8 +1,8 @@
 # Qatarat (قطرات) — Close Distribution QA Automation Suite & Deep Investigation Report (v2.0)
 
 > **Basecamp Task:** Card #10349901696: Close Distribution Issue  
-> **Target Environments:** Stage WebApp (`qatarat-stage.vercel.app`), Stage Admin (`stage-admin.qataratapp.com`)  
-> **Backend API Cluster:** `u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com`  
+> **Target Environments:** Stage WebApp (`dev01.prowhats.com`), Stage Admin (`admin-dev01.prowhats.com`)  
+> **Backend API Cluster:** `ws01dev.prowhats.com`  
 > **Assignee / Audit:** QA Engineering Team
 
 ---
@@ -402,7 +402,7 @@ For an order to be queried and displayed in the Admin **Close Distribution** tab
 | **DEFECT-QT-CD-01** | `P0 · CRITICAL` | Payment Webhook Race Condition Leaves `payment_date = NULL` Blocking Close Distribution | Payment Webhook / Backend DB (`client_orders.payment_date`) |
 | **DEFECT-QT-CD-02** | `P1 · HIGH` | Timezone Truncation (UTC vs KSA UTC+3) Drops Orders Placed Late in the Evening | Admin Panel Date Filter / SQL Comparison (`/admin/v2/orders/close-distribution`) |
 | **DEFECT-QT-CD-03** | `P1 · HIGH` | Silent Exclusion of `MULTI_TIME_DISTRIBUTION` Orders without Routing Notice | Admin Order Management UX (`/order-management`) |
-| **DEFECT-QT-CD-04** | `P2 · MEDIUM` | Stage Checkout Displays Currency Mismatch Badge (`IDR 140.0` instead of SAR) | Client WebApp Checkout Form (`qatarat-stage.vercel.app/en/checkout`) |
+| **DEFECT-QT-CD-04** | `P2 · MEDIUM` | Stage Checkout Displays Currency Mismatch Badge (`IDR 140.0` instead of SAR) | Client WebApp Checkout Form (`dev01.prowhats.com/en/checkout`) |
 
 ---
 

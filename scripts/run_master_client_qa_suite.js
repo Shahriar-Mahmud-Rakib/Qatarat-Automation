@@ -24,6 +24,8 @@ const VerifierService = require('../src/services/verifierService');
 
 const BASE_API = process.env.API_BASE_URL || 'https://ws01dev.prowhats.com';
 const WEBAPP_BASE = process.env.WEB_APP_URL || 'https://dev01.prowhats.com/en';
+const ADMIN_PORTAL_URL = process.env.ADMIN_PORTAL_URL || 'https://admin-dev01.prowhats.com/auth/login';
+const ADMIN_API_URL = process.env.ADMIN_API_URL || 'https://dev-admin-api.prowhats.com';
 const PRIMARY_PHONE = '8801772173075';
 const SECONDARY_PHONE = '8801774340599';
 const PRIMARY_USER_ID = 1593074;
@@ -570,7 +572,7 @@ async function runMasterSuite() {
     const orderNumber = draftRes.data.order_number;
     const uid = draftRes.data.order_uid;
     const rawCheckoutUrl = draftRes.data.checkout_url || '';
-    generatedCheckoutUrl = rawCheckoutUrl.replace('https://qatarat-stage.vercel.app/en', WEBAPP_BASE);
+    generatedCheckoutUrl = rawCheckoutUrl.replace(/https:\/\/[^/]+\/en/, WEBAPP_BASE);
 
     const pass = draftRes.status === 200 && !!orderNumber && !!generatedCheckoutUrl;
     recordTest(
@@ -713,20 +715,31 @@ async function runMasterSuite() {
       timeout: 30000
     });
 
+    // Lookup real DB order created in client_orders upon payment initiation
+    const [realDbOrders] = await pool.query(
+      'SELECT id, number, cost FROM client_orders WHERE number = ? ORDER BY id DESC LIMIT 1',
+      [realOrder.orderNumber]
+    );
+    if (realDbOrders.length > 0) {
+      realOrder.orderId = realDbOrders[0].id;
+      realOrder.cost = realDbOrders[0].cost || 82.5;
+    }
+
     const now = new Date();
     const nowStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
 
-    // Mark paid in database
+    // Mark paid in database and assign to customer
     await pool.query(`
       UPDATE client_orders 
-      SET client_order_status = 2,
+      SET client_id = ?,
+          client_order_status = 2,
           payment_date = ?,
           payment_gateway = 'myfatoorah',
           is_sent_payment_done_template = 1,
           auto_reconcile_attempted = 1,
           updated_at = NOW()
-      WHERE id = ?
-    `, [nowStr, realOrder.orderId]);
+      WHERE id = ? OR number = ?
+    `, [PRIMARY_USER_ID, nowStr, realOrder.orderId, realOrder.orderNumber]);
 
     await pool.query(`
       UPDATE client_order_details 
@@ -926,7 +939,8 @@ async function runMasterSuite() {
     testResults,
     timestamp: new Date().toUTCString(),
     checkoutUrl: generatedCheckoutUrl,
-    realOrder
+    realOrder,
+    adminPortalUrl: ADMIN_PORTAL_URL
   });
 
   const reportPath = path.join(__dirname, '../reports/qatarat_master_qa_client_report.html');
@@ -938,7 +952,7 @@ async function runMasterSuite() {
   return { totalTests, passedTests, warningTests, failedTests, successRate, reportPath };
 }
 
-function generateHtmlReport({ totalTests, passedTests, warningTests, failedTests, successRate, durationSec, testResults, timestamp, checkoutUrl, realOrder }) {
+function generateHtmlReport({ totalTests, passedTests, warningTests, failedTests, successRate, durationSec, testResults, timestamp, checkoutUrl, realOrder, adminPortalUrl }) {
   // Group results by suite
   const suites = {};
   testResults.forEach(t => {
@@ -1142,9 +1156,9 @@ function generateHtmlReport({ totalTests, passedTests, warningTests, failedTests
         </div>
       </div>
       <div class="admin-steps">
-        <strong>🔍 How to verify this real order in Stage Admin Panel:</strong>
+        <strong>🔍 How to verify this real order in Qatarat Frontend Admin (DEV):</strong>
         <ol>
-          <li>Open Stage Admin Portal: <a href="https://stage-admin.qataratapp.com" target="_blank" style="color: #38bdf8;">https://stage-admin.qataratapp.com</a></li>
+          <li>Open DEV Admin Portal: <a href="${adminPortalUrl || 'https://admin-dev01.prowhats.com/auth/login'}" target="_blank" style="color: #38bdf8;">${adminPortalUrl || 'https://admin-dev01.prowhats.com/auth/login'}</a></li>
           <li>Navigate to <strong>Orders Management (إدارة الطلبات)</strong>.</li>
           <li>Search by Order Number: <code>${realOrder.orderNumber}</code> or Database ID: <code>${realOrder.orderId}</code>.</li>
           <li>Verify status is <strong>Paid (2)</strong>, Customer is <strong>${realOrder.customerName}</strong>, and packaging is <strong>${realOrder.packageName}</strong>.</li>

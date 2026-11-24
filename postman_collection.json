@@ -8,7 +8,7 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com",
+      "value": "https://ws01dev.prowhats.com",
       "type": "string"
     },
     {
@@ -178,7 +178,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"cart_id\": 696600,\n  \"callbackUrl\": \"https://qatarat-stage.vercel.app/en/checkout/success\",\n  \"errorUrl\": \"https://qatarat-stage.vercel.app/en/checkout/error\",\n  \"paymentMethodId\": 2,\n  \"phoneNumber\": \"8801772173075\",\n  \"name\": \"Shahriar Mahmud\",\n  \"email\": \"shahriar@qataratapp.com\"\n}"
+              "raw": "{\n  \"cart_id\": 696600,\n  \"callbackUrl\": \"https://dev01.prowhats.com/en/checkout/success\",\n  \"errorUrl\": \"https://dev01.prowhats.com/en/checkout/error\",\n  \"paymentMethodId\": 2,\n  \"phoneNumber\": \"8801772173075\",\n  \"name\": \"Shahriar Mahmud\",\n  \"email\": \"shahriar@qataratapp.com\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v2/web-payments/initiate/myfatoorah",

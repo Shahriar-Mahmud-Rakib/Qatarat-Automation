@@ -18,7 +18,7 @@ async function runSubscriptionNotifications() {
 
   const targetPhone = '8801772173075';
   const targetUserId = 1593074;
-  const baseApi = process.env.API_BASE_URL || 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+  const baseApi = process.env.API_BASE_URL || 'https://ws01dev.prowhats.com';
   const apiKey = 'qatarat-subscription-generate-api-key-dev';
 
   console.log(`📌 Target User Phone:   ${targetPhone}`);

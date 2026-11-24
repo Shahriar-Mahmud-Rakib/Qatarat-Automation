@@ -37,8 +37,8 @@ async function runAdminVerificationFlow() {
   });
 
   try {
-    console.log('\n📍 1. Navigating to Stage Admin Login: https://stage-admin.qataratapp.com/auth/login ...');
-    await page.goto('https://stage-admin.qataratapp.com/auth/login', { waitUntil: 'networkidle2', timeout: 45000 });
+    console.log('\n📍 1. Navigating to Stage Admin Login: https://admin-dev01.prowhats.com/auth/login ...');
+    await page.goto('https://admin-dev01.prowhats.com/auth/login', { waitUntil: 'networkidle2', timeout: 45000 });
     await sleep(3000);
 
     const adminPhone = process.env.ADMIN_PHONE || '8801772173075';

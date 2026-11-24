@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 async function testSendWhatsAppOtp() {
-  const baseApi = 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+  const baseApi = 'https://ws01dev.prowhats.com';
   console.log('--- Testing SendWhatsAppOtp for 8801772173075 ---');
   try {
     const res = await axios.post(`${baseApi}/api/v2/Accounts/SendWhatsAppOtp`, {

@@ -1,7 +1,7 @@
 // ============================================
 // WhatsApp Ordering & 1-Click Checkout Lifecycle Spec
 // Endpoint: /api/whatsapp/order
-// WebApp Direct Checkout: https://qatarat-stage.vercel.app/en/checkout?token=...
+// WebApp Direct Checkout: https://dev01.prowhats.com/en/checkout?token=...
 // ============================================
 
 const { test, expect } = require('@playwright/test');
@@ -54,7 +54,7 @@ test.describe('📱 [WHATSAPP ORDERING] Chatbot Draft & 1-Click Checkout Links',
         expect(data.order_summary.service).toBe('water');
         expect(data.order_summary.quantity).toBe(50);
         expect(data.order_summary.total_cost).toBeGreaterThan(0);
-        expect(data.checkout_url).toContain('qatarat-stage.vercel.app');
+        expect(data.checkout_url).toContain('dev01.prowhats.com');
         expect(data.checkout_url).toContain('token=');
         expect(data.checkout_url).toContain(`order_number=${data.order_number}`);
 
@@ -80,7 +80,7 @@ test.describe('📱 [WHATSAPP ORDERING] Chatbot Draft & 1-Click Checkout Links',
         expect(data.order_summary.path).toBe('grand_mosque');
         expect(data.order_summary.service).toBe('meals');
         expect(data.order_summary.quantity).toBe(100);
-        expect(data.checkout_url).toContain('qatarat-stage.vercel.app');
+        expect(data.checkout_url).toContain('dev01.prowhats.com');
     });
 
     test('TC-WA-04: Verify 1-Click Checkout Token format & Auto-login claims', async ({}, testInfo) => {

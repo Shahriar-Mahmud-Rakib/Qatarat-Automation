@@ -48,8 +48,8 @@ async function runStageOrderFlow() {
 
   try {
     // 1. Navigate to Staging Web App
-    console.log('\n📍 Step 1: Navigating to https://qatarat-stage.vercel.app/en ...');
-    await page.goto('https://qatarat-stage.vercel.app/en', { waitUntil: 'networkidle2', timeout: 45000 });
+    console.log('\n📍 Step 1: Navigating to https://dev01.prowhats.com/en ...');
+    await page.goto('https://dev01.prowhats.com/en', { waitUntil: 'networkidle2', timeout: 45000 });
     await page.screenshot({ path: 'stage_step1_home.png' });
     console.log('📸 Screenshot saved: stage_step1_home.png');
 
@@ -59,7 +59,7 @@ async function runStageOrderFlow() {
     if (categoryLink) {
       await categoryLink.click();
     } else {
-      await page.goto('https://qatarat-stage.vercel.app/en/haram-watering-&-feeding', { waitUntil: 'networkidle2' });
+      await page.goto('https://dev01.prowhats.com/en/haram-watering-&-feeding', { waitUntil: 'networkidle2' });
     }
     await sleep(3000);
     await page.screenshot({ path: 'stage_step2_category.png' });
@@ -114,8 +114,8 @@ async function runStageOrderFlow() {
 
     // Navigate to checkout directly if needed
     if (!page.url().includes('checkout')) {
-      console.log('👉 Navigating to checkout page: https://qatarat-stage.vercel.app/en/checkout');
-      await page.goto('https://qatarat-stage.vercel.app/en/checkout', { waitUntil: 'networkidle2' });
+      console.log('👉 Navigating to checkout page: https://dev01.prowhats.com/en/checkout');
+      await page.goto('https://dev01.prowhats.com/en/checkout', { waitUntil: 'networkidle2' });
       await sleep(3000);
     }
 

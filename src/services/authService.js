@@ -3,7 +3,7 @@ const pool = require('../config/db');
 
 class AuthService {
   constructor() {
-    this.baseApi = process.env.API_BASE_URL || 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+    this.baseApi = process.env.API_BASE_URL || 'https://ws01dev.prowhats.com';
   }
 
   /**

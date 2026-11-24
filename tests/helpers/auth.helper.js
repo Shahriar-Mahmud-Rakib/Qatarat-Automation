@@ -4,7 +4,7 @@
 
 const { QATARAT_DATA } = require('./test-data.helper');
 
-const BASE_URL = process.env.API_BASE_URL || 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+const BASE_URL = process.env.API_BASE_URL || 'https://ws01dev.prowhats.com';
 
 const DEFAULT_HEADERS = {
     'Content-Type': 'application/json',

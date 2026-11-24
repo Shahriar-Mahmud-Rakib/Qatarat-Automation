@@ -14,7 +14,7 @@ async function runCloseDistributionLiveWorkflow() {
   console.log('   Scenarios: Order with Gift, 2 Close Distribution Orders, 1 Driver Order + Admin Live Completion');
   console.log('================================================================================================\n');
 
-  const baseApi = 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+  const baseApi = 'https://ws01dev.prowhats.com';
   const screenshotDir = path.join(__dirname, 'screenshots');
   if (!fs.existsSync(screenshotDir)) fs.mkdirSync(screenshotDir, { recursive: true });
 
@@ -275,7 +275,7 @@ async function runCloseDistributionLiveWorkflow() {
     await page.setViewport({ width: 1280, height: 900 });
 
     console.log('🌐 Loading Admin Portal Close Distribution UI...');
-    await page.goto('https://stage-admin.qataratapp.com/auth/login', { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.goto('https://admin-dev01.prowhats.com/auth/login', { waitUntil: 'domcontentloaded', timeout: 30000 });
     await sleep(2000);
 
     const shot1 = 'screenshots/live_close_dist_admin_portal.png';
@@ -283,7 +283,7 @@ async function runCloseDistributionLiveWorkflow() {
     console.log(`📸 Screenshot saved: ${shot1}`);
 
     // Navigate to live web storefront showing the Haram watering package
-    await page.goto('https://qatarat-stage.vercel.app/en', { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.goto('https://dev01.prowhats.com/en', { waitUntil: 'domcontentloaded', timeout: 30000 });
     await sleep(2500);
 
     const shot2 = 'screenshots/live_close_dist_storefront.png';

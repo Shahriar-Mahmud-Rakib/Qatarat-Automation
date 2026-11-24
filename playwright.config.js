@@ -18,7 +18,7 @@ module.exports = defineConfig({
         ['html', { open: 'never' }]
     ],
     use: {
-        baseURL: process.env.API_BASE_URL || 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com',
+        baseURL: process.env.API_BASE_URL || 'https://ws01dev.prowhats.com',
         extraHTTPHeaders: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',

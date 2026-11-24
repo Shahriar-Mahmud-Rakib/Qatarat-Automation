@@ -39,7 +39,7 @@ async function showBanner(page, text, bgColor = '#0284c7') {
 
 class RealUserOrderLifecycle {
   constructor(options = {}) {
-    this.baseApi = process.env.API_BASE_URL || 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+    this.baseApi = process.env.API_BASE_URL || 'https://ws01dev.prowhats.com';
     this.userPhone = options.phone || '8801772173075';
     this.headless = options.headless !== undefined ? options.headless : false;
     this.display = options.display || ':0';
@@ -273,7 +273,7 @@ class RealUserOrderLifecycle {
       console.log('------------------------------------------------------------------------------------------------');
 
       await showBanner(page, `🏛️ Admin Portal: Searching for Order #${orderNumber} in Order Management...`, '#0f766e');
-      await page.goto('https://stage-admin.qataratapp.com/order-management', { waitUntil: 'domcontentloaded', timeout: 30000 });
+      await page.goto('https://admin-dev01.prowhats.com/order-management', { waitUntil: 'domcontentloaded', timeout: 30000 });
       console.log('   - Waiting patiently for Admin portal tables and search data to load (5 seconds)...');
       await sleep(5000);
 

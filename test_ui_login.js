@@ -41,8 +41,8 @@ async function runLoginTests() {
   });
 
   try {
-    console.log('1. Navigating to https://stage-admin.qataratapp.com/auth/login ...');
-    await page.goto('https://stage-admin.qataratapp.com/auth/login', { waitUntil: 'networkidle2' });
+    console.log('1. Navigating to https://admin-dev01.prowhats.com/auth/login ...');
+    await page.goto('https://admin-dev01.prowhats.com/auth/login', { waitUntil: 'networkidle2' });
     await sleep(2000);
 
     // Take screenshot of initial login page

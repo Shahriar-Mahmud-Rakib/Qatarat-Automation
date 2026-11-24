@@ -15,7 +15,7 @@ async function runLive2OrdersUIWorkflow() {
   console.log('   Full Flow: Storefront -> Payment Gateway Test -> Live Order Completion (Close Dist & Driver)');
   console.log('================================================================================================\n');
 
-  const baseApi = 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+  const baseApi = 'https://ws01dev.prowhats.com';
   const screenshotDir = path.join(__dirname, 'screenshots');
   if (!fs.existsSync(screenshotDir)) fs.mkdirSync(screenshotDir, { recursive: true });
 

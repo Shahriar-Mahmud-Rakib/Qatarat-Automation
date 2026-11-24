@@ -6,7 +6,7 @@ const mysql = require('mysql2/promise');
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 async function runRealPayment() {
-  const base = 'https://u3swc2lpah.execute-api.ap-southeast-5.amazonaws.com';
+  const base = 'https://ws01dev.prowhats.com';
 
   console.log('1. Creating Guest session...');
   const guestRes = await axios.post(`${base}/api/v2/Accounts/AccessGuestUser`);
@@ -31,8 +31,8 @@ async function runRealPayment() {
   console.log('3. Initiating MyFatoorah web payment...');
   const webPay = await axios.post(`${base}/api/v2/web-payments/initiate/myfatoorah`, {
     cart_id: cartId,
-    callbackUrl: 'https://qatarat-stage.vercel.app/en/checkout/success',
-    errorUrl: 'https://qatarat-stage.vercel.app/en/checkout/error',
+    callbackUrl: 'https://dev01.prowhats.com/en/checkout/success',
+    errorUrl: 'https://dev01.prowhats.com/en/checkout/error',
     paymentMethodId: 2,
     phoneNumber: '008801772173075',
     name: 'Shahriar Mahmud',
